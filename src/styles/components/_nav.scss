@@ -1,0 +1,26 @@
+.nav {
+  display: block;
+  width: 100%;
+  text-align: center;
+  &__link {
+    color: #555;
+    text-decoration: none;
+    display: block;
+    padding: 1.5rem 0;
+    font-weight: 500;
+    font-size: 1.5rem;
+    &:hover {
+      color: var(--primary);
+    }
+  }
+
+  @media screen and (min-width: 992px) {
+    display: block;
+    width: auto;
+    text-align-last: left;
+    &__link {
+      display: inline-block;
+      padding: 0.5em 1em;
+    }
+  }
+}

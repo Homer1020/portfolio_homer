@@ -1,0 +1,10 @@
+.burger {
+  background-color: transparent;
+  border: none;
+  font-size: 3rem;
+  color: $primary;
+  cursor: pointer;
+  @media screen and (min-width: 992px) {
+    display: none;
+  }
+}

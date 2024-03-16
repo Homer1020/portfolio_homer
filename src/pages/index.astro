@@ -1,0 +1,36 @@
+---
+import '../styles/style.scss'
+import Layout from '../layouts/Layout.astro'
+import Hero from '../components/Hero.astro'
+---
+
+<Layout title="Homer Developer">
+	<Hero />
+	<section class="p-section bg-white l-about" id="sobre-mi">
+		<div class="container">
+			<div class="l-about__media">
+				<img src="/assets/img/developer.svg" alt="">
+			</div>
+			<div class="l-about__info">
+				<p class="badge">Sobre mi</p>
+				<h2>Un creador de soluciones de software web modernas y escalables.</h2>
+				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos libero, impedit ex, assumenda vero velit veniam reiciendis asperiores nemo minima sint alias harum rerum deleniti architecto recusandae odio ad debitis.</p>
+				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos libero, impedit ex, assumenda vero velit veniam reiciendis asperiores nemo minima sint alias harum rerum deleniti architecto recusandae odio ad debitis.</p>
+				<a href="#" class="button button--secondary-o">
+					Descargar CV
+					<i class="far fa-file-pdf"></i>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="p-section">
+		<div class="container">
+			<p class="badge">Portfolio</p>
+			<h2>Mis últimos proyectos</h2>
+
+			<div class="l-portfolio">
+			</div>
+		</div>
+	</section>
+</Layout>

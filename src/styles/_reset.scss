@@ -1,0 +1,50 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%; // 1rem = 10px
+}
+
+body {
+  font-size: 1.6rem;
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  color: $bodyText;
+  background-color: $bodyBg;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #000;
+  font-family: "Poppins", sans-serif;
+}
+
+p {
+  line-height: 1.6;
+  margin: 1.5rem 0;
+  font-size: 1.7rem;
+}
+
+img {
+  max-width: 100%;
+}
+
+.container {
+  width: 90%;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+
+  &--sm {
+    max-width: 900px;
+  }
+}
