@@ -1,0 +1,64 @@
+---
+const techs = [
+  {
+    path: '/assets/img/nodejs-icon.svg',
+    tech: 'NodeJS'
+  },
+  {
+    path: '/assets/img/astro-icon.svg',
+    tech: 'Astro'
+  },
+  {
+    path: '/assets/img/react-icon.svg',
+    tech: 'React'
+  },
+  {
+    path: '/assets/img/sass-icon.svg',
+    tech: 'Sass'
+  },
+  {
+    path: '/assets/img/laravel-icon.svg',
+    tech: 'Laravel'
+  },
+  {
+    path: '/assets/img/php-icon.svg',
+    tech: 'PHP'
+  },
+  {
+    path: '/assets/img/javascript-icon.svg',
+    tech: 'JavaScript'
+  },
+  {
+    path: '/assets/img/typescript-icon.svg',
+    tech: 'TypeScript'
+  },
+  {
+    path: '/assets/img/wordpress-icon.svg',
+    tech: 'Wordpress'
+  },
+  {
+    path: '/assets/img/mysql-icon.svg',
+    tech: 'MySQL'
+  },
+  {
+    path: '/assets/img/nextjs-icon.svg',
+    tech: 'NextJS'
+  },
+  {
+    path: '/assets/img/woocommerce-icon.svg',
+    tech: 'Woocommerce'
+  },
+]
+---
+<ul class="l-stack">
+  {
+    techs.map(({ path, tech }) => (
+      <li class="l-stack__item">
+        <figure>
+          <img src={path} alt={tech}>
+          <figcaption>{tech}</figcaption>
+        </figure>
+      </li>
+    ))
+  }
+</ul>
