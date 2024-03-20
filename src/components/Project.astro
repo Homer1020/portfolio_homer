@@ -2,15 +2,18 @@
 interface Props {
   image: string,
   title: string,
-  stack?: string[]
+  stacks?: string[]
 }
 
-const { title, image, stack = [] } = Astro.props
+const { title, image, stacks = [] } = Astro.props
 
 ---
 <article>
   <img src={image} alt={title}>
   <h3>{title}</h3>
+  {stacks.map(stack => (
+    <a class="category" href="#">{stack}</a>
+  ))}
 </article>
 <style>
   img {
@@ -20,5 +23,24 @@ const { title, image, stack = [] } = Astro.props
 
   h3 {
     font-weight: 500;
+  }
+
+  .category {
+    text-decoration: none;
+    color: inherit;
+    font-size: 1.4rem;
+    font-weight: 500;
+  }
+
+  .category:hover {
+    color: var(--primary);
+  }
+
+  .category::before {
+    content: '#';
+  }
+
+  .category:not(:last-child)::after {
+    content: ', ';
   }
 </style>

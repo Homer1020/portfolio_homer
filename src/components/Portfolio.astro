@@ -1,0 +1,59 @@
+---
+import Project from "./Project.astro"
+---
+<div class="l-portfolio" id="portfolio">
+  <Project
+    image='/assets/img/example_01.webp'
+    title='Sistema de Parking'
+    stacks={['Laravel', 'PHP']}
+  />
+  <Project
+    image='/assets/img/example_01.webp'
+    title='Sistema de censo'
+    stacks={['React', 'NodeJS', 'ExpressJS']}
+  />
+  <Project
+    image='/assets/img/example_01.webp'
+    title='Gomishots landing'
+    stacks={['AWS', 'CSS', 'JavaScript']}
+  />
+  <Project
+    image='/assets/img/example_01.webp'
+    title='Gestión de inventario'
+    stacks={['NodeJS', 'Express', 'Bootstrap']}
+  />
+  <Project
+    image='/assets/img/example_01.webp'
+    title='Oficiales de cumplimiento'
+    stacks={['ReactJS', 'PHP', 'HTML']}
+  />
+  <Project
+    image='/assets/img/example_01.webp'
+    title='Strateps web'
+    stacks={['Wordpress', 'PHP']}
+  />
+</div>
+
+<style is:global>
+  .l-portfolio {
+    margin-top: 5rem;
+  } 
+
+  .l-portfolio article {
+    width: calc(33% - 17px);
+    margin-bottom: 3rem;
+  }
+</style>
+
+<script>
+  import Isotope from 'isotope-layout'
+
+  const grid = new Isotope('#portfolio', {
+    itemSelector: '#portfolio article',
+    masonry: {
+      // use outer width of grid-sizer for columnWidth
+      columnWidth: '#portfolio article',
+      gutter: 30
+    }
+  })
+</script>
