@@ -1,6 +1,15 @@
 ---
 import Project from "./Project.astro"
 ---
+<div id="filter-portfolio">
+  <button class="button button--sm" data-filter="*">show all</button>
+  <button class="button button--sm" data-filter=".php">PHP</button>
+  <button class="button button--sm" data-filter=".laravel">Laravel</button>
+  <button class="button button--sm" data-filter=".javascript">JavaScript</button>
+  <button class="button button--sm" data-filter=".reactjs">ReactJS</button>
+  <button class="button button--sm" data-filter=".wordpress">Wordpress</button>
+  <button class="button button--sm" data-filter=".nodejs">NodeJS</button>
+</div>
 <div class="l-portfolio" id="portfolio">
   <Project
     image='/assets/img/example_01.webp'
@@ -10,7 +19,7 @@ import Project from "./Project.astro"
   <Project
     image='/assets/img/example_01.webp'
     title='Sistema de censo'
-    stacks={['React', 'NodeJS', 'ExpressJS']}
+    stacks={['ReactJS', 'NodeJS', 'ExpressJS']}
   />
   <Project
     image='/assets/img/example_01.webp'
@@ -34,26 +43,46 @@ import Project from "./Project.astro"
   />
 </div>
 
-<style is:global>
-  .l-portfolio {
-    margin-top: 5rem;
-  } 
+<style>
+  #filter-portfolio {
+    margin-top: 2rem;
+  }
 
-  .l-portfolio article {
-    width: calc(33% - 17px);
-    margin-bottom: 3rem;
+  #filter-portfolio button {
+    margin-right: .5rem;
+    margin-bottom: 1rem;
   }
 </style>
 
 <script>
   import Isotope from 'isotope-layout'
+  import imagesLoaded from 'imagesloaded'
 
-  const grid = new Isotope('#portfolio', {
+  const $grid = document.getElementById('portfolio') as HTMLElement
+  const $filterPortfolio = document.getElementById('filter-portfolio') as HTMLElement
+
+  const grid = new Isotope($grid, {
     itemSelector: '#portfolio article',
     masonry: {
-      // use outer width of grid-sizer for columnWidth
       columnWidth: '#portfolio article',
       gutter: 30
     }
   })
+
+  $filterPortfolio.addEventListener('click', e => {
+    const target = e.target as HTMLElement
+
+    if(target.dataset.filter) {
+      grid.arrange({
+        filter: target.dataset.filter
+      })
+    }
+  })
+  
+
+  imagesLoaded(grid).on('progress', function() {
+    // layout Isotope after each image loads
+    grid.layout();
+  });
+
 </script>

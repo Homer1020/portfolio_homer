@@ -12,10 +12,12 @@
   "dependencies": {
     "@astrojs/check": "^0.5.8",
     "astro": "^4.5.2",
+    "imagesloaded": "^5.0.0",
     "isotope-layout": "^3.0.6",
     "typescript": "^5.4.2"
   },
   "devDependencies": {
+    "@types/imagesloaded": "^4.1.6",
     "@types/isotope-layout": "^3.0.13",
     "sass": "^1.71.1"
   }

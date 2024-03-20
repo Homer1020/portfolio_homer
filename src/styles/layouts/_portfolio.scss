@@ -1,6 +1,20 @@
-// .l-portfolio {
-//   gap: 3rem;
-//   margin-top: 5rem;
-//   display: grid;
-//   grid-template-columns: repeat(3, 1fr);
-// }
+.l-portfolio {
+  margin-top: 5rem;
+}
+
+.l-portfolio article {
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+@media screen and (min-width: 992px) {
+  .l-portfolio article {
+    width: calc(50% - 17px);
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .l-portfolio article {
+    width: calc(33% - 17px);
+  }
+}

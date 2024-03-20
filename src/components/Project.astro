@@ -8,7 +8,7 @@ interface Props {
 const { title, image, stacks = [] } = Astro.props
 
 ---
-<article>
+<article class={stacks.map(stack => stack.toLowerCase()).join(' ')}>
   <img src={image} alt={title}>
   <h3>{title}</h3>
   {stacks.map(stack => (
