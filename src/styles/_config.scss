@@ -1,7 +1,9 @@
 $primary: #0F81C7;
+$secondary: lightseagreen;
 $bodyBg: #f9f9f9;
 $bodyText: #555;
 
 :root {
   --primary: #{$primary};
+  --secondary: #{$secondary};
 }

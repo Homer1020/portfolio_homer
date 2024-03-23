@@ -9,20 +9,50 @@ const { title, image, stacks = [] } = Astro.props
 
 ---
 <article class={stacks.map(stack => stack.toLowerCase()).join(' ')}>
-  <img src={image} alt={title}>
-  <h3>{title}</h3>
+  <a href="#" class="project-wrapper">
+    <img src={image} alt={title}>
+  </a>
+  <h3>
+    <a href="#">{title}</a>
+  </h3>
   {stacks.map(stack => (
     <a class="category" href="#">{stack}</a>
   ))}
 </article>
 <style>
-  img {
+  .project-wrapper {
+    overflow: hidden;
     border-radius: 10px;
     margin-bottom: 1rem;
   }
 
+  article:hover img {
+    transform: scale(1.3);
+  }
+  
+  img {
+    transition: transform .3s;
+    display: block;
+  }
+
+  a:has(img) {
+    display: block;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
   h3 {
     font-weight: 500;
+  }
+
+  h3 a:hover {
+    color: var(--primary);
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--primary);
   }
 
   .category {

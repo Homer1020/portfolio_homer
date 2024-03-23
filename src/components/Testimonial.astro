@@ -1,0 +1,65 @@
+  <blockquote>
+    <div>
+      <i class="decoration fa fa-quote-left"></i>
+    </div>
+    <p class="bq__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus, et nemo iste tenetur saepe velit ut modi aperiam, numquam odio vero.</p>
+
+    <div class="profile">
+      <img class="avatar" src="/assets/img/homer_02.jpg" alt="">
+
+      <div>
+        <p class="profile__name">Homer Moncayo</p>
+        <p class="profile__role">Programador web</p>
+      </div>
+    </div>
+  </blockquote>
+
+  <style>
+    .decoration {
+      color: var(--secondary);
+      font-size: 5rem;
+    }
+
+    .avatar {
+      width: 5.5rem !important;
+      height: 5.5rem !important;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-right: 1rem;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      margin-top: 2rem;
+    }
+
+    .profile__name,
+    .profile__role {
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .profile__name {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: #000;
+    }
+
+    .profile__role {
+      font-size: 1.3rem;
+    }
+
+    blockquote {
+      box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.02);
+      background-color: #fff;
+      padding: 2rem 2rem;
+      border-radius: 5px;
+    }
+
+    .bq__text {
+      font-size: 1.5rem;
+      line-height: 1.7;
+      margin-top: .7rem;
+    }
+  </style>

@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro'
 import Hero from '../components/Hero.astro'
 import Stack from '../components/Stack.astro'
 import Portfolio from '../components/Portfolio.astro'
+import Testimonials from '../components/Testimonials.astro'
 ---
 
 <Layout title="Homer Developer">
@@ -40,6 +41,19 @@ import Portfolio from '../components/Portfolio.astro'
 			<h2>Mis últimos proyectos</h2>
 
 			<Portfolio />
+		</div>
+	</section>
+
+	<section class="p-section">
+		<div class="container">
+			<p class="badge">Testimonios</p>
+			<h2>Lo que las personas opinan de mi</h2>
+			<Testimonials />
+		</div>
+	</section>
+
+	<section class="p-section bg-white">
+		<div class="container">
 		</div>
 	</section>
 </Layout>

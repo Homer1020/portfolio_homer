@@ -1,0 +1,56 @@
+---
+import Testimonial from "./Testimonial.astro";
+---
+
+<div class="l-testimonials owl-carousel">
+  <Testimonial />
+  <Testimonial />
+  <Testimonial />
+  <Testimonial />
+  <Testimonial />
+  <Testimonial />
+</div>
+
+<style is:global>
+  .l-testimonials {
+    margin-top: 5rem;
+  }
+
+  .owl-dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 4rem;
+    gap: 1rem;
+  }
+
+  .owl-dot span {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid var(--secondary);
+    border-radius: 50%;
+    transition: background-color .2s;
+
+  }
+
+  .owl-dot.active span {
+    background-color: var(--secondary);
+  }
+</style>
+
+<script>
+  $(document).ready(function(){
+    $(".owl-carousel").owlCarousel({
+      items: 1,
+      margin: 20,
+      responsive: {
+        992: {
+          items: 2
+        },
+        1400: {
+          items: 3
+        }
+      }
+    });
+  });
+</script>

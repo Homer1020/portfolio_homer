@@ -2,7 +2,7 @@
 import Project from "./Project.astro"
 ---
 <div id="filter-portfolio">
-  <button class="button button--sm" data-filter="*">show all</button>
+  <button class="button button--sm" data-filter="*">Mostra todo</button>
   <button class="button button--sm" data-filter=".php">PHP</button>
   <button class="button button--sm" data-filter=".laravel">Laravel</button>
   <button class="button button--sm" data-filter=".javascript">JavaScript</button>
@@ -17,7 +17,7 @@ import Project from "./Project.astro"
     stacks={['Laravel', 'PHP']}
   />
   <Project
-    image='/assets/img/example_01.webp'
+    image='/assets/img/mockup.jpg'
     title='Sistema de censo'
     stacks={['ReactJS', 'NodeJS', 'ExpressJS']}
   />
@@ -27,7 +27,22 @@ import Project from "./Project.astro"
     stacks={['AWS', 'CSS', 'JavaScript']}
   />
   <Project
+    image='/assets/img/mockup.jpg'
+    title='Gestión de inventario'
+    stacks={['NodeJS', 'Express', 'Bootstrap']}
+  />
+  <Project
     image='/assets/img/example_01.webp'
+    title='Oficiales de cumplimiento'
+    stacks={['ReactJS', 'PHP', 'HTML']}
+  />
+  <Project
+    image='/assets/img/example_01.webp'
+    title='Strateps web'
+    stacks={['Wordpress', 'PHP']}
+  />
+  <Project
+    image='/assets/img/mockup.jpg'
     title='Gestión de inventario'
     stacks={['NodeJS', 'Express', 'Bootstrap']}
   />
@@ -44,6 +59,22 @@ import Project from "./Project.astro"
 </div>
 
 <style>
+  .l-portfolio {
+    margin-top: 3rem;
+  }
+
+  .button {
+    border-radius: 0;
+    font-size: 1.2rem;
+    font-weight: normal;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .active {
+    background-color: #333;
+    color: #fff;
+  }
+
   #filter-portfolio {
     margin-top: 2rem;
   }
@@ -73,6 +104,10 @@ import Project from "./Project.astro"
     const target = e.target as HTMLElement
 
     if(target.dataset.filter) {
+      $filterPortfolio.querySelectorAll('.button').forEach($btn => {
+        $btn.classList.remove('active')
+      });
+      target.classList.add('active')
       grid.arrange({
         filter: target.dataset.filter
       })
@@ -81,7 +116,6 @@ import Project from "./Project.astro"
   
 
   imagesLoaded($grid).on('progress', function() {
-    // layout Isotope after each image loads
     grid.layout();
   });
 
