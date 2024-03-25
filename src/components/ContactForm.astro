@@ -1,0 +1,38 @@
+---
+import Input from "./Form/Input.astro"
+import Textarea from "./Form/Textarea.astro"
+---
+<form action="" style="width: 60%;">
+  <div class="cols">
+    <Input
+      type="text",
+      id="name"
+      label="Nombre y apellido"
+      placeholder='John Doe'
+    />
+    
+    <Input
+      type="text",
+      id="subject"
+      label="Asunto"
+      placeholder='Necesito una web.'
+    />
+  </div>
+  <Input
+    type="email",
+    id="email"
+    label="Correo"
+    placeholder='john@doe.com'
+  />
+  <Textarea
+    id="message",
+    label="Tu mensaje"
+    rows={5}
+    placeholder="Requiero una pagina web para mi negocio."
+  />
+
+  <button type="submit" class="button button--secondary">
+    Enviar
+    <i class="fa fa-paper-plane"></i>
+  </button>
+</form>

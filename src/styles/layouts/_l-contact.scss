@@ -1,0 +1,9 @@
+@media screen and (min-width: 992px) {
+  .cols {
+    display: flex;
+    gap: 2rem;
+  }
+  .cols > * {
+    width: 50%;
+  }
+}

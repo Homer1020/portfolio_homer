@@ -33,6 +33,8 @@ const { title, image, stacks = [] } = Astro.props
   img {
     transition: transform .3s;
     display: block;
+    aspect-ratio: 16/10;
+    object-fit: cover;
   }
 
   a:has(img) {

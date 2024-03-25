@@ -1,0 +1,34 @@
+.input {
+  padding: 1.3rem;
+  font-size: 1.4rem;
+  border: 1px solid #ddd;
+  width: 100%;
+  border-radius: 5px;
+  font-weight: normal;
+  font-family: inherit;
+}
+
+textarea.input {
+  resize: vertical;
+}
+
+.input::placeholder {
+  color: #888;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.group {
+  margin-bottom: 2rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: .7rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+}

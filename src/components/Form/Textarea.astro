@@ -1,0 +1,23 @@
+---
+import styles from './input.module.css'
+
+interface Props extends astroHTML.JSX.TextareaHTMLAttributes{
+  label?: string
+}
+
+const {id, label = '', placeholder = '', ...props } = Astro.props
+---
+
+<div class={styles.group}>
+  <label
+    class={styles.label}
+    for={id}
+  >{label}</label>
+  <textarea
+    class={styles.input}
+    id={id}
+    name={id}
+    placeholder={placeholder},
+    {...props}
+  ></textarea>
+</div>
