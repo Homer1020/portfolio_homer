@@ -76,6 +76,7 @@ if(Astro.request.method === 'POST') {
           label="Nombre y apellido"
           placeholder='John Doe'
           errors={errors.fullname}
+          required
         />
         
         <Input
@@ -84,6 +85,7 @@ if(Astro.request.method === 'POST') {
           label="Asunto"
           placeholder='Necesito una web.'
           errors={errors.subject}
+          required
         />
       </div>
       <Input
@@ -92,6 +94,7 @@ if(Astro.request.method === 'POST') {
         label="Correo"
         placeholder='john@doe.com'
         errors={errors.email}
+        required
       />
       <Textarea
         id="message",
@@ -99,6 +102,7 @@ if(Astro.request.method === 'POST') {
         rows={5}
         placeholder="Requiero una pagina web para mi negocio."
         errors={errors.message}
+        required
       />
     
       <button type="submit" class="button button--primary">
