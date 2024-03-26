@@ -2,10 +2,11 @@
 import styles from './input.module.css'
 
 interface Props extends astroHTML.JSX.TextareaHTMLAttributes{
-  label?: string
+  label?: string,
+  errors?: string[]
 }
 
-const {id, label = '', placeholder = '', ...props } = Astro.props
+const {errors, id, label = '', placeholder = '', ...props } = Astro.props
 ---
 
 <div class={styles.group}>
@@ -14,10 +15,16 @@ const {id, label = '', placeholder = '', ...props } = Astro.props
     for={id}
   >{label}</label>
   <textarea
-    class={styles.input}
+    class:list={[
+      styles.input,
+      {[styles.invalid]: errors?.length}
+    ]}
     id={id}
     name={id}
     placeholder={placeholder},
     {...props}
   ></textarea>
+  {errors?.map(error => (
+    <small class={styles.invalidFeedback}>{error}</small>
+  ))}
 </div>

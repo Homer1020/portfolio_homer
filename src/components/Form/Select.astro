@@ -1,0 +1,15 @@
+---
+import styles from './input.module.css'
+
+interface Props extends astroHTML.JSX.SelectHTMLAttributes {
+  label?: string
+}
+
+const {label, id, ...props} = Astro.props
+---
+<div>
+  <label class={styles.label} for={id}>{label}</label>
+  <select class={styles.input} {...props} id={id}>
+    <slot />
+  </select>
+</div>

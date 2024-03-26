@@ -8,6 +8,10 @@
   font-family: inherit;
 }
 
+.invalid {
+  border-color: red;
+}
+
 textarea.input {
   resize: vertical;
 }
@@ -31,4 +35,8 @@ textarea.input {
   font-size: 1.4rem;
   font-weight: 500;
   font-family: "Poppins", sans-serif;
+}
+
+.invalidFeedback {
+  color: red;
 }

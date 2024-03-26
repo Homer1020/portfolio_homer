@@ -3,6 +3,20 @@ import Input from "./Form/Input.astro"
 import Textarea from "./Form/Textarea.astro"
 import { Resend } from "resend"
 
+type Errors = {
+  fullname: string[]
+  email: string[],
+  subject: string[],
+  message: string[],
+}
+
+const errors: Errors = {
+  fullname: [],
+  email: [],
+  subject: [],
+  message: [],
+}
+
 if(Astro.request.method === 'POST') {
   try {
 
@@ -10,24 +24,42 @@ if(Astro.request.method === 'POST') {
     const fullname = data.get('fullname')
     const email = data.get('email')
     const subject = data.get('subject')
-    const message = data.get('subject')
+    const message = data.get('message')
 
-    const resend = new Resend(import.meta.env.RESEND_API_KEY)
+    if(!fullname) {
+      errors.fullname.push('El nombre completo es requerido')
+    }
 
-    await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: 'homermoncallo@gmail.com',
-      subject: 'Hello World',
-      html: `
-        <b>Nombre completo</b>: ${fullname}
-        <br>
-        <b>Correo</b>: ${email}
-        <br>
-        <b>Asunto</b>: ${subject}
-        <br>
-        ${message}
-      `
-    })
+    if(!email) {
+      errors.email.push('El correo es requerido')
+    }
+
+    if(!subject) {
+      errors.subject.push('El asunto es requerido')
+    }
+
+    if(!message) {
+      errors.message.push('El mensaje es requerido')
+    }
+
+    if(!Object.values(errors).some(arr => arr.length)) {
+      const resend = new Resend(import.meta.env.RESEND_API_KEY)
+
+      await resend.emails.send({
+        from: 'onboarding@resend.dev',
+        to: 'homermoncallo@gmail.com',
+        subject: `${subject}`,
+        html: `
+          <b>Nombre completo</b>: ${fullname}
+          <br>
+          <b>Correo</b>: ${email}
+          <br>
+          <b>Asunto</b>: ${subject}
+          <br>
+          ${message}
+        `
+      })
+    }
 
   } catch(err) {
     console.log(err)
@@ -43,6 +75,7 @@ if(Astro.request.method === 'POST') {
           id="fullname"
           label="Nombre y apellido"
           placeholder='John Doe'
+          errors={errors.fullname}
         />
         
         <Input
@@ -50,6 +83,7 @@ if(Astro.request.method === 'POST') {
           id="subject"
           label="Asunto"
           placeholder='Necesito una web.'
+          errors={errors.subject}
         />
       </div>
       <Input
@@ -57,12 +91,14 @@ if(Astro.request.method === 'POST') {
         id="email"
         label="Correo"
         placeholder='john@doe.com'
+        errors={errors.email}
       />
       <Textarea
         id="message",
         label="Tu mensaje"
         rows={5}
         placeholder="Requiero una pagina web para mi negocio."
+        errors={errors.message}
       />
     
       <button type="submit" class="button button--primary">
@@ -88,15 +124,19 @@ if(Astro.request.method === 'POST') {
   @media (min-width: 1200px) {
     .section-contact {
       display: flex;
-      gap: 4rem;
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      /* gap: 4rem; */
     }
 
     .contact-section {
       width: 60%;
+      padding: 4rem 3rem 4rem 4rem;
     }
 
     .image-section {
       width: 40%;
+      padding: 1rem;
     }
 
     .image-section img {
