@@ -1,38 +1,114 @@
 ---
 import Input from "./Form/Input.astro"
 import Textarea from "./Form/Textarea.astro"
----
-<form action="" style="width: 60%;">
-  <div class="cols">
-    <Input
-      type="text",
-      id="name"
-      label="Nombre y apellido"
-      placeholder='John Doe'
-    />
-    
-    <Input
-      type="text",
-      id="subject"
-      label="Asunto"
-      placeholder='Necesito una web.'
-    />
-  </div>
-  <Input
-    type="email",
-    id="email"
-    label="Correo"
-    placeholder='john@doe.com'
-  />
-  <Textarea
-    id="message",
-    label="Tu mensaje"
-    rows={5}
-    placeholder="Requiero una pagina web para mi negocio."
-  />
+import { Resend } from "resend"
 
-  <button type="submit" class="button button--secondary">
-    Enviar
-    <i class="fa fa-paper-plane"></i>
-  </button>
-</form>
+if(Astro.request.method === 'POST') {
+  try {
+
+    const data = await Astro.request.formData()
+    const fullname = data.get('fullname')
+    const email = data.get('email')
+    const subject = data.get('subject')
+    const message = data.get('subject')
+
+    const resend = new Resend(import.meta.env.RESEND_API_KEY)
+
+    await resend.emails.send({
+      from: 'onboarding@resend.dev',
+      to: 'homermoncallo@gmail.com',
+      subject: 'Hello World',
+      html: `
+        <b>Nombre completo</b>: ${fullname}
+        <br>
+        <b>Correo</b>: ${email}
+        <br>
+        <b>Asunto</b>: ${subject}
+        <br>
+        ${message}
+      `
+    })
+
+  } catch(err) {
+    console.log(err)
+  }
+}
+---
+<div class="section-contact">
+  <div class="contact-section">
+    <form method="post">
+      <div class="cols">
+        <Input
+          type="text",
+          id="fullname"
+          label="Nombre y apellido"
+          placeholder='John Doe'
+        />
+        
+        <Input
+          type="text",
+          id="subject"
+          label="Asunto"
+          placeholder='Necesito una web.'
+        />
+      </div>
+      <Input
+        type="email",
+        id="email"
+        label="Correo"
+        placeholder='john@doe.com'
+      />
+      <Textarea
+        id="message",
+        label="Tu mensaje"
+        rows={5}
+        placeholder="Requiero una pagina web para mi negocio."
+      />
+    
+      <button type="submit" class="button button--primary">
+        Enviar
+        <i class="fa fa-paper-plane"></i>
+      </button>
+    </form>
+  </div>
+  <div class="image-section">
+    <div class="image"></div>
+  </div>
+</div>
+
+<style>
+  .image-section img {
+    display: none;
+  }
+
+  .section-contact {
+    margin-top: 3.5rem;
+  }
+
+  @media (min-width: 1200px) {
+    .section-contact {
+      display: flex;
+      gap: 4rem;
+    }
+
+    .contact-section {
+      width: 60%;
+    }
+
+    .image-section {
+      width: 40%;
+    }
+
+    .image-section img {
+      display: block;
+    }
+  }
+
+  .image {
+    width: 100%;
+    height: 100%;
+    background-image: url(/assets/img/astronauta.jpg);
+    border-radius: 10px;
+    background-position: center;
+  }
+</style>
