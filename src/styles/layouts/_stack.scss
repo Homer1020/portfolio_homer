@@ -2,16 +2,17 @@
   margin-top: 5rem;
   list-style: none;
   display: grid;
-  gap: 3rem;
+  gap: 1rem;
   
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(2, 1fr);
 
-  @media screen and (min-width: 576px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  // @media screen and (min-width: 576px) {
+  //   grid-template-columns: repeat(2, 1fr);
+  // }
 
   @media screen and (min-width: 992px) {
     grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
   }
 
   @media screen and (min-width: 1200px) {

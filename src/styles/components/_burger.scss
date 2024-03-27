@@ -1,10 +1,48 @@
 .burger {
+  padding: 0;
   background-color: transparent;
   border: none;
-  font-size: 3rem;
-  color: $primary;
   cursor: pointer;
-  @media screen and (min-width: 992px) {
+  font-size: 50px;
+  position: relative;
+  color: var(--primary);
+  @media (min-width: 992px) {
     display: none;
+  }
+  span {
+    display: block;
+    width: 40px;
+    height: 5px;
+    border-radius: 3px;
+    background-color: currentColor;
+    transition-property: opacity, top, bottom, transform;
+    transition-duration: .2s;
+    position: relative;
+    &:not(:last-child) {
+      margin-bottom: 7px;
+    }
+    &:nth-child(2) {
+      transform-origin: left;
+    }
+    &:first-child {
+      top: 0;
+    }
+    &:last-child {
+      bottom: 0;
+    }
+  }
+  &.active {
+    span:nth-child(2) {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+    span:first-child {
+      top: 1.25rem;
+      transform: rotate(45deg);
+    }
+    span:last-child {
+      bottom: 1.1rem;
+      transform: rotate(-45deg);
+    }
   }
 }

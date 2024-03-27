@@ -4,11 +4,13 @@
       <img src="/assets/img/logo.svg" alt="Logo Homer Developer">
     </a>
 
-    <button class="burger">
-      <i class="fa fa-bars"></i>
+    <button class="burger" id="burger">
+      <span></span>
+      <span></span>
+      <span></span>
     </button>
 
-    <nav class="nav">
+    <nav class="nav" id="navbar">
       <a href="#sobre-mi" class="nav__link">Sobre mi</a>
       <a href="#portafolio" class="nav__link">Proyectos</a>
       <a href="#testimonios" class="nav__link">Testimonios</a>
@@ -31,3 +33,17 @@
     }
   }
 </style>
+
+<script>
+  const $burger = document.getElementById('burger')
+  const $navbar = document.getElementById('navbar')
+
+  const handleToggleNavbar = () => {
+    $navbar?.classList.toggle('show')
+    $burger?.classList.toggle('active')
+  }
+
+  if($burger) {
+    $burger.addEventListener('click', handleToggleNavbar)
+  }
+</script>

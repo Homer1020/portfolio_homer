@@ -1,5 +1,9 @@
 .nav {
-  display: block;
+  display: none;
+  // outline: 1px solid red;
+  &.show {
+    display: block;
+  }
   width: 100%;
   text-align: center;
   &__link {
