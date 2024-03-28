@@ -9,11 +9,11 @@ const { title, image, stacks = [] } = Astro.props
 
 ---
 <article class={stacks.map(stack => stack.toLowerCase()).join(' ')}>
-  <a href="#" class="project-wrapper">
+  <a href="/proyectos/2" class="project-wrapper">
     <img src={image} alt={title}>
   </a>
   <h3>
-    <a href="#">{title}</a>
+    <a href="/proyectos/2">{title}</a>
   </h3>
   {stacks.map(stack => (
     <a class="category" href="#">{stack}</a>

@@ -4,7 +4,7 @@
       <img src="/assets/img/logo.svg" alt="Logo Homer Developer">
     </a>
 
-    <button class="burger" id="burger">
+    <button class="burger" id="burger" aria-expanded="false">
       <span></span>
       <span></span>
       <span></span>
@@ -39,8 +39,11 @@
   const $navbar = document.getElementById('navbar')
 
   const handleToggleNavbar = () => {
-    $navbar?.classList.toggle('show')
-    $burger?.classList.toggle('active')
+    if($navbar && $burger) {
+      $navbar.classList.toggle('show')
+      $burger.classList.toggle('active')
+      $burger.ariaExpanded = $burger?.classList.contains('active') ? 'true' : 'false'
+    }
   }
 
   if($burger) {
