@@ -1,0 +1,118 @@
+---
+import Layout from "../../layouts/Layout.astro"
+import data from '../../data/projects.json'
+
+const {project:slug} = Astro.params
+
+const project = data.find(p => p.slug === slug)
+
+if(!project) {
+  return Astro.redirect('/', 301)
+}
+---
+<Layout
+  title='Proyecto'
+>
+  <div class="container container--sm">
+    <div class="card">
+      <div class="card__body">
+        <img class="banner" src={project.image} alt='Gomishot'>
+        <div>
+          <h1 class="title">{project.title}</h1>
+          <h3 class="subtitle">Descripción:</h3>
+          <div set:html={project.description || `
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum itaque nam quam et? Inventore accusantium iure excepturi quam expedita enim natus blanditiis vero ea, harum quis cupiditate, voluptatem quia fugit.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum itaque nam quam et? Inventore accusantium iure excepturi quam expedita enim natus blanditiis vero ea, harum quis cupiditate, voluptatem quia fugit.</p>
+          `.trim()}></div>
+          <h3 class="subtitle">Tecnologías:</h3>
+          <ul class="list">
+            {project.stacks.map(stack => (
+              <li>{stack}</li>
+            ))}
+          </ul>
+          <div class="buttons">
+            <a target="_blank" href={project.github} class="button button--secondary">
+              Código
+              <i class="fab fa-github"></i>
+            </a>
+            <a href="#" class="button button--primary">
+              Preview
+              <i class="fa fa-link"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  .header {
+    background-color: #fff;
+    box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
+  }
+
+  p {
+    font-size: 1.5rem;
+  }
+</style>
+
+<style>
+  h3,
+  h1 {
+    font-weight: 500;
+    line-height: 1;
+  }
+  
+  .container {
+    margin-bottom: 5rem;
+    margin-top: 2rem;
+  }
+
+  h1 {
+    font-size: 2.4rem;
+    margin-bottom: 2rem;
+    color: var(--primary);
+  }
+
+  .card {
+    background-color: #fff;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
+  }
+
+  .banner {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+    margin-bottom: 3rem;
+    aspect-ratio: 16/8;
+    object-fit: cover;
+  }
+
+  .list {
+    list-style: none;
+    margin: 1.5rem 0;
+  }
+
+  .list li {
+    background-color: #eee;
+    display: inline-block;
+    padding: .5rem 1rem;
+    border-radius: 3px;
+    font-size: 1.4rem;
+  }
+
+  .list li:not(:last-child) {
+    margin-right: 1rem;
+  }
+
+  .buttons {
+    margin-top: 3rem;
+  }
+
+  .buttons a:not(:last-child) {
+    margin-right: .5rem;
+  }
+</style>

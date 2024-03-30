@@ -2,14 +2,15 @@
 interface Props {
   image: string,
   title: string,
-  stacks?: string[]
+  stacks?: string[],
+  slug: string
 }
 
-const { title, image, stacks = [] } = Astro.props
+const { title, image, stacks = [], slug } = Astro.props
 
 ---
 <article class={stacks.map(stack => stack.toLowerCase()).join(' ')}>
-  <a href="/proyectos/2" class="project-wrapper">
+  <a href={`/proyectos/${slug}`} class="project-wrapper">
     <img src={image} alt={title}>
   </a>
   <h3>

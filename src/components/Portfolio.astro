@@ -1,5 +1,6 @@
 ---
 import Project from "./Project.astro"
+import data from '../data/projects.json'
 ---
 <div id="filter-portfolio">
   <button class="button button--sm" data-filter="*">Mostra todo</button>
@@ -11,51 +12,16 @@ import Project from "./Project.astro"
   <button class="button button--sm" data-filter=".nodejs">NodeJS</button>
 </div>
 <div class="l-portfolio" id="portfolio">
-  <Project
-    image='/assets/img/example_01.webp'
-    title='Sistema de Parking'
-    stacks={['Laravel', 'PHP']}
-  />
-  <Project
-    image='/assets/img/mockup.jpg'
-    title='Sistema de censo'
-    stacks={['ReactJS', 'NodeJS', 'ExpressJS']}
-  />
-  <Project
-    image='/assets/img/example_01.webp'
-    title='Gomishots landing'
-    stacks={['AWS', 'CSS', 'JavaScript']}
-  />
-  <Project
-    image='/assets/img/mockup.jpg'
-    title='Gestión de inventario'
-    stacks={['NodeJS', 'Express', 'Bootstrap']}
-  />
-  <Project
-    image='/assets/img/example_01.webp'
-    title='Oficiales de cumplimiento'
-    stacks={['ReactJS', 'PHP', 'HTML']}
-  />
-  <Project
-    image='/assets/img/example_01.webp'
-    title='Strateps web'
-    stacks={['Wordpress', 'PHP']}
-  />
-  <Project
-    image='/assets/img/mockup.jpg'
-    title='Gestión de inventario'
-    stacks={['NodeJS', 'Express', 'Bootstrap']}
-  />
-  <Project
-    image='/assets/img/example_01.webp'
-    title='Oficiales de cumplimiento'
-    stacks={['ReactJS', 'PHP', 'HTML']}
-  />
-  <Project
-    image='/assets/img/example_01.webp'
-    title='Strateps web'
-    stacks={['Wordpress', 'PHP']}
-  />
+  {
+    data.map(project => (
+    <Project
+      image={project.image}
+      title={project.title}
+      stacks={project.stacks}
+      slug={project.slug}
+    />
+    ))
+  }
 </div>
 
 <style>
