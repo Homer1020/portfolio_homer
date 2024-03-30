@@ -12,30 +12,34 @@
     "image": "/assets/img/mockup.jpg",
     "title": "Sistema de censo",
     "stacks": ["ReactJS", "NodeJS", "ExpressJS"],
-    "slug": "sistema-censo"
+    "slug": "sistema-censo",
+    "github": "https://github.com/Homer1020/censoapp"
   },
   {
     "image": "/assets/img/example_01.webp",
     "title": "Gomishots landing",
-    "stacks": ["AWS", "CSS", "JavaScript"],
-    "slug": "gomishot"
+    "stacks": ["HTML", "CSS", "JavaScript"],
+    "slug": "gomishot",
+    "url": "https://gomishots.com"
   },
   {
     "image": "/assets/img/mockup.jpg",
     "title": "Gestión de inventario",
-    "stacks": ["NodeJS", "Express", "Bootstrap"],
+    "stacks": ["NodeJS", "Sequelize", "Bootstrap 5"],
     "slug": "sistema-inventario"
   },
   {
     "image": "/assets/img/example_01.webp",
     "title": "Oficiales de cumplimiento",
     "stacks": ["ReactJS", "PHP", "HTML"],
-    "slug": "oficiales-cumplimiento"
+    "slug": "oficiales-cumplimiento",
+    "url": "https:/oficial-cumplimiento.com"
   },
   {
     "image": "/assets/img/mockup.jpg",
     "title": "Strateps web",
-    "stacks": ["Wordpress", "PHP"],
-    "slug": "strateps"
+    "stacks": ["Wordpress", "PHP", "JavaScript"],
+    "slug": "strateps",
+    "url": "https:/strateps.com"
   }
 ]

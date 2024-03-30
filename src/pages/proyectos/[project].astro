@@ -31,14 +31,18 @@ if(!project) {
             ))}
           </ul>
           <div class="buttons">
-            <a target="_blank" href={project.github} class="button button--secondary">
-              Código
-              <i class="fab fa-github"></i>
-            </a>
-            <a href="#" class="button button--primary">
-              Preview
-              <i class="fa fa-link"></i>
-            </a>
+            {project.github && (
+              <a target="_blank" href={project.github} class="button button--secondary">
+                Código
+                <i class="fab fa-github"></i>
+              </a>
+            )}
+            {project.url && (
+              <a href={project.url} target="_blank" class="button button--primary">
+                Preview
+                <i class="fa fa-link"></i>
+              </a>
+            )}
           </div>
         </div>
       </div>
