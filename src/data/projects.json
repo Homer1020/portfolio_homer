@@ -1,45 +1,46 @@
 [
   {
-    "image": "/assets/img/example_01.webp",
-    "title": "Sistema de Parking",
-    "stacks": ["Laravel", "PHP", "MySQL"],
-    "slug": "sistema-parking",
-    "description": "<p>Sistema web completo para estacionamiento, desarrollado en laravel 10 haciendo uso de las caracteristicas principales del framework y utilizando la plantilla AdminLTE.</p><p>El sistema le permite al encargado del estacionamiento poder registrar entradas, salidas y reservas de vehiculos ademas de servicios adicionales que solicite el propietario.</p><p>El sistema factura de acuerdo al tiempo de estadía en el estacionamiento añadiendo costo de los servicios adicionales solicitados</p><p>El sistema cuenta con un apartado de membresías para que los clientes frecuentes puedan obtener un porcentaje de descuento en su factura.</p>",
-    "github": "https://github.com/Homer1020/estacionamiento_app",
-    "url": ""
-  },
-  {
-    "image": "/assets/img/mockup.jpg",
-    "title": "Sistema de censo",
+    "image": "/assets/img/portfolio/galenus.png",
+    "title": "Revista Galenus",
     "stacks": ["ReactJS", "NodeJS", "ExpressJS"],
     "slug": "sistema-censo",
-    "github": "https://github.com/Homer1020/censoapp"
+    "url": "https://www.galenusrevista.com"
   },
   {
-    "image": "/assets/img/example_01.webp",
-    "title": "Gomishots landing",
-    "stacks": ["HTML", "CSS", "JavaScript"],
-    "slug": "gomishot",
-    "url": "https://gomishots.com"
-  },
-  {
-    "image": "/assets/img/mockup.jpg",
-    "title": "Gestión de inventario",
-    "stacks": ["NodeJS", "Sequelize", "Bootstrap 5"],
-    "slug": "sistema-inventario"
-  },
-  {
-    "image": "/assets/img/example_01.webp",
+    "image": "/assets/img/portfolio/oficiales.png",
     "title": "Oficiales de cumplimiento",
     "stacks": ["ReactJS", "PHP", "HTML"],
     "slug": "oficiales-cumplimiento",
     "url": "https:/oficial-cumplimiento.com"
   },
   {
-    "image": "/assets/img/mockup.jpg",
+    "image": "/assets/img/portfolio/strateps.png",
     "title": "Strateps web",
     "stacks": ["Wordpress", "PHP", "JavaScript"],
     "slug": "strateps",
     "url": "https:/strateps.com"
+  },
+  {
+    "image": "/assets/img/portfolio/parking.png",
+    "title": "Sistema de Parking",
+    "stacks": ["Laravel", "PHP", "MySQL"],
+    "slug": "sistema-parking",
+    "description": "<p>Sistema web completo para estacionamiento, desarrollado en laravel 10 haciendo uso de las caracteristicas principales del framework y utilizando la plantilla AdminLTE.</p><p>El sistema le permite al encargado del estacionamiento poder registrar entradas, salidas y reservas de vehiculos ademas de servicios adicionales que solicite el propietario.</p><p>El sistema factura de acuerdo al tiempo de estadía en el estacionamiento añadiendo costo de los servicios adicionales solicitados</p><p>El sistema cuenta con un apartado de membresías para que los clientes frecuentes puedan obtener un porcentaje de descuento en su factura.</p>",
+    "github": "https://github.com/Homer1020/estacionamiento_app",
+    "url": "https://homer1020.github.io/parkingplus/"
+  },
+  {
+    "image": "/assets/img/portfolio/gomishots.png",
+    "title": "Gomishots landing",
+    "stacks": ["HTML", "CSS", "JavaScript"],
+    "slug": "gomishot",
+    "url": "https://gomishots.com"
+  },
+  {
+    "image": "/assets/img/portfolio/legacy.png",
+    "title": "Portafolio legacy 🤯",
+    "stacks": ["ReactJS", "Firebase", "Sass"],
+    "slug": "sistema-inventario",
+    "url": "https://portafolio-homer-moncayo.web.app"
   }
 ]
