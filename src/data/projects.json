@@ -1,6 +1,6 @@
 [
   {
-    "image": "/assets/img/portfolio/galenus.png",
+    "image": "/assets/img/portfolio/galenus.jpg",
     "title": "Revista Galenus",
     "stacks": ["ReactJS", "NodeJS", "ExpressJS"],
     "slug": "sistema-censo",
