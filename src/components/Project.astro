@@ -9,9 +9,9 @@ interface Props {
 const { title, image, stacks = [], slug } = Astro.props
 
 ---
-<article class={stacks.map(stack => stack.toLowerCase()).join(' ')}>
-  <a href={`/proyectos/${slug}`} class="project-wrapper">
-    <img src={image} alt={title}>
+<article data-project-slug={slug} class={stacks.map(stack => stack.toLowerCase()).join(' ')}>
+  <a href={`#${slug}`} class="project-wrapper">
+    <img class="project-img" src={image} alt={title}>
   </a>
   <h3>
     <a href="#">{title}</a>
