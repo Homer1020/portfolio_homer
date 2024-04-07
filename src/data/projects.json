@@ -18,7 +18,7 @@
     "title": "Sistema de ceso",
     "stacks": ["Laravel", "PHP", "MySQL"],
     "slug": "sistema-censo",
-    "description": "<p>Sistema web completo para estacionamiento, desarrollado en laravel 10 haciendo uso de las caracteristicas principales del framework y utilizando la plantilla AdminLTE.</p><p>El sistema le permite al encargado del estacionamiento poder registrar entradas, salidas y reservas de vehiculos ademas de servicios adicionales que solicite el propietario.</p><p>El sistema factura de acuerdo al tiempo de estadía en el estacionamiento añadiendo costo de los servicios adicionales solicitados</p><p>El sistema cuenta con un apartado de membresías para que los clientes frecuentes puedan obtener un porcentaje de descuento en su factura.</p>",
+    "description": "<p>Sistema web completo para estacionamiento, desarrollado en laravel 10 haciendo uso de las caracteristicas principales del framework y utilizando la plantilla AdminLTE.</p><p>El sistema le permite al encargado del estacionamiento poder registrar entradas, salidas y reservas de vehiculos ademas de servicios adicionales que solicite el propietario.</p><p>El sistema factura de acuerdo al tiempo de estadía en el estacionamiento añadiendo costo de los servicios adicionales solicitados</p>",
     "github": "https://github.com/Homer1020/estacionamiento_app",
     "url": "https://homer1020.github.io/parkingplus/"
   },
@@ -41,7 +41,7 @@
     "title": "Sistema de Parking",
     "stacks": ["Laravel", "PHP", "MySQL"],
     "slug": "sistema-parking",
-    "description": "<p>Sistema web completo para estacionamiento, desarrollado en laravel 10 haciendo uso de las caracteristicas principales del framework y utilizando la plantilla AdminLTE.</p><p>El sistema le permite al encargado del estacionamiento poder registrar entradas, salidas y reservas de vehiculos ademas de servicios adicionales que solicite el propietario.</p><p>El sistema factura de acuerdo al tiempo de estadía en el estacionamiento añadiendo costo de los servicios adicionales solicitados</p><p>El sistema cuenta con un apartado de membresías para que los clientes frecuentes puedan obtener un porcentaje de descuento en su factura.</p>",
+    "description": "<p>Sistema web completo para estacionamiento, desarrollado en laravel 10 haciendo uso de las caracteristicas principales del framework y utilizando la plantilla AdminLTE.</p><p>El sistema le permite al encargado del estacionamiento poder registrar entradas, salidas y reservas de vehiculos ademas de servicios adicionales que solicite el propietario.</p><p>El sistema factura de acuerdo al tiempo de estadía en el estacionamiento añadiendo costo de los servicios adicionales solicitados</p>",
     "github": "https://github.com/Homer1020/estacionamiento_app",
     "url": "https://homer1020.github.io/parkingplus/"
   }

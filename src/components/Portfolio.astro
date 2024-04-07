@@ -90,36 +90,7 @@ import data from '../data/projects.json'
   /**
    * MODAL
    */
-  import {generateProjectTemplate} from '../utils/modal'
-
-  const handleCloseModal = (e: MouseEvent) => {
-    const $target = e.target as HTMLElement
-
-    if($target.classList.contains('modal')) {
-      document.body.style.overflow = ''
-      $target.removeEventListener('click', handleCloseModal)
-      $target.remove()
-    }
-  }
-  
-  const generateModal = (project: any) => {
-    const $modal = document.createElement('div')
-    $modal.classList.add('modal')
-
-    $modal.innerHTML = `
-      <article class="modal__content">
-        <div class="modal__body">
-          ${generateProjectTemplate(project)}
-        </div>
-      </article>
-    `.trim()
-
-    $modal.addEventListener('click', handleCloseModal)
-
-    document.body.style.overflow = 'hidden'
-
-    return $modal
-  }
+  import {generateModal} from '../utils/modal'
 
   const handleShowModal = (e: MouseEvent) => {
     const $target = e.target as HTMLElement
@@ -127,7 +98,6 @@ import data from '../data/projects.json'
       e.preventDefault()
       const slug = $target.parentElement?.parentElement?.dataset.projectSlug
       const project = projectsJSON.find(p => p.slug === slug)
-      console.log(project)
       const $modal = generateModal(project)
       document.body.appendChild($modal)
     }
