@@ -9,6 +9,13 @@
   color: var(--color, $secondary);
   border: 1px solid var(--color, $secondary);
   border-radius: 5px;
+  &--whatsapp {
+    background-color: var(--secondary);
+    color: #fff;
+    position: fixed;
+    bottom: 2rem;
+    right: 1rem;
+  }
   &:not(:last-child) {
     margin-right: 1rem;
   }

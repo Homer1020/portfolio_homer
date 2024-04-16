@@ -4,14 +4,14 @@
     "title": "Oficiales de cumplimiento",
     "stacks": ["ReactJS", "PHP", "HTML"],
     "slug": "oficiales-cumplimiento",
-    "url": "https:/oficial-cumplimiento.com"
+    "url": "https://oficial-cumplimiento.com"
   },
   {
     "image": "/assets/img/portfolio/strateps.png",
     "title": "Strateps web",
     "stacks": ["Wordpress", "PHP", "JavaScript"],
     "slug": "strateps",
-    "url": "https:/strateps.com"
+    "url": "https://strateps.com"
   },
   {
     "image": "/assets/img/portfolio/censo.jpg",
