@@ -14,6 +14,14 @@
     "url": "https://strateps.com"
   },
   {
+    "image": "/assets/img/portfolio/crypto.png",
+    "title":"Cotizador de cryptomonedas",
+    "stacks": ["JavaScript", "Bootstrap"],
+    "url": "https://iujocryptoapp.netlify.app",
+    "description": "<p>Esta aplicación web permite a los usuarios obtener información en tiempo real sobre el precio de las criptomonedas, incluyendo valores adicionales relevantes. Desarrollada como proyecto universitario, destaca por su simplicidad y su implementación en Vanilla JS, utilizando un sistema de enrutamiento SPA basado en anchors.</p></p><p>El proyecto tiene pocos errores, algunos de ellos debido a que las API'S, ya no están funcionando. Espero encontrar el código para corregir esto pronto y así reutilizar ese router.</p>",
+    "slug": "cotizador-cryptomonedas"
+  },
+  {
     "image": "/assets/img/portfolio/censo.jpg",
     "title": "Sistema de ceso",
     "stacks": ["Laravel", "PHP", "MySQL"],
