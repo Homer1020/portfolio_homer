@@ -1,5 +1,9 @@
 .hero {
   padding: 10rem 0;
+  padding-top: calc(10rem + 80px);
+  @media (min-width: 992px) {
+    padding-top: calc(10rem + 86.56px);
+  }
   .container {
     display: flex;
     flex-direction: column;

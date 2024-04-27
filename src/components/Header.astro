@@ -1,4 +1,4 @@
-<header class="header">
+<header class="header" id="header">
   <div class="container">
     <a href="/" class="brand">
       <img src="/assets/img/logo.svg" alt="Logo Homer Developer">
@@ -37,6 +37,7 @@
 <script>
   const $burger = document.getElementById('burger')
   const $navbar = document.getElementById('navbar')
+  const $header = document.getElementById('header')
 
   const handleToggleNavbar = () => {
     if($navbar && $burger) {
@@ -46,7 +47,17 @@
     }
   }
 
+  const handleToggleWhiteHeader = () => {
+    if(window.scrollY >= 30) {
+      $header?.classList.add('header--white');
+    } else {
+      $header?.classList.remove('header--white');
+    }
+  }
+
   if($burger) {
     $burger.addEventListener('click', handleToggleNavbar)
   }
+
+  window.addEventListener('scroll', handleToggleWhiteHeader)
 </script>
