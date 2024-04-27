@@ -39,25 +39,30 @@
   const $navbar = document.getElementById('navbar')
   const $header = document.getElementById('header')
 
+  const isMovil = matchMedia('(max-width: 992px)').matches
+
   const handleToggleNavbar = () => {
-    if($navbar && $burger) {
-      $navbar.classList.toggle('show')
-      $burger.classList.toggle('active')
-      $burger.ariaExpanded = $burger?.classList.contains('active') ? 'true' : 'false'
-    }
+    if(!$navbar || !$burger) return null
+
+    $navbar.classList.toggle('show')
+    $burger.classList.toggle('active')
+    $burger.ariaExpanded = $burger?.classList.contains('active') ? 'true' : 'false'
   }
 
   const handleToggleWhiteHeader = () => {
-    if(window.scrollY >= 30) {
-      $header?.classList.add('header--white');
-    } else {
-      $header?.classList.remove('header--white');
+    if(window.scrollY >= 30) $header?.classList.add('header--white')
+    else $header?.classList.remove('header--white')
+  }
+
+  const handleClickOnNavbar =(e: MouseEvent) => {
+    if(!(e.target instanceof HTMLElement)) return null
+    if(e.target.nodeName === 'A' && $navbar && $burger) {
+      $navbar.classList.remove('show')
+      $burger.classList.remove('active')
     }
   }
 
-  if($burger) {
-    $burger.addEventListener('click', handleToggleNavbar)
-  }
-
-  window.addEventListener('scroll', handleToggleWhiteHeader)
+  if($burger) $burger.addEventListener('click', handleToggleNavbar)
+  if($header) window.addEventListener('scroll', handleToggleWhiteHeader)
+  if($navbar && isMovil) $navbar.addEventListener('click', handleClickOnNavbar)
 </script>
