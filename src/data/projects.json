@@ -32,7 +32,7 @@
   {
     "image": "/assets/img/portfolio/legacy.png",
     "title": "Portafolio legacy 🤯",
-    "description": "<p>Visualiza mis proyectos y obtén servicios relacionados con desarrollo web, al mejor precio y calidad.</p><p>Este portafolio es antiguo y está obsoleto. <a class=\"link\" href=\"https://homer-developer.vercel.app\" target=\"blank\">Ver nuevo portafolio.</a></p>",
+    "description": "<p>Visualiza mis proyectos y obtén servicios relacionados con desarrollo web, al mejor precio y calidad.</p><p>Este portafolio es antiguo y está obsoleto.</p>",
     "stacks": ["ReactJS", "Firebase", "Sass"],
     "slug": "sistema-inventario",
     "url": "https://portafolio-homer-moncayo.web.app"
