@@ -24,33 +24,17 @@
   {
     "image": "/assets/img/portfolio/censo.jpg",
     "title": "Sistema de ceso",
-    "stacks": ["Laravel", "PHP", "MySQL"],
+    "stacks": ["NodeJS", "MySQL"],
     "slug": "sistema-censo",
-    "description": "<p>Sistema web completo para estacionamiento, desarrollado en laravel 10 haciendo uso de las caracteristicas principales del framework y utilizando la plantilla AdminLTE.</p><p>El sistema le permite al encargado del estacionamiento poder registrar entradas, salidas y reservas de vehiculos ademas de servicios adicionales que solicite el propietario.</p><p>El sistema factura de acuerdo al tiempo de estadía en el estacionamiento añadiendo costo de los servicios adicionales solicitados</p>",
-    "github": "https://github.com/Homer1020/estacionamiento_app",
-    "url": "https://homer1020.github.io/parkingplus/"
+    "description": "<p>Sistema desarrollado como servicio comunitario. El encargado del sistema es capaz de registrar y modificar personas pertenecientes a la comunidad, obteniendo información importante para procesos administrativos.</p><p>Esta desarrollado con ReactJS para el Frontend y un Backend en Express, con una base de datos MySQL.</p>",
+    "github": "https://github.com/Homer1020/censoapp"
   },
   {
     "image": "/assets/img/portfolio/legacy.png",
     "title": "Portafolio legacy 🤯",
+    "description": "<p>Visualiza mis proyectos y obtén servicios relacionados con desarrollo web, al mejor precio y calidad.</p><p>Este portafolio es antiguo y está obsoleto. <a class=\"link\" href=\"https://homer-developer.vercel.app\" target=\"blank\">Ver nuevo portafolio.</a></p>",
     "stacks": ["ReactJS", "Firebase", "Sass"],
     "slug": "sistema-inventario",
     "url": "https://portafolio-homer-moncayo.web.app"
-  },
-  {
-    "image": "/assets/img/portfolio/galenus.jpg",
-    "title": "Revista Galenus",
-    "stacks": ["ReactJS", "NodeJS", "ExpressJS"],
-    "slug": "revista-galenus",
-    "url": "https://www.galenusrevista.com"
-  },
-  {
-    "image": "/assets/img/portfolio/parking.png",
-    "title": "Sistema de Parking",
-    "stacks": ["Laravel", "PHP", "MySQL"],
-    "slug": "sistema-parking",
-    "description": "<p>Sistema web completo para estacionamiento, desarrollado en laravel 10 haciendo uso de las caracteristicas principales del framework y utilizando la plantilla AdminLTE.</p><p>El sistema le permite al encargado del estacionamiento poder registrar entradas, salidas y reservas de vehiculos ademas de servicios adicionales que solicite el propietario.</p><p>El sistema factura de acuerdo al tiempo de estadía en el estacionamiento añadiendo costo de los servicios adicionales solicitados</p>",
-    "github": "https://github.com/Homer1020/estacionamiento_app",
-    "url": "https://homer1020.github.io/parkingplus/"
   }
 ]
