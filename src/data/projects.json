@@ -4,12 +4,14 @@
     "title": "Oficiales de cumplimiento",
     "stacks": ["ReactJS", "PHP", "HTML"],
     "slug": "oficiales-cumplimiento",
+    "description": "<p>Sitio web y CRM para gestionar información acerca la escuela para oficiales de cumplimiento, desarrollado con ReactJS y PHP.</p><p>Desarrollado totalmente a la medida con optimizaciones para los motores de busqueda.</p>",
     "url": "https://oficial-cumplimiento.com"
   },
   {
     "image": "/assets/img/portfolio/strateps.png",
     "title": "Strateps web",
     "stacks": ["Wordpress", "PHP", "JavaScript"],
+    "description": "<p>Creación e implementación de un tema completamente funcional en wordpress con gutenberg.</p><p>Desarrollado totalmente a la medida con optimizaciones para los motores de busqueda.</p>",
     "slug": "strateps",
     "url": "https://strateps.com"
   },
