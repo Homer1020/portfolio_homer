@@ -1,6 +1,6 @@
 export const generateProjectTemplate = ({title, image, description, stacks, github, url}) => {
   return `
-    <img class="banner" src="${image}" alt='Gomishot'>
+    <img class="banner" src="${image}" alt='${ title }'>
     <div>
       <h2 class="title">${title || ''}</h2>
       <h3 class="subtitle">Descripción:</h3>
