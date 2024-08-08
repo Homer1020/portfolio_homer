@@ -44,10 +44,10 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: transform .2s;
+    transition: background-color .2s;
     box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
     &:hover {
-      transform: scale(1.2);
+      background-color: darken(#dc3545, 7);
     }
     i {
       font-size: 1.7rem;

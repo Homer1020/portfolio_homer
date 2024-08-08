@@ -42,7 +42,9 @@ if(Astro.request.method === 'POST') {
       errors.message.push('El mensaje es requerido')
     }
 
-    if(!Object.values(errors).some(arr => arr.length)) {
+    const thereIsSomeError = Object.values(errors).some(arr => arr.length)
+
+    if(!thereIsSomeError) {
       const resend = new Resend(import.meta.env.RESEND_API_KEY)
 
       await resend.emails.send({

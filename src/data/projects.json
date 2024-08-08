@@ -26,17 +26,17 @@
   {
     "image": "/assets/img/portfolio/censo.jpg",
     "title": "Sistema de ceso",
-    "stacks": ["NodeJS", "MySQL"],
+    "stacks": ["NodeJS", "ReactJS"],
     "slug": "sistema-censo",
     "description": "<p>Sistema desarrollado como servicio comunitario. El encargado del sistema es capaz de registrar y modificar personas pertenecientes a la comunidad, obteniendo información importante para procesos administrativos.</p><p>Esta desarrollado con ReactJS para el Frontend y un Backend en Express, con una base de datos MySQL.</p>",
     "github": "https://github.com/Homer1020/censoapp"
   },
   {
-    "image": "/assets/img/portfolio/legacy.png",
-    "title": "Portafolio legacy 🤯",
-    "description": "<p>Visualiza mis proyectos y obtén servicios relacionados con desarrollo web, al mejor precio y calidad.</p><p>Este portafolio es antiguo y está obsoleto.</p>",
-    "stacks": ["ReactJS", "Firebase", "Sass"],
-    "slug": "sistema-inventario",
-    "url": "https://portafolio-homer-moncayo.web.app"
+    "image": "/assets/img/portfolio/pos.jpg",
+    "title": "Sistema punto de venta",
+    "description": "<p>Sistema de punto de ventas (POS) está diseñado para ofrecer una gestión integral de un negocio. Permite administrar diversos roles y usuarios, garantizando una configuración flexible y segura del acceso y las funciones según las necesidades de cada miembro del equipo. Además, facilita la gestión de inventario y stock, permitiendo el seguimiento en tiempo real de los niveles de productos, con alertas automáticas para asegurar un suministro adecuado y evitar desabastecimientos.</p><p>Esta herramienta integral simplifica la operación diaria y optimiza la administración de recursos.</p>",
+    "stacks": ["Laravel", "JavaScript", "PHP"],
+    "slug": "sistema-punto-de-venta",
+    "github": "https://github.com/Homer1020/punto-de-venta"
   }
 ]

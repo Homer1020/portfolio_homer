@@ -13,38 +13,34 @@ if(!project) {
 <Layout
   title={ project.title }
 >
-  <div class="container container--sm">
-    <div class="card">
-      <div class="card__body">
-        <img class="banner" src={project.image} alt='Gomishot'>
-        <div>
-          <h1 class="title">{project.title}</h1>
-          <h3 class="subtitle">Descripción:</h3>
-          <div set:html={project.description || `
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum itaque nam quam et? Inventore accusantium iure excepturi quam expedita enim natus blanditiis vero ea, harum quis cupiditate, voluptatem quia fugit.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum itaque nam quam et? Inventore accusantium iure excepturi quam expedita enim natus blanditiis vero ea, harum quis cupiditate, voluptatem quia fugit.</p>
-          `.trim()}></div>
-          <h3 class="subtitle">Tecnologías:</h3>
-          <ul class="list">
-            {project.stacks.map(stack => (
-              <li>{stack}</li>
-            ))}
-          </ul>
-          <div class="buttons">
-            {project.github && (
-              <a target="_blank" href={project.github} class="button button--secondary">
-                Código
-                <i class="fab fa-github"></i>
-              </a>
-            )}
-            {project.url && (
-              <a href={project.url} target="_blank" class="button button--primary">
-                Preview
-                <i class="fa fa-link"></i>
-              </a>
-            )}
-          </div>
-        </div>
+  <div class="container">
+    <img class="banner" src={project.image} alt='Gomishot'>
+    <div>
+      <h1 class="title">{project.title}</h1>
+      <h3 class="subtitle">Descripción:</h3>
+      <div set:html={project.description || `
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum itaque nam quam et? Inventore accusantium iure excepturi quam expedita enim natus blanditiis vero ea, harum quis cupiditate, voluptatem quia fugit.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum itaque nam quam et? Inventore accusantium iure excepturi quam expedita enim natus blanditiis vero ea, harum quis cupiditate, voluptatem quia fugit.</p>
+      `.trim()}></div>
+      <h3 class="subtitle">Tecnologías:</h3>
+      <ul class="list">
+        {project.stacks.map(stack => (
+          <li>{stack}</li>
+        ))}
+      </ul>
+      <div class="buttons">
+        {project.github && (
+          <a target="_blank" href={project.github} class="button button--secondary">
+            Código
+            <i class="fab fa-github"></i>
+          </a>
+        )}
+        {project.url && (
+          <a href={project.url} target="_blank" class="button button--primary">
+            Preview
+            <i class="fa fa-link"></i>
+          </a>
+        )}
       </div>
     </div>
   </div>
@@ -70,7 +66,7 @@ if(!project) {
   
   .container {
     margin-bottom: 5rem;
-    margin-top: 2rem;
+    margin-top: 10rem;
   }
 
   h1 {
@@ -89,9 +85,8 @@ if(!project) {
   .banner {
     width: 100%;
     display: block;
-    border-radius: 10px;
     margin-bottom: 3rem;
-    aspect-ratio: 16/8;
+    aspect-ratio: 16/9;
     object-fit: cover;
   }
 

@@ -15,10 +15,7 @@ import data from '../data/projects.json'
   {
     data.map(project => (
       <Project
-        image={project.image}
-        title={project.title}
-        stacks={project.stacks}
-        slug={project.slug}
+        { ...project }
       />
     ))
   }
