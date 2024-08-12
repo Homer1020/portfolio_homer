@@ -1,0 +1,43 @@
+---
+import Dashboard from "../../layouts/Dashboard.astro";
+import { supabase } from "../../config/supabase";
+
+const { cookies, redirect } = Astro;
+
+const accessToken = cookies.get("sb-access-token");
+const refreshToken = cookies.get("sb-refresh-token");
+
+if (!accessToken || !refreshToken) {
+  return redirect("/admin/login");
+}
+
+const { data, error } = await supabase.auth.setSession({
+  refresh_token: refreshToken.value,
+  access_token: accessToken.value,
+});
+
+if (error) {
+  cookies.delete("sb-access-token", {
+    path: "/",
+  });
+  cookies.delete("sb-refresh-token", {
+    path: "/",
+  });
+
+  return redirect("/signin");
+}
+
+const email = data?.user?.email;
+---
+<Dashboard title="panel de control">
+  <h1>Bienvenido {email}</h1>
+  <p>Estamos felices de verte aquí</p>
+</Dashboard>
+
+<style is:global>
+  .header {
+    background-color: #fff;
+    box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
+    position: static;
+  }
+</style>

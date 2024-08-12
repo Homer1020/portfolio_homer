@@ -1,0 +1,39 @@
+---
+import { supabase } from "../../../config/supabase"
+import Dashboard from "../../../layouts/Dashboard.astro"
+
+if(Astro.request.method === 'POST') {
+  try {
+
+    const data = await supabase.from('projects').insert({
+      title: 'Second project',
+      content: 'Content of my second project',
+      slug: 'nuevoasas-project',
+      category_id: 1,
+    })
+
+    console.log(data)
+   
+  } catch(err) {
+    console.log(err)
+  }
+}
+---
+
+<Dashboard
+  title="Portafolio"
+>
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 m-0 text-gray-800">Nuevo proyecto</h1>
+  </div>
+  <div class="card">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Agregar proyecto</h6>
+    </div>
+    <div class="card-body">
+      <form method="POST">
+        <button type="submit">Crear</button>
+      </form>
+    </div>
+  </div>
+</Dashboard>
