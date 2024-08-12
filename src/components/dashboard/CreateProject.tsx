@@ -1,19 +1,30 @@
-import { useRef, type FormEvent } from "react"
+import { useRef, type FormEvent, useState, useEffect } from "react"
 import type { ProjectType } from "../../types"
+import Select from 'react-select'
+import { supabase } from "../../config/supabase"
 
 export default function CreateProject({
   setProjects
 }: {
   setProjects: React.Dispatch<React.SetStateAction<ProjectType[]>>
 }) {
+  const [tecnologies, setTecnologies] = useState([])
+
+  useEffect(() => {
+    supabase
+      .from('tecnologies')
+      .select()
+      .then(({ data }) => {
+        setTecnologies(data.map(tecnology => ({label: tecnology.tecnology, value: tecnology.id})))
+      })
+  }, [])
+
   const modalRef = useRef<HTMLDivElement>(null)
 
   const handleCreateProject = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = e.currentTarget
     const fd = new FormData(form)
-
-    console.log(fd)
 
     const res = await fetch('/api/projects/store', {
       method: 'POST',
@@ -49,8 +60,19 @@ export default function CreateProject({
                 <input type="text" className="form-control" name="title" id="project-title" />
               </div>
               <div className="form-group">
+                <label htmlFor="project-tecnologies" className="form-label">Tecnologias</label>
+                <Select
+                  id="project-tecnologies"
+                  options={ tecnologies }
+                  isClearable
+                  placeholder="Seleccione las tecnologias"
+                  isMulti
+                  closeMenuOnSelect={false}
+                />
+              </div>
+              <div className="form-group">
                 <label htmlFor="project-content" className="form-label">Contenido</label>
-                <textarea name="content" id="project-content" className="form-control"></textarea>
+                <textarea name="content" rows={5} id="project-content" className="form-control"></textarea>
               </div>
             </form>
           </div>
