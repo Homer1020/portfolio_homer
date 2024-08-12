@@ -5,4 +5,8 @@ export type ProjectType = {
   created_at: string
   slug: string
   id: number
+  tecnologies: {
+    id: number,
+    tecnology: string
+  }
 }

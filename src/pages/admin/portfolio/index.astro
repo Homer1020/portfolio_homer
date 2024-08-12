@@ -1,12 +1,7 @@
 ---
+import CreateProject from "../../../components/dashboard/CreateProject"
 import ProjectList from "../../../components/dashboard/ProjectList"
-import { supabase } from "../../../config/supabase"
 import Dashboard from "../../../layouts/Dashboard.astro"
-import { type ProjectType } from "../../../types"
-
-const { data, error } = await supabase
-  .from('projects')
-  .select()
 ---
 
 <Dashboard
@@ -20,5 +15,7 @@ const { data, error } = await supabase
       <i class="fa fa-plus ms-2"></i>
     </button>
   </div>
-  <ProjectList client:load data={ data as ProjectType[] } />
+  <ProjectList
+    client:load
+  />
 </Dashboard>

@@ -27,8 +27,10 @@
     "typescript": "^5.4.2"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
     "@types/imagesloaded": "^4.1.6",
     "@types/isotope-layout": "^3.0.13",
+    "@types/jquery": "^3.5.30",
     "sass": "^1.71.1"
   }
 }

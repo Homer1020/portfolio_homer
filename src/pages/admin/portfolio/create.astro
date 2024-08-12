@@ -1,7 +1,7 @@
 ---
-import CreateProject from "../../../components/dashboard/CreateProject"
 import { supabase } from "../../../config/supabase"
 import Dashboard from "../../../layouts/Dashboard.astro"
+import ProjectList from "../../../components/dashboard/ProjectList"
 
 if(Astro.request.method === 'POST') {
   try {
@@ -32,7 +32,7 @@ if(Astro.request.method === 'POST') {
       <h6 class="m-0 font-weight-bold text-primary">Agregar proyecto</h6>
     </div>
     <div class="card-body">
-      <CreateProject client:load />
+      <ProjectList client:load />
     </div>
   </div>
 </Dashboard>
