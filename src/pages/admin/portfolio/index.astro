@@ -1,6 +1,8 @@
 ---
+import ProjectList from "../../../components/dashboard/ProjectList"
 import { supabase } from "../../../config/supabase"
 import Dashboard from "../../../layouts/Dashboard.astro"
+import { type ProjectType } from "../../../types"
 
 const { data, error } = await supabase
   .from('projects')
@@ -13,45 +15,10 @@ const { data, error } = await supabase
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 m-0 text-gray-800">Portafolio</h1>
 
-    <a href="/admin/portfolio/create" class="btn btn btn-primary">
+    <button data-toggle="modal" data-target="#modal-create-project" class="btn btn btn-primary">
       Agregar nuevo
       <i class="fa fa-plus ms-2"></i>
-    </a>
+    </button>
   </div>
-  <div class="card">
-    <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">Proyectos</h6>
-    </div>
-    <div class="card-body">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Titulo</th>
-            <th>Slug</th>
-            <th>Categorias</th>
-            <th>Fecha</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          { data?.map(project => (
-            <tr>
-              <td>{ project.title }</td>
-              <td>{ project.slug }</td>
-              <td>{ project.category_id }</td>
-              <td>{ project.created_at }</td>
-              <td>
-                <a href="" class="btn btn-danger">
-                  <i class="fa fa-trash"></i>
-                </a>
-                <a href="" class="btn btn-warning">
-                  <i class="fa fa-edit"></i>
-                </a>
-              </td>
-            </tr>
-          )) }
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <ProjectList client:load data={ data as ProjectType[] } />
 </Dashboard>
