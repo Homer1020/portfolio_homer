@@ -10,9 +10,15 @@ export default function ProjectList() {
   useEffect(() => {
     supabase
       .from('projects')
-      .select(`*, tecnologies(id, tecnology)`)
+      .select(`
+        *,
+        project_tecnology(
+          *,
+          tecnologies(*)
+        )
+      `)
       .then(({data}) => {
-        setProjects(data || [] as ProjectType[])
+        setProjects(data?.map(d => ({...d, tecnologies: d.project_tecnology.map(pt => pt.tecnologies)})) || [] as ProjectType[])
         setLoading(false)
       })
   }, [])
@@ -53,7 +59,9 @@ export default function ProjectList() {
                     <tr key={project.id}>
                       <td>{project.title}</td>
                       <td>{project.slug}</td>
-                      <td>{project.tecnologies.tecnology}</td>
+                      <td>{ project.tecnologies.map(({tecnology, id}) => (
+                        <span className="badge badge-secondary mr-1" key={ id }>{ tecnology }</span>
+                      )) }</td>
                       <td>{project.created_at}</td>
                       <td>
                         <button onClick={ () => { handleDeleteProject(project.id) } } className="btn btn-danger mr-1">

@@ -8,9 +8,16 @@ export const POST: APIRoute = async ({ request }) => {
         .insert({
             title: fd.get('title'),
             content: fd.get('content'),
-            slug: fd.get('title')?.toString().toLowerCase().replaceAll(' ', '-'),
-            category_id: 1
+            slug: fd.get('title')?.toString().toLowerCase().replaceAll(' ', '-')
         })
-        .select(`*, tecnologies(id, tecnology)`)
+        .select()
+    if(data.data) {
+        fd.getAll('tecnologies').forEach(async tecnology => {
+            await supabase.from('project_tecnology').insert({
+                tecnology_id: tecnology,
+                project_id: data.data[0].id
+            })
+        })
+    }
     return new Response(JSON.stringify(data))
 };
