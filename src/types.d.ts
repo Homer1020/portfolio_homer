@@ -5,8 +5,9 @@ export type ProjectType = {
   created_at: string
   slug: string
   id: number
-  tecnologies: {
+  main_thumbnail: string
+  tecnologies: Array<{
     id: number,
     tecnology: string
-  }
+  }>
 }

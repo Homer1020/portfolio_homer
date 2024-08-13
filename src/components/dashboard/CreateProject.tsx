@@ -15,6 +15,7 @@ export default function CreateProject({
   setProjects: React.Dispatch<React.SetStateAction<ProjectType[]>>
 }) {
   const [tecnologies, setTecnologies] = useState<Option[]>([])
+  const [isCreatingProject, setIsCreatingProject] = useState<boolean>(false)
 
   useEffect(() => {
     supabase
@@ -31,6 +32,7 @@ export default function CreateProject({
 
   const handleCreateProject = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setIsCreatingProject(true)
     const form = e.currentTarget
     const fd = new FormData(form)
 
@@ -50,8 +52,10 @@ export default function CreateProject({
       const project = {...projectDB, tecnologies: values.map(value => ({ id: value.value, tecnology: value.label }))}
       setProjects(previous => [...previous, project])
       $(modalRef.current as HTMLElement).modal('hide')
+      setValues([])
       form.reset()
     }
+    setIsCreatingProject(false)
   }
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -88,10 +92,20 @@ export default function CreateProject({
             </button>
           </div>
           <div className="modal-body">
-            <form id="form-create-project" onSubmit={ handleCreateProject }>
+            <form id="form-create-project" encType="multipart/form-data" onSubmit={ handleCreateProject }>
               <div className="form-group">
                 <label htmlFor="project-title" className="form-label">Titulo</label>
                 <input type="text" className="form-control" name="title" id="project-title" />
+              </div>
+              <div className="form-group">
+                <label htmlFor="project-thumbnail" className="form-label">Imagen</label>
+                <input
+                  type="file"
+                  className="form-control-file"
+                  name="thumbnail" 
+                  id="project-thumbnail"
+                  accept="image/*"
+                />
               </div>
               <div className="form-group">
                 <label htmlFor={ selectId } className="form-label">Tecnologias</label>
@@ -103,7 +117,6 @@ export default function CreateProject({
                   isClearable
                   placeholder="Seleccione las tecnologias"
                   isMulti
-                  closeMenuOnSelect={ false }
                   onCreateOption={ handleCreateTecnology }
                   onChange={ newValue => setValues(newValue) }
                   value={ values }
@@ -116,7 +129,23 @@ export default function CreateProject({
             </form>
           </div>
           <div className="modal-footer">
-            <button form="form-create-project" type="submit" className="btn btn-primary">Guardar</button>
+            <button disabled={ isCreatingProject } form="form-create-project" type="submit" className="btn btn-primary">
+              {
+                isCreatingProject
+                ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+                    <span>Guardando</span>
+                  </>
+                )
+                : (
+                  <>
+                    <i className="fa fa-save mr-1"></i>
+                    <span>Guardar</span>
+                  </>
+                )
+              }
+            </button>
             <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancelar</button>
           </div>
         </div>
