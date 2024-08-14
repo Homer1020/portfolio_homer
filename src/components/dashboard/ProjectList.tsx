@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import type { ProjectType } from "../../types";
 import CreateProject from "./CreateProject";
 import { supabase } from "../../config/supabase";
+import UpdateProject from "./UpdateProject";
 
 export default function ProjectList() {
   const [loading, setLoading] = useState<boolean>(true)
   const [projects, setProjects] = useState<ProjectType[]>([])
   const [deletingId, setDeletingId] = useState<number|null>(null)
+  const [currentProjectToUpdate, setCurrentProjectToUpdate] = useState<ProjectType|null>(null)
 
   useEffect(() => {
     supabase
@@ -43,9 +45,18 @@ export default function ProjectList() {
     setDeletingId(null)
   }
 
+  const handleEditProjet = (project: ProjectType) => {
+    setCurrentProjectToUpdate(project)
+  }
+
   return (
     <>
-      <CreateProject setProjects={setProjects} />
+      <CreateProject
+        setProjects={ setProjects }
+      />
+      <UpdateProject
+        project={ currentProjectToUpdate }
+      />
       <div className="card">
         <div className="card-header py-3">
           <h6 className="m-0 font-weight-bold text-primary">Proyectos</h6>
@@ -54,7 +65,9 @@ export default function ProjectList() {
           <div className="table-responsive">
             {
               loading
-                ? <h1 className="h6">Loading...</h1>
+                ? (
+                  <p>Loading...</p>
+                )
                 : (
                   <div className="table-responsive">
                     <table className="table table-bordered table-striped">
@@ -76,14 +89,19 @@ export default function ProjectList() {
                                   width: 100,
                                   objectFit: 'cover',
                                   aspectRatio: 1
-                                }} src={`https://cptqwyxiumlnxciqeena.supabase.co/storage/v1/object/public/${project.main_thumbnail}`} alt={project.title} />
+                                }} className="img-thumbnail" src={`https://cptqwyxiumlnxciqeena.supabase.co/storage/v1/object/public/${project.main_thumbnail}`} alt={project.title} />
                               </a>
                             </td>
                             <td>{project.title}</td>
                             <td>{project.tecnologies.map(({ tecnology, id }) => (
                               <span className="badge badge-secondary mr-1" key={id}>{tecnology}</span>
                             ))}</td>
-                            <td>{project.created_at}</td>
+                            <td>{new Intl.DateTimeFormat('es-ES', {
+                              weekday: 'short',
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric'
+                            }).format(new Date(project.created_at))}</td>
                             <td>
                               <button disabled={ deletingId === project.id } onClick={() => { handleDeleteProject(project.id) }} className="btn btn-danger mr-1">
                                 {
@@ -92,7 +110,7 @@ export default function ProjectList() {
                                   : <i className="fa fa-trash"></i>
                                 }
                               </button>
-                              <button className="btn btn-warning">
+                              <button onClick={ () => handleEditProjet(project) } data-toggle="modal" data-target="#modal-edit-project" className="btn btn-warning">
                                 <i className="fa fa-edit"></i>
                               </button>
                             </td>

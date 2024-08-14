@@ -11,3 +11,8 @@ export type ProjectType = {
     tecnology: string
   }>
 }
+
+interface Option {
+  readonly label: string;
+  readonly value: string;
+}

@@ -1,13 +1,7 @@
 import { useRef, type FormEvent, useState, useEffect, useId } from "react"
-import type { ProjectType } from "../../types"
+import type { Option, ProjectType } from "../../types"
 import Select from 'react-select/creatable'
 import { supabase } from "../../config/supabase"
-
-
-interface Option {
-  readonly label: string;
-  readonly value: string;
-}
 
 export default function CreateProject({
   setProjects
@@ -25,6 +19,11 @@ export default function CreateProject({
         if(data) {
           setTecnologies(data.map(tecnology => ({label: tecnology.tecnology, value: tecnology.id})))
         }
+      })
+
+      $('#modal-create-project').on('hidden.bs.modal', function (e) {
+        setValues([])
+        $('#modal-create-project form').trigger('reset')
       })
   }, [])
 
