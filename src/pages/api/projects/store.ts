@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { supabase } from "../../../config/supabase";
+import { uploadImage } from "../../../utils/helpers";
 
 export const POST: APIRoute = async ({ request }) => {
     const fd = await request.formData()
@@ -9,13 +10,7 @@ export const POST: APIRoute = async ({ request }) => {
     const projectSlug = fd.get('title')?.toString().toLowerCase().replaceAll(' ', '-')
     const thumbnailName = `${ fd.get('title')?.toString().toLowerCase().replaceAll(' ', '-') }.${ thumbnailExtension }`
 
-    const { data: uploadData, error: uploadError } = await supabase
-        .storage
-        .from('projects')
-        .upload(thumbnailName, thumbnail, {
-            cacheControl: '3600',
-            upsert: false,
-        })
+    const { data: uploadData } = await uploadImage(thumbnailName, fd.get('thumbnail') as File)
 
     const data = await supabase
         .from('projects')

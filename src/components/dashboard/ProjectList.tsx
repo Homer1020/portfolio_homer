@@ -34,11 +34,8 @@ export default function ProjectList() {
 
   const handleDeleteProject = async (projectId: number) => {
     setDeletingId(projectId)
-    const fd = new FormData()
-    fd.append('id', `${projectId}`)
-    const { data } = await (await fetch('/api/projects/destroy', {
-      method: 'DELETE',
-      body: fd
+    const { data } = await (await fetch(`/api/projects/${ projectId }/destroy`, {
+      method: 'DELETE'
     })).json()
     console.log(data)
     setProjects(previous => previous.filter(p => p.id != projectId))
@@ -56,6 +53,7 @@ export default function ProjectList() {
       />
       <UpdateProject
         project={ currentProjectToUpdate }
+        setProjects={ setProjects }
       />
       <div className="card">
         <div className="card-header py-3">

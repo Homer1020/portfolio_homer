@@ -4,16 +4,24 @@ import { getProjectImageURL } from "../../utils/helpers";
 import { supabase } from "../../config/supabase";
 import Select from 'react-select/creatable'
 
-export default function UpdateProject({ project }: { project: ProjectType|null }) {
+export default function UpdateProject({
+  project,
+  setProjects
+}: {
+  project: ProjectType|null,
+  setProjects: React.Dispatch<React.SetStateAction<ProjectType[]>>
+}) {
   const selectId = useId()
   const [tecnologies, setTecnologies] = useState<Option[]>([])
+  const [isUpdatingProject, setIsUpdatingProject] = useState<boolean>(false)
+
   useEffect(() => {
     supabase
       .from('tecnologies')
       .select()
       .then(({ data }) => {
         if(data) {
-          setTecnologies(data.map(tecnology => ({label: tecnology.tecnology, value: tecnology.id})))
+          setTecnologies(data.map(tecnology => ({label: tecnology.tecnology, value: `${ tecnology.id }`})))
         }
       })
 
@@ -50,8 +58,36 @@ export default function UpdateProject({ project }: { project: ProjectType|null }
     setValues(prev => [...prev, newOption])
   }
 
-  const handleUpdateProject = (e: FormEvent<HTMLFormElement>) => {
+  const handleUpdateProject = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setIsUpdatingProject(true)
+    if(!project) { return null }
+    const form = e.currentTarget
+    const fd = new FormData(form)
+
+    /*
+      append aditional data
+    */
+    fd.append('current_thumbnail_path', project.main_thumbnail)
+    values.forEach(tecnology => {
+      fd.append('tecnologies', tecnology.value)
+    })
+
+    const res = await fetch(`/api/projects/${ project.id }/update`, {
+      method: 'PUT',
+      body: fd
+    })
+    const data = await res.json()
+
+    if(data) {
+      const projectDB = data.data[0]
+      const projectDBFormated = {...projectDB, tecnologies: values.map(value => ({ id: value.value, tecnology: value.label }))}
+      setProjects(projects => projects.map(project => project.id === projectDB.id ? projectDBFormated : project))
+      $('#modal-edit-project').modal('hide')
+      setValues([])
+      form.reset()
+    }
+    setIsUpdatingProject(false)
   }
 
   return (
@@ -66,7 +102,7 @@ export default function UpdateProject({ project }: { project: ProjectType|null }
           </div>
           <div className="modal-body">
             { project && (
-              <form encType="multipart/form-data" onSubmit={ handleUpdateProject }>
+              <form id="form-update-project" encType="multipart/form-data" onSubmit={ handleUpdateProject }>
                 <div className="form-group">
                   <label htmlFor="project-title" className="form-label">Titulo</label>
                   <input type="text" defaultValue={ project.title } className="form-control" name="title" id="project-title" />
@@ -106,9 +142,22 @@ export default function UpdateProject({ project }: { project: ProjectType|null }
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <button type="button" className="btn btn-primary">
-              <i className="fa fa-refresh mr-1"></i>
-              Actualizar
+            <button disabled={ isUpdatingProject } form="form-update-project" type="submit" className="btn btn-primary">
+              {
+                isUpdatingProject
+                ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+                    <span>Actualizando</span>
+                  </>
+                )
+                : (
+                  <>
+                    <i className="fa fa-refresh mr-1"></i>
+                    <span>Actualizar</span>
+                  </>
+                )
+              }
             </button>
           </div>
         </div>
