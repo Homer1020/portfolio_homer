@@ -33,9 +33,6 @@ export const PUT: APIRoute = async ({ request, params }) => {
       *,
       project_tecnology(*)
     `)
-
-  console.log(data)
-  console.log(params.id)
   
   if (data.data) {
     data.data[0].project_tecnology.forEach(async (pt: {id: number}) => {

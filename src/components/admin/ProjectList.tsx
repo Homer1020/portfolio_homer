@@ -3,12 +3,14 @@ import type { ProjectType } from "../../types";
 import CreateProject from "./CreateProject";
 import { supabase } from "../../config/supabase";
 import UpdateProject from "./UpdateProject";
+import useTecnologies from "../../hooks/useTecnologies";
 
 export default function ProjectList() {
   const [loading, setLoading] = useState<boolean>(true)
   const [projects, setProjects] = useState<ProjectType[]>([])
   const [deletingId, setDeletingId] = useState<number|null>(null)
   const [currentProjectToUpdate, setCurrentProjectToUpdate] = useState<ProjectType|null>(null)
+  const { tecnologies, addTecnology, isLoading } = useTecnologies()
 
   useEffect(() => {
     supabase
@@ -50,10 +52,17 @@ export default function ProjectList() {
     <>
       <CreateProject
         setProjects={ setProjects }
+        tecnologies={ tecnologies }
+        addTecnology={ addTecnology }
+        isLoading={ isLoading }
       />
       <UpdateProject
         project={ currentProjectToUpdate }
+        setCurrentProjectToUpdate={ setCurrentProjectToUpdate }
         setProjects={ setProjects }
+        tecnologies={ tecnologies }
+        addTecnology={ addTecnology }
+        isLoading={ isLoading }
       />
       <div className="card">
         <div className="card-header py-3">
@@ -101,7 +110,7 @@ export default function ProjectList() {
                               day: 'numeric'
                             }).format(new Date(project.created_at))}</td>
                             <td>
-                              <button disabled={ deletingId === project.id } onClick={() => { handleDeleteProject(project.id) }} className="btn btn-danger mr-1">
+                              <button disabled={ Boolean(deletingId) } onClick={() => { handleDeleteProject(project.id) }} className="btn btn-danger mr-1">
                                 {
                                   deletingId === project.id
                                   ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

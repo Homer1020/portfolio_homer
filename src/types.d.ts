@@ -16,3 +16,10 @@ interface Option {
   readonly label: string;
   readonly value: string;
 }
+
+export interface ProjectValidationErrors {
+  title?: string,
+  content?: string,
+  thumbnail?: string,
+  tecnologies?: string,
+}
