@@ -1,4 +1,4 @@
-import { useRef, type FormEvent, useState, useEffect, useId, type ChangeEvent } from "react"
+import { useRef, type FormEvent, useState, useEffect } from "react"
 import type { Option, ProjectType, ProjectValidationErrors } from "../../types"
 import ProjectForm from "./ProjectForm"
 

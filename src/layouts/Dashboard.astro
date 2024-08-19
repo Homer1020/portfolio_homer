@@ -25,6 +25,8 @@ const { title } = Astro.props;
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <!-- jQuery -->
+    <script is:inline src="/assets/js/jquery.min.js"></script>
     <link rel="manifest" href="/favicon/site.webmanifest">
     <title>Dashboard - {title}</title>
 </head>
@@ -285,10 +287,7 @@ const { title } = Astro.props;
     </div>
 </div>
     </main>
-
-    <script is:inline src="/assets/js/jquery.min.js"></script>
     <script is:inline src="/assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
     <script is:inline src="/assets/vendor/sb-admin-2/sb-admin-2.min.js"></script>
-    
 </body>
 </html>
