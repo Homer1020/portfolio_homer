@@ -9,3 +9,14 @@
     border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
   }
 }
+
+@keyframes rotate {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.rotate {
+  display: inline-block;
+  animation: rotate 1.2s linear infinite;
+}

@@ -101,7 +101,10 @@ import Textarea from "./Form/Textarea.astro"
     if(!(e.target instanceof HTMLFormElement)) return;
 
     $submitButton.disabled = true
-    $submitButton.innerHTML = $submitButton.innerHTML.replace('Enviar', 'Enviando')
+    $submitButton.innerHTML = $submitButton.innerHTML = `
+      Enviando
+      <i class="fa fa-spinner rotate"></i>
+    `.trim()
 
     const fd = new FormData(e.target)
 
@@ -119,7 +122,10 @@ import Textarea from "./Form/Textarea.astro"
 
     $contactForm.reset()
     $submitButton.disabled = false
-    $submitButton.innerHTML = $submitButton.innerHTML.replace('Enviando', 'Enviar')
+    $submitButton.innerHTML = $submitButton.innerHTML = `
+      Enviar
+      <i class="fa fa-paper-plane"></i>
+    `.trim()
   }
 
   $contactForm.addEventListener('submit', handleSendMessage)
