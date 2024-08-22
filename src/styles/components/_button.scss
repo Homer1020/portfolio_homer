@@ -30,6 +30,10 @@
   cursor: pointer;
   border: none;
 
+  &:disabled {
+    opacity: .8;
+  }
+
   &--sm {
     font-size: 1.4rem;
   }

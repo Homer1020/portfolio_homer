@@ -18,6 +18,7 @@
     "imagesloaded": "^5.0.0",
     "isotope-layout": "^3.0.6",
     "resend": "^3.2.0",
+    "sweetalert2": "^11.12.4",
     "typescript": "^5.4.2"
   },
   "devDependencies": {
