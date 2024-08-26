@@ -25,14 +25,14 @@ const { title, image, stacks = [], slug } = Astro.props
     overflow: hidden;
     border-radius: 10px;
     margin-bottom: 1rem;
+    transition: transform .3s;
   }
 
-  article:hover img {
+  article:hover .project-wrapper {
     transform: scale(1.03);
   }
   
   img {
-    transition: transform .3s;
     display: block;
     aspect-ratio: 3/2;
     object-fit: cover;
