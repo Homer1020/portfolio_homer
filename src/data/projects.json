@@ -39,9 +39,19 @@
     "mockup": "/assets/img/portfolio/mockups/833shots_so.png",
     "image": "/assets/img/portfolio/censo.png",
     "title": "Sistema de ceso",
-    "stacks": ["NodeJS", "ReactJS"],
+    "stacks": ["NodeJS", "ReactJS", "ExpressJS"],
     "slug": "sistema-censo",
     "description": "<p>Sistema desarrollado como servicio comunitario. El encargado del sistema es capaz de registrar y modificar personas pertenecientes a la comunidad, obteniendo información importante para procesos administrativos.</p><p>Esta desarrollado con ReactJS para el Frontend y un Backend en Express, con una base de datos MySQL.</p>",
     "github": "https://github.com/Homer1020/censoapp"
+  },
+  {
+    "mockup": "/assets/img/portfolio/mockups/855shots_so.png",
+    "image": "/assets/img/portfolio/avipla.png",
+    "title": "AVIPLA",
+    "stacks": ["Laravel", "PHP", "Bootstrap"],
+    "slug": "avipla",
+    "description": "<p>El sistema CRM se presenta como una herramienta valiosa para optimizar la gestión de afiliados de la Asociación Venezolana de Plástico, mejorando la comunicación, la organización y la eficiencia en el manejo de información.</p><ul class=\"styled-list\"> <li><strong>Funcionalidades para afiliados:</strong><ul> <li>Visualización de estado de cuenta.</li> <li>Consulta de facturas y pagos.</li> <li>Recepción de notificaciones y boletines.</li> <li>Modificación de datos de empresa.</li> <li>Envío de mensajes a la asociación.</li> </ul> </li> <li><strong>Funcionalidades para administradores:</strong><ul> <li>Creación de notificaciones, boletines y noticias.</li> <li>Consulta de datos de afiliados (incluidos estados de cuenta).</li> <li>Suspensión de cuentas de afiliados.</li> <li>Edición de información del sitio web.</li> </ul> </li> </ul>",
+    "github": "https://github.com/Homer1020/avipla",
+    "url": "https://avipla.online"
   }
 ]
