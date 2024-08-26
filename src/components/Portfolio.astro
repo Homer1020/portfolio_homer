@@ -16,6 +16,7 @@ import data from '../data/projects.json'
     data.map(project => (
       <Project
         { ...project }
+        image={ project.mockup }
       />
     ))
   }

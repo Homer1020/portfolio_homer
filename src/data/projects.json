@@ -1,5 +1,6 @@
 [
   {
+    "mockup": "/assets/img/portfolio/mockups/871shots_so.png",
     "image": "/assets/img/portfolio/oficiales.png",
     "title": "Oficiales de cumplimiento",
     "stacks": ["ReactJS", "PHP", "HTML"],
@@ -8,6 +9,7 @@
     "url": "https://oficial-cumplimiento.com"
   },
   {
+    "mockup": "/assets/img/portfolio/mockups/795shots_so.png",
     "image": "/assets/img/portfolio/strateps.png",
     "title": "Strateps web",
     "stacks": ["Wordpress", "PHP", "JavaScript"],
@@ -16,6 +18,7 @@
     "url": "https://strateps.com"
   },
   {
+    "mockup": "/assets/img/portfolio/mockups/491shots_so.png",
     "image": "/assets/img/portfolio/crypto.png",
     "title":"Cotizador de cryptomonedas",
     "stacks": ["JavaScript", "Bootstrap"],
@@ -24,19 +27,21 @@
     "slug": "cotizador-cryptomonedas"
   },
   {
-    "image": "/assets/img/portfolio/censo.jpg",
-    "title": "Sistema de ceso",
-    "stacks": ["NodeJS", "ReactJS"],
-    "slug": "sistema-censo",
-    "description": "<p>Sistema desarrollado como servicio comunitario. El encargado del sistema es capaz de registrar y modificar personas pertenecientes a la comunidad, obteniendo información importante para procesos administrativos.</p><p>Esta desarrollado con ReactJS para el Frontend y un Backend en Express, con una base de datos MySQL.</p>",
-    "github": "https://github.com/Homer1020/censoapp"
-  },
-  {
-    "image": "/assets/img/portfolio/pos.jpg",
+    "mockup": "/assets/img/portfolio/mockups/939shots_so.png",
+    "image": "/assets/img/portfolio/pos.png",
     "title": "Sistema punto de venta",
     "description": "<p>Sistema de punto de ventas (POS) está diseñado para ofrecer una gestión integral de un negocio. Permite administrar diversos roles y usuarios, garantizando una configuración flexible y segura del acceso y las funciones según las necesidades de cada miembro del equipo. Además, facilita la gestión de inventario y stock, permitiendo el seguimiento en tiempo real de los niveles de productos, con alertas automáticas para asegurar un suministro adecuado y evitar desabastecimientos.</p><p>Esta herramienta integral simplifica la operación diaria y optimiza la administración de recursos.</p>",
     "stacks": ["Laravel", "JavaScript", "PHP"],
     "slug": "sistema-punto-de-venta",
     "github": "https://github.com/Homer1020/punto-de-venta"
+  },
+  {
+    "mockup": "/assets/img/portfolio/mockups/833shots_so.png",
+    "image": "/assets/img/portfolio/censo.png",
+    "title": "Sistema de ceso",
+    "stacks": ["NodeJS", "ReactJS"],
+    "slug": "sistema-censo",
+    "description": "<p>Sistema desarrollado como servicio comunitario. El encargado del sistema es capaz de registrar y modificar personas pertenecientes a la comunidad, obteniendo información importante para procesos administrativos.</p><p>Esta desarrollado con ReactJS para el Frontend y un Backend en Express, con una base de datos MySQL.</p>",
+    "github": "https://github.com/Homer1020/censoapp"
   }
 ]
