@@ -27,6 +27,27 @@ import ContactForm from '../components/ContactForm.astro'
 		</div>
 	</section>
 
+	<section class="p-section pt-0 bg-white">
+		<div class="container container--sm">
+			<h2 style="margin-bottom: 4rem;">Experiencia laboral</h2>
+			{ [1,2,3,4].map(item => (
+				<article class="job">
+					<div class="job__meta">
+						<h3 class="job__role">Programador FullStack</h3>
+						<h4 class="job__business">Soluciones Tecnológicas Tepuy 21</h4>
+						<p class="job__date">2024 - Actualidad</p>
+					</div>
+					<div class="job__desc">
+						<ul>
+							<li>Desarrollo sistemas robustos y escalables con Laravel para pequeñas y grandes empresas.</li>
+							<li>Desarrollo de REST API’S con PHP nativo e implementación con frameworks Frontend.</li>
+						</ul>
+					</div>
+				</article>
+			)) }
+		</div>
+	</section>
+
 	<section class="p-section" id="habilidades">
 		<div class="container container--sm">
 			<p class="badge text-center">Habilidades</p>
