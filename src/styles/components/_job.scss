@@ -1,8 +1,10 @@
   .job {
-    border-left: 2px solid rgba($primary, .4);
-    padding-left: 3rem;
+    border-left: 2px solid rgba(#000, .1);
+    padding-left: 2rem;
     padding-top: 2rem;
     padding-bottom: 2rem;
+    margin-right: 3rem;
+    margin-left: 2rem;
     color: #000;
     &__desc {
       margin-top: 1rem;
@@ -11,6 +13,8 @@
       padding-left: 4rem;
       padding-top: 3rem;
       padding-bottom: 3rem;
+      margin-right: 0;
+      margin-left: 0;
       display: flex;
       &__meta {
         width: 45%;
@@ -45,7 +49,7 @@
         content: '';
         position: absolute;
         top: 50%;
-        left: calc(-2rem - 11px);
+        left: calc(-1rem - 11px);
         transform: translate(-50%, -50%);
         width: 15px;
         height: 15px;
@@ -69,7 +73,7 @@
     ul {
       list-style: none;
       li:not(:last-child) {
-        margin-bottom: .9rem;
+        margin-bottom: 1rem;
       }
     }
   }

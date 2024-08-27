@@ -1,0 +1,17 @@
+.separator {
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  font-size: 24px;
+  &::after,
+  &::before {
+    content: '';
+    width: 100px;
+    height: 1px;
+    background-color: var(--primary);
+    display: block;
+    margin: 0 1.5rem;
+  }
+}

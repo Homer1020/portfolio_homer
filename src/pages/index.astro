@@ -5,6 +5,7 @@ import Stack from '../components/Stack.astro'
 import Portfolio from '../components/Portfolio.astro'
 import Testimonials from '../components/Testimonials.astro'
 import ContactForm from '../components/ContactForm.astro'
+import Experience from '../components/Experience.astro'
 ---
 
 <Layout title="Homer Moncayo">
@@ -29,22 +30,11 @@ import ContactForm from '../components/ContactForm.astro'
 
 	<section class="p-section pt-0 bg-white">
 		<div class="container container--sm">
-			<h2 style="margin-bottom: 4rem;">Experiencia laboral</h2>
-			{ [1,2,3,4].map(item => (
-				<article class="job">
-					<div class="job__meta">
-						<h3 class="job__role">Programador FullStack</h3>
-						<h4 class="job__business">Soluciones Tecnológicas Tepuy 21</h4>
-						<p class="job__date">2024 - Actualidad</p>
-					</div>
-					<div class="job__desc">
-						<ul>
-							<li>Desarrollo sistemas robustos y escalables con Laravel para pequeñas y grandes empresas.</li>
-							<li>Desarrollo de REST API’S con PHP nativo e implementación con frameworks Frontend.</li>
-						</ul>
-					</div>
-				</article>
-			)) }
+			<h2 class="text-center">Experiencia laboral</h2>
+			<div class="separator">
+				<i class="fa fa-briefcase"></i>
+			</div>
+			<Experience />
 		</div>
 	</section>
 
