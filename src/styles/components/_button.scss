@@ -38,6 +38,10 @@
     font-size: 1.4rem;
   }
 
+  &--md {
+    font-size: 1.8rem;
+  }
+
   i {
     font-size: 1.8rem;
     margin-left: 1rem;
@@ -69,6 +73,17 @@
     &:hover {
       color: #fff;
       background-color: $primary;
+    }
+  }
+
+  &--light-o {
+    color: #fff;
+    text-decoration: none;
+    border: 1px solid #fff;
+    background-color: transparent;
+    &:hover {
+      color: $primary;
+      background-color: #fff;
     }
   }
 
