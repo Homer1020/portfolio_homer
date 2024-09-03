@@ -1,0 +1,45 @@
+---
+const { title, text } = Astro.props
+---
+<section class="section-banner">
+  <div class="section-banner__content">
+    <h2 class="section-banner__title">{ title }</h2>
+    <p>{ text }</p>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section-banner {
+    padding: 10rem 0;
+    background-color: var(--primary);
+    background-image:
+      linear-gradient(
+        to top,
+      rgba(11, 98, 152, 0.9),
+      rgba(11, 98, 152, 0.8)
+      ),
+      url(/assets/img/home-office.jpg);
+    background-position: center;
+    background-size: cover;
+    color: #fff;
+  }
+
+  .section-banner__title {
+    font-size: 3.4rem;
+    color: #fff;
+  }
+
+  .section-banner__content {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: min(800px, 95%);
+  }
+  p {
+    font-size: 1.8rem;
+    line-height: 1.8;
+    margin-bottom: 2.4rem;
+    font-weight: 500;
+  }
+</style>

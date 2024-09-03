@@ -25,33 +25,3 @@
 @import 'utils/spacing';
 @import 'utils/text';
 @import 'utils/swal';
-
-.section-banner {
-  &__title {
-    font-size: 3.4rem;
-    color: #fff;
-  }
-  &__content {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    width: min(800px, 95%);
-  }
-  p {
-    font-size: 1.8rem;
-    line-height: 1.8;
-    margin-bottom: 2.4rem;
-    font-weight: 500;
-  }
-  padding: 15rem 0;
-  background-color: var(--primary);
-  background-image: linear-gradient(
-    to top,
-    rgba(darken($primary, 10), .9),
-    rgba(darken($primary, 10), .8)
-  ), url(/assets/img/home-office.jpg);
-  background-position: center;
-  // background-attachment: fixed;
-  background-size: cover;
-  color: #fff;
-}

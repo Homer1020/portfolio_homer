@@ -6,6 +6,7 @@ import Portfolio from '../components/Portfolio.astro'
 import Testimonials from '../components/Testimonials.astro'
 import ContactForm from '../components/ContactForm.astro'
 import Experience from '../components/Experience.astro'
+import SectionBanner from '../components/SectionBanner.astro'
 ---
 
 <Layout title="Homer Moncayo">
@@ -64,16 +65,15 @@ import Experience from '../components/Experience.astro'
 		</div>
 	</section>
 
-	<section class="section-banner">
-		<div class="section-banner__content">
-			<h2 class="section-banner__title">¡Comparte tu opinión!</h2>
-			<p>Tu testimonio es clave para ayudarme a mejorar y crecer. Si has trabajado conmigo o has utilizado mis servicios, por favor deja un comentario sobre tu experiencia.</p>
-			<button role="button" onclick="alert('Coming soon')" class="button button--light-o button--md">
-				Dejar un comentario
-				<i class="fa fa-comment-dots"></i>
-			</button>
-		</div>
-	</section>
+	<SectionBanner
+		title="¡Comparte tu opinión!"
+		text="Tu testimonio es clave para ayudarme a mejorar y crecer. Si has trabajado conmigo o has utilizado mis servicios, por favor deja un comentario sobre tu experiencia."
+	>
+		<button role="button" onclick="alert('Coming soon')" class="button button--light-o button--md">
+			Dejar un comentario
+			<i class="fa fa-comment-dots"></i>
+		</button>
+	</SectionBanner>
 
 	<section class="bg-white p-section" id="contacto">
 		<div class="container">
