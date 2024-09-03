@@ -97,7 +97,7 @@ import data from '../data/projects.json'
       const slug = $target.parentElement?.parentElement?.dataset.projectSlug
       const project = projectsJSON.find(p => p.slug === slug)
       const $modal = generateModal(project)
-      document.body.appendChild($modal)
+      document.body.appendChild($modal) // this can be optimizated
     }
   }
 

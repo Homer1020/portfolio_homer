@@ -43,3 +43,16 @@ const { title, text } = Astro.props
     font-weight: 500;
   }
 </style>
+
+<script>
+import { generateTestimonialModal } from "../utils/modal"
+
+  const $button = document.querySelector('.section-banner .button')
+
+  if($button) {
+    $button.addEventListener('click', () => {
+      const $modal = generateTestimonialModal()
+      document.body.appendChild($modal) // this can be optimizated
+    })
+  }
+</script>

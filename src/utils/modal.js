@@ -43,7 +43,7 @@ const handleCloseModal = (e) => {
   }
 }
 
-export const generateModal = (project) => {
+export const showModal = (content) => {
   const $modal = document.createElement('div')
   $modal.classList.add('modal')
 
@@ -53,7 +53,7 @@ export const generateModal = (project) => {
         <button class="modal__close">
           <i class="fa fa-times"></i>
         </button>
-        ${generateProjectTemplate(project)}
+        ${content}
       </div>
     </article>
   `.trim()
@@ -63,4 +63,15 @@ export const generateModal = (project) => {
   document.body.style.overflow = 'hidden'
 
   return $modal
+}
+
+export const generateModal = (project) => showModal(generateProjectTemplate(project))
+
+export const generateTestimonialModal = () => {
+  return showModal(`
+    <div>
+      <h2>Muy pronto</h2>
+      <p style="font-size: 1.6rem;">Esta funcionalidad esta en desarrollo...</p>
+    </div>
+  `);
 }
