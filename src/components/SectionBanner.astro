@@ -1,13 +1,58 @@
 ---
+import Input from "./Form/Input.astro"
+import Textarea from "./Form/Textarea.astro"
+
 const { title, text } = Astro.props
 ---
 <section class="section-banner">
   <div class="section-banner__content">
     <h2 class="section-banner__title">{ title }</h2>
     <p>{ text }</p>
-    <slot />
+    <button role="button" class="button button--light-o" id="testimonial-button">
+			Dejar un comentario
+			<i class="fa fa-comment-dots"></i>
+		</button>
   </div>
 </section>
+
+<div class="modal modal--dom" id="testimonial-modal">
+  <article class="modal__content" style="width: min(750px, 95%)">
+    <div class="modal__body modal__body--full">
+      <button class="modal__close">
+        <i class="fa fa-times"></i>
+      </button>
+      <h2 class="title">Deja una reseña</h2>
+      <form action="">
+        <!-- <input type="file"> -->
+        <Input
+          type="text",
+          id="name"
+          label="Nombre completo"
+          placeholder='John Doe'
+          required
+        />
+        <Input
+          type="text",
+          id="role"
+          label="Cargo y empresa"
+          placeholder='CEO de Facebook'
+          required
+        />
+        <Textarea
+          id="testimonial",
+          label="Reseña"
+          rows={5}
+          placeholder="Homer es un programador excepcional..."
+          required
+        />
+        <button type="submit" class="button button--primary">
+          Dejar comentario
+          <i class="fa fa-comment-dots"></i>
+        </button>
+      </form>
+    </div>
+  </article>
+</div>
 
 <style>
   .section-banner {
@@ -22,37 +67,72 @@ const { title, text } = Astro.props
       url(/assets/img/home-office.jpg);
     background-position: center;
     background-size: cover;
-    color: #fff;
+    color: #f5f5f5;
   }
 
   .section-banner__title {
-    font-size: 3.4rem;
+    font-size: 2.8rem;
     color: #fff;
+  }
+
+  @media (min-width: 992px) {
+    .section-banner__title {
+      font-size: 3rem;
+      color: #fff;
+    }  
   }
 
   .section-banner__content {
     text-align: center;
     margin-left: auto;
     margin-right: auto;
-    width: min(800px, 95%);
+    width: min(750px, 95%);
   }
   p {
-    font-size: 1.8rem;
-    line-height: 1.8;
-    margin-bottom: 2.4rem;
+    font-size: 1.6rem;
+    line-height: 1.6;
+    margin-bottom: 2.8rem;
     font-weight: 500;
+  }
+
+  #testimonial-button { 
+    padding: 1.5rem 2rem;
+    font-weight: 500;
+  }
+
+  @media (min-width: 992px) {
+    p {
+      font-size: 1.8rem;
+      line-height: 1.8;
+    }
+
+    #testimonial-button {
+      font-size: 1.6rem;
+    }
   }
 </style>
 
 <script>
-import { generateTestimonialModal } from "../utils/modal"
+  // const $button = document.getElementById('testimonial-button') as HTMLElement
+  // const $modal = document.getElementById('testimonial-modal') as HTMLElement
 
-  const $button = document.querySelector('.section-banner .button')
+  // const handleCloseModal = (e: MouseEvent) => {
+  //   let $target = e.target as HTMLElement
 
-  if($button) {
-    $button.addEventListener('click', () => {
-      const $modal = generateTestimonialModal()
-      document.body.appendChild($modal) // this can be optimizated
-    })
-  }
+  //   if($target.classList.contains('modal') || $target.classList.contains('modal__close')) {
+  //     document.body.style.overflow = ''
+  //     while(!$target.classList.contains('modal')) {
+  //       console.log('Executing')
+  //       $target = $target.parentElement as HTMLElement
+  //     }
+  //     $target.classList.remove('open')
+  //   }
+  // }
+
+  // $modal.addEventListener('click', handleCloseModal);
+
+  // $button.addEventListener('click', () => {
+  //     $modal.classList.add('open')
+  //     document.body.style.overflow = 'hidden';
+  // })
 </script>

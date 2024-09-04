@@ -43,12 +43,14 @@ const handleCloseModal = (e) => {
   }
 }
 
-export const showModal = (content) => {
-  const $modal = document.createElement('div')
+export const showModal = (content, config = {}) => {
+  const $modal = config?.modalSelector
+    ? document.getElementById(config.modalSelector)
+    : document.createElement('div')
   $modal.classList.add('modal')
 
   $modal.innerHTML = `
-    <article class="modal__content">
+    <article class="modal__content" ${ config?.contentStyle ? `style="${ config.contentStyle }"` : '' }>
       <div class="modal__body">
         <button class="modal__close">
           <i class="fa fa-times"></i>
@@ -66,12 +68,3 @@ export const showModal = (content) => {
 }
 
 export const generateModal = (project) => showModal(generateProjectTemplate(project))
-
-export const generateTestimonialModal = () => {
-  return showModal(`
-    <div>
-      <h2>Muy pronto</h2>
-      <p style="font-size: 1.6rem;">Esta funcionalidad esta en desarrollo...</p>
-    </div>
-  `);
-}

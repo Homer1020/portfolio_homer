@@ -29,7 +29,12 @@
   place-items: center;
   overflow: auto;
   padding: 2rem 0;
-
+  &--dom {
+    display: none;
+    &.open {
+      display: grid;
+    }
+  }
   &__close {
     position: absolute;
     top: 1.5rem;
@@ -70,10 +75,12 @@
 
   &__body {
     padding: 2.5rem;
-    @media (min-width: 1200px) {
-      display: grid;
-      gap: 2.5rem;
-      grid-template-columns: 1fr 1fr;
+    &:not(&--full) {
+      @media (min-width: 1200px) {
+        display: grid;
+        gap: 2.5rem;
+        grid-template-columns: 1fr 1fr;
+      }
     }
   }
 
