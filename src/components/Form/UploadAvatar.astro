@@ -1,0 +1,31 @@
+---
+import styles from './upload-avatar.module.css'
+
+interface Props extends astroHTML.JSX.InputHTMLAttributes {
+  label?: string,
+  errors?: string[]
+}
+
+const {errors, id, type = 'text', label = '', placeholder = '', ...rest} = Astro.props
+---
+
+<div class={styles.group}>
+  <div class={ styles.preview }>
+    <label class={styles.upload}>
+      <input
+        type='file'
+        class:list={[
+          styles.input,
+          {[styles.invalid]: errors?.length}
+        ]}
+        id={id}
+        name={id}
+        {...rest}
+      >
+      <i class="fa fa-camera"></i>
+    <label>
+  </div>
+  {errors?.map(error => (
+    <small class={styles.invalidFeedback}>{error}</small>
+  ))}
+</div>

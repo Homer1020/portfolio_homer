@@ -1,4 +1,5 @@
 ---
+import UploadAvatar from "./Form/UploadAvatar.astro"
 import Input from "./Form/Input.astro"
 import Textarea from "./Form/Textarea.astro"
 
@@ -16,14 +17,18 @@ const { title, text } = Astro.props
 </section>
 
 <div class="modal modal--dom" id="testimonial-modal">
-  <article class="modal__content" style="width: min(750px, 95%)">
+  <article class="modal__content" style="width: min(700px, 95%)">
     <div class="modal__body modal__body--full">
       <button class="modal__close">
         <i class="fa fa-times"></i>
       </button>
-      <h2 class="title">Deja una reseña</h2>
+      <h2 class="title">Dejar una reseña</h2>
       <form action="">
-        <!-- <input type="file"> -->
+        <UploadAvatar
+          type="file"
+          id="avatar"
+          label="Avatar"
+        />
         <Input
           type="text",
           id="name"
@@ -113,26 +118,26 @@ const { title, text } = Astro.props
 </style>
 
 <script>
-  // const $button = document.getElementById('testimonial-button') as HTMLElement
-  // const $modal = document.getElementById('testimonial-modal') as HTMLElement
+  const $button = document.getElementById('testimonial-button') as HTMLElement
+  const $modal = document.getElementById('testimonial-modal') as HTMLElement
 
-  // const handleCloseModal = (e: MouseEvent) => {
-  //   let $target = e.target as HTMLElement
+  const handleCloseModal = (e: MouseEvent) => {
+    let $target = e.target as HTMLElement
 
-  //   if($target.classList.contains('modal') || $target.classList.contains('modal__close')) {
-  //     document.body.style.overflow = ''
-  //     while(!$target.classList.contains('modal')) {
-  //       console.log('Executing')
-  //       $target = $target.parentElement as HTMLElement
-  //     }
-  //     $target.classList.remove('open')
-  //   }
-  // }
+    if($target.classList.contains('modal') || $target.classList.contains('modal__close')) {
+      document.body.style.overflow = ''
+      while(!$target.classList.contains('modal')) {
+        console.log('Executing')
+        $target = $target.parentElement as HTMLElement
+      }
+      $target.classList.remove('open')
+    }
+  }
 
-  // $modal.addEventListener('click', handleCloseModal);
+  $modal.addEventListener('click', handleCloseModal);
 
-  // $button.addEventListener('click', () => {
-  //     $modal.classList.add('open')
-  //     document.body.style.overflow = 'hidden';
-  // })
+  $button.addEventListener('click', () => {
+      $modal.classList.add('open')
+      document.body.style.overflow = 'hidden';
+  })
 </script>
