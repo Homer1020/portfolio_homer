@@ -137,7 +137,25 @@ const { title, text } = Astro.props
   $modal.addEventListener('click', handleCloseModal);
 
   $button.addEventListener('click', () => {
-      $modal.classList.add('open')
-      document.body.style.overflow = 'hidden';
+    $modal.classList.add('open')
+    document.body.style.overflow = 'hidden';
   })
+
+  const $uploadAvatarFile = document.getElementById('avatar') as HTMLInputElement
+  const $uploadPreview = $uploadAvatarFile.closest('.preview') as HTMLElement
+
+  const fr = new FileReader()
+
+  $uploadAvatarFile.addEventListener('change', () => {
+    if($uploadAvatarFile.files?.[0]) {
+      const file = $uploadAvatarFile.files?.[0]
+      fr.readAsDataURL(file)
+    }
+  })
+
+  fr.addEventListener('load', e => {
+    if(e.target?.result) {
+      $uploadPreview.style.backgroundImage = `url(${ e.target.result })`
+    }
+  });
 </script>

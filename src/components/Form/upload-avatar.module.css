@@ -7,7 +7,7 @@
   height: 120px;
   display: block;
   border-radius: 50%;
-  background-image: url(https://adminlte.io/themes/AdminLTE/dist/img/user3-128x128.jpg);
+  background-image: url(/assets/img/profile.png);
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
   position: relative;
   background-size: cover;

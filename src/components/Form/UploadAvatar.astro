@@ -9,8 +9,8 @@ interface Props extends astroHTML.JSX.InputHTMLAttributes {
 const {errors, id, type = 'text', label = '', placeholder = '', ...rest} = Astro.props
 ---
 
-<div class={styles.group}>
-  <div class={ styles.preview }>
+<div class={ styles.group }>
+  <div class={ `${ styles.preview } preview` }>
     <label class={styles.upload}>
       <input
         type='file'
