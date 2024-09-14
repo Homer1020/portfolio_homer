@@ -1,11 +1,11 @@
-import type { QuerySnapshot } from "firebase-admin/firestore";
 import type { TestimonialInterface } from "../types";
+import type { DocumentSnapshot } from "firebase/firestore";
 
-export const formatTestimonials = (qs: QuerySnapshot): TestimonialInterface[] => {
+export const formatTestimonials = (qs: any): TestimonialInterface[] => {
   const testimonials: TestimonialInterface[] = [];
   const baseUrl = "https://firebasestorage.googleapis.com/v0/b/portfolio-74159.appspot.com/o/";
 
-  qs.forEach(doc => {
+  qs.forEach((doc: DocumentSnapshot) => {
     const avatarPath = doc.get('avatar'); // Ruta parcial o nombre del archivo
 
     testimonials.push({
