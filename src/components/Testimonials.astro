@@ -1,14 +1,27 @@
   ---
-  import Testimonial from "./Testimonial.astro";
+  import Testimonial from "./Testimonial.astro"
+  import { db } from '../config/firebase'
+  import { collection, getDocs, query, where } from 'firebase/firestore'
+  import { formatTestimonials } from "../utils/formater"
+
+  const q = query(
+    collection(db, 'testimonials'),
+    where('published', '==', true)
+  )
+  const querySnapshot = await getDocs(q)
+  const testimonials = formatTestimonials(querySnapshot)
   ---
 
   <div class="l-testimonials owl-carousel">
-    <Testimonial />
-    <Testimonial />
-    <Testimonial />
-    <Testimonial />
-    <Testimonial />
-    <Testimonial />
+    { testimonials.map(testimonial => (
+      <Testimonial
+        avatar={ testimonial.avatar }
+        key={ testimonial.id }
+        name={ testimonial.name }
+        role={ testimonial.role }
+        testimonial={ testimonial.testimonial }
+      />
+    )) }
   </div>
 
   <style is:global>

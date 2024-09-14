@@ -23,11 +23,12 @@ const { title, text } = Astro.props
         <i class="fa fa-times"></i>
       </button>
       <h2 class="title">Dejar una reseña</h2>
-      <form action="">
+      <form id="form-create-testimonial">
         <UploadAvatar
           type="file"
           id="avatar"
           label="Avatar"
+          accept="image/*"
         />
         <Input
           type="text",
@@ -39,7 +40,7 @@ const { title, text } = Astro.props
         <Input
           type="text",
           id="role"
-          label="Cargo y empresa"
+          label="Ocupación y empresa"
           placeholder='CEO de Facebook'
           required
         />
@@ -118,19 +119,73 @@ const { title, text } = Astro.props
 </style>
 
 <script>
+  import { addDoc, collection } from "firebase/firestore"
+  import { getStorage, ref, uploadBytes } from "firebase/storage";
+  import { db } from "../config/firebase"
+  import Swal from "sweetalert2";
+
   const $button = document.getElementById('testimonial-button') as HTMLElement
   const $modal = document.getElementById('testimonial-modal') as HTMLElement
+  const $formCreateTestimonial = document.getElementById('form-create-testimonial') as HTMLFormElement
+  const $submitButton = $formCreateTestimonial.querySelector('[type="submit"]') as HTMLButtonElement
+
+  $formCreateTestimonial.addEventListener('submit', async e => {
+    e.preventDefault()
+
+    const fd = new FormData(e.target as HTMLFormElement)
+    
+    const file = fd.get('avatar') as File
+    const ext = file.name.split('.').reverse()[0]
+    const filename = `${ Date.now() }.${ ext }`
+    const storage = getStorage()
+    const storageRef = ref(storage, 'testimonials/' + filename)
+    
+
+    $submitButton.disabled = true
+    $submitButton.innerHTML = $submitButton.innerHTML = `
+      Enviando
+      <i class="fa fa-spinner rotate"></i>
+    `.trim()
+    try {
+      const fileSnapshot = await uploadBytes(storageRef, file)
+      
+      const docRef = await addDoc(collection(db, 'testimonials'), {
+        avatar: 'testimonials/' + filename,
+        name: fd.get('name'),
+        role: fd.get('role'),
+        testimonial: fd.get('testimonial'),
+        published: false
+      });
+
+      await Swal.fire({
+        // title: 'Se guardo tu testimonio correctamente.',
+        text: 'Muchas gracias por tu comentario, lo analizaré a la brevedad 🤗.',
+        icon: 'success',
+        confirmButtonText: 'Esta bien', 
+        confirmButtonColor: "var(--secondary)",
+      })
+
+      $formCreateTestimonial.reset()
+      document.body.style.overflow = ''
+      $modal.classList.remove('open')
+    } catch(err) {
+      alert('Ocurrio un error')
+    } finally {
+      $submitButton.disabled = false
+      $submitButton.innerHTML = $submitButton.innerHTML = `
+        Dejar comentario
+        <i class="fa fa-comment-dots"></i>
+      `.trim()
+    }
+  })
 
   const handleCloseModal = (e: MouseEvent) => {
     let $target = e.target as HTMLElement
 
     if($target.classList.contains('modal') || $target.classList.contains('modal__close')) {
       document.body.style.overflow = ''
-      while(!$target.classList.contains('modal')) {
-        console.log('Executing')
-        $target = $target.parentElement as HTMLElement
-      }
-      $target.classList.remove('open')
+      const $modal = $target.closest('.modal')
+      if($modal) $modal.classList.remove('open')
     }
   }
 
