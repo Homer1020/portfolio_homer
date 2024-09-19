@@ -147,9 +147,32 @@ const { title, text } = Astro.props
       <i class="fa fa-spinner rotate"></i>
     `.trim()
     try {
-      const fileSnapshot = await uploadBytes(storageRef, file)
+      const allowedExtensions: string[] = ['gif', 'jpg', 'png', 'jpeg']
+      const fileExtension = file.name.split('.').reverse()[0]
+
+      if(!allowedExtensions.includes(fileExtension)) {
+        Swal.fire({
+          title: 'Error con el archivo.',
+          text: `Formatos permitidos ${ allowedExtensions.join(', ') }`,
+          icon: 'error',
+          confirmButtonColor: "var(--primary)",
+        })
+        return null
+      }
+
+      if(file.size > 2e6) {
+        Swal.fire({
+          title: 'Error con el archivo.',
+          text: `El archivo debe pesar 2mb o menos`,
+          icon: 'error',
+          confirmButtonColor: "var(--primary)",
+        })
+        return null
+      }
+
+      await uploadBytes(storageRef, file)
       
-      const docRef = await addDoc(collection(db, 'testimonials'), {
+      await addDoc(collection(db, 'testimonials'), {
         avatar: 'testimonials/' + filename,
         name: fd.get('name'),
         role: fd.get('role'),
@@ -158,8 +181,7 @@ const { title, text } = Astro.props
       });
 
       await Swal.fire({
-        // title: 'Se guardo tu testimonio correctamente.',
-        text: 'Muchas gracias por tu comentario, lo analizaré a la brevedad 🤗.',
+        title: 'Comentario guardado con éxito.',
         icon: 'success',
         confirmButtonText: 'Esta bien', 
         confirmButtonColor: "var(--secondary)",
@@ -169,7 +191,11 @@ const { title, text } = Astro.props
       document.body.style.overflow = ''
       $modal.classList.remove('open')
     } catch(err) {
-      alert('Ocurrio un error')
+      Swal.fire({
+        title: 'Error al crear el testimonio.',
+        icon: 'error',
+        confirmButtonColor: "var(--primary)",
+      })
     } finally {
       $submitButton.disabled = false
       $submitButton.innerHTML = $submitButton.innerHTML = `

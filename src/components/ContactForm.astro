@@ -114,7 +114,7 @@ import Textarea from "./Form/Textarea.astro"
     })).json()
 
     Swal.fire({
-      text: resp.message,
+      title: resp.message,
       icon: resp.ok ? 'success' : 'error',
       confirmButtonText: 'Ok', 
       confirmButtonColor: "var(--primary)",
