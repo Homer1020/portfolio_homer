@@ -140,7 +140,6 @@ const { title, text } = Astro.props
     const storage = getStorage()
     const storageRef = ref(storage, 'testimonials/' + filename)
     
-
     $submitButton.disabled = true
     $submitButton.innerHTML = $submitButton.innerHTML = `
       Enviando
@@ -151,6 +150,11 @@ const { title, text } = Astro.props
       const fileExtension = file.name.split('.').reverse()[0]
 
       if(!allowedExtensions.includes(fileExtension)) {
+        $submitButton.disabled = false
+        $submitButton.innerHTML = $submitButton.innerHTML = `
+          Dejar comentario
+          <i class="fa fa-comment-dots"></i>
+        `.trim()
         Swal.fire({
           title: 'Error con el archivo.',
           text: `Formatos permitidos ${ allowedExtensions.join(', ') }`,
@@ -161,6 +165,11 @@ const { title, text } = Astro.props
       }
 
       if(file.size > 2e6) {
+        $submitButton.disabled = false
+        $submitButton.innerHTML = $submitButton.innerHTML = `
+          Dejar comentario
+          <i class="fa fa-comment-dots"></i>
+        `.trim()
         Swal.fire({
           title: 'Error con el archivo.',
           text: `El archivo debe pesar 2mb o menos`,
@@ -180,6 +189,12 @@ const { title, text } = Astro.props
         published: false
       });
 
+      $submitButton.disabled = false
+      $submitButton.innerHTML = $submitButton.innerHTML = `
+        Dejar comentario
+        <i class="fa fa-comment-dots"></i>
+      `.trim()
+
       await Swal.fire({
         title: 'Comentario guardado con éxito.',
         icon: 'success',
@@ -191,17 +206,16 @@ const { title, text } = Astro.props
       document.body.style.overflow = ''
       $modal.classList.remove('open')
     } catch(err) {
-      Swal.fire({
-        title: 'Error al crear el testimonio.',
-        icon: 'error',
-        confirmButtonColor: "var(--primary)",
-      })
-    } finally {
       $submitButton.disabled = false
       $submitButton.innerHTML = $submitButton.innerHTML = `
         Dejar comentario
         <i class="fa fa-comment-dots"></i>
       `.trim()
+      Swal.fire({
+        title: 'Error al crear el testimonio.',
+        icon: 'error',
+        confirmButtonColor: "var(--primary)",
+      })
     }
   })
 
@@ -234,9 +248,13 @@ const { title, text } = Astro.props
     }
   })
 
+  $formCreateTestimonial.addEventListener('reset', () => {
+    $uploadPreview.style.backgroundImage = ''
+  })
+
   fr.addEventListener('load', e => {
     if(e.target?.result) {
       $uploadPreview.style.backgroundImage = `url(${ e.target.result })`
     }
-  });
+  })
 </script>

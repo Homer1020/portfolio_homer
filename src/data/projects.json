@@ -38,7 +38,7 @@
   {
     "mockup": "/assets/img/portfolio/mockups/833shots_so.png",
     "image": "/assets/img/portfolio/censo.png",
-    "title": "Sistema de ceso",
+    "title": "Sistema de censo",
     "stacks": ["NodeJS", "ReactJS", "ExpressJS"],
     "slug": "sistema-censo",
     "description": "<p>Sistema desarrollado como servicio comunitario. El encargado del sistema es capaz de registrar y modificar personas pertenecientes a la comunidad, obteniendo información importante para procesos administrativos.</p><p>Esta desarrollado con ReactJS para el Frontend y un Backend en Express, con una base de datos MySQL.</p>",
