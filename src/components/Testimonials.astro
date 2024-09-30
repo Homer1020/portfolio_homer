@@ -27,6 +27,9 @@
   <style is:global>
     .l-testimonials {
       margin-top: 5rem;
+      width: min(75rem, 100%);
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .owl-dots {
@@ -43,7 +46,6 @@
       border: 2px solid var(--secondary);
       border-radius: 50%;
       transition: background-color .2s;
-
     }
 
     .owl-dot.active span {
@@ -60,18 +62,11 @@
       ($(".owl-carousel") as owlElement).owlCarousel({
         items: 1,
         margin: 20,
-        // navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
-        // nav: true,
-        responsive: {
-          1200: {
-            items: 2,
-          },
-        },
         autoplay: true,
         autoplayTimeout: 4000,
         autoplayHoverPause: true,
         autoplaySpeed: 1000,
-        loop: true
+        loop: false
       });
     });
   </script>
