@@ -1,4 +1,4 @@
-# Portafolio personal Homer Moncayo
+# Portafolio Homer Moncayo
 
 > 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
