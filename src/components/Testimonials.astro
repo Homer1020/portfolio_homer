@@ -1,4 +1,4 @@
-  ---
+---
   import Testimonial from "./Testimonial.astro"
   import { db } from '../config/firebase'
   import { collection, getDocs, query, where } from 'firebase/firestore'
@@ -10,63 +10,63 @@
   )
   const querySnapshot = await getDocs(q)
   const testimonials = formatTestimonials(querySnapshot)
-  ---
+---
 
-  <div class="l-testimonials owl-carousel">
-    { testimonials.map(testimonial => (
-      <Testimonial
-        avatar={ testimonial.avatar }
-        key={ testimonial.id }
-        name={ testimonial.name }
-        role={ testimonial.role }
-        testimonial={ testimonial.testimonial }
-      />
-    )) }
-  </div>
+<div class="l-testimonials owl-carousel">
+  { testimonials.map(testimonial => (
+    <Testimonial
+      avatar={ testimonial.avatar }
+      key={ testimonial.id }
+      name={ testimonial.name }
+      role={ testimonial.role }
+      testimonial={ testimonial.testimonial }
+    />
+  )) }
+</div>
 
-  <style is:global>
-    .l-testimonials {
-      margin-top: 4rem;
-      width: min(75rem, 100%);
-      margin-left: auto;
-      margin-right: auto;
-    }
+<style is:global>
+  .l-testimonials {
+    margin-top: 4rem;
+    width: min(75rem, 100%);
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-    .owl-dots {
-      display: flex;
-      justify-content: center;
-      margin-top: 2rem;
-      gap: 1rem;
-    }
+  .owl-dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    gap: 1rem;
+  }
 
-    .owl-dot span {
-      display: block;
-      width: 1.5rem;
-      height: 1.5rem;
-      border: 2px solid var(--secondary);
-      border-radius: 50%;
-      transition: background-color .2s;
-    }
+  .owl-dot span {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid var(--secondary);
+    border-radius: 50%;
+    transition: background-color .2s;
+  }
 
-    .owl-dot.active span {
-      background-color: var(--secondary);
-    }
-  </style>
+  .owl-dot.active span {
+    background-color: var(--secondary);
+  }
+</style>
 
-  <script>
-    interface owlElement extends JQuery<HTMLElement> {
-      owlCarousel: any
-    }
+<script>
+  interface owlElement extends JQuery<HTMLElement> {
+    owlCarousel: any
+  }
 
-    $(document).ready(function(){
-      ($(".owl-carousel") as owlElement).owlCarousel({
-        items: 1,
-        margin: 20,
-        autoplay: true,
-        autoplayTimeout: 4000,
-        autoplayHoverPause: true,
-        autoplaySpeed: 1000,
-        loop: false
-      });
+  $(document).ready(function(){
+    ($(".owl-carousel") as owlElement).owlCarousel({
+      items: 1,
+      margin: 20,
+      autoplay: true,
+      autoplayTimeout: 4000,
+      autoplayHoverPause: true,
+      autoplaySpeed: 1000,
+      loop: false
     });
-  </script>
+  });
+</script>
