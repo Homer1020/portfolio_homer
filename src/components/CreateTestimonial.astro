@@ -120,7 +120,6 @@ const { title, text } = Astro.props
 
 <script>
   import { addDoc, collection } from "firebase/firestore"
-  import { getStorage, ref, uploadBytes } from "firebase/storage";
   import { db } from "../config/firebase"
   import Swal from "sweetalert2";
 
@@ -133,56 +132,71 @@ const { title, text } = Astro.props
     e.preventDefault()
 
     const fd = new FormData(e.target as HTMLFormElement)
-    
     const file = fd.get('avatar') as File
-    const ext = file.name.split('.').reverse()[0]
-    const filename = `${ Date.now() }.${ ext }`
-    const storage = getStorage()
-    const storageRef = ref(storage, 'testimonials/' + filename)
-    
+
     $submitButton.disabled = true
     $submitButton.innerHTML = $submitButton.innerHTML = `
       Enviando
       <i class="fa fa-spinner rotate"></i>
     `.trim()
     try {
-      const allowedExtensions: string[] = ['gif', 'jpg', 'png', 'jpeg']
-      const fileExtension = file.name.split('.').reverse()[0]
+      let avatarUrl: string | null = null
 
-      if(!allowedExtensions.includes(fileExtension)) {
-        $submitButton.disabled = false
-        $submitButton.innerHTML = $submitButton.innerHTML = `
-          Dejar comentario
-          <i class="fa fa-comment-dots"></i>
-        `.trim()
-        Swal.fire({
-          title: 'Error con el archivo.',
-          text: `Formatos permitidos ${ allowedExtensions.join(', ') }`,
-          icon: 'error',
-          confirmButtonColor: "var(--primary)",
+      if (file && file.size > 0) {
+        const allowedExtensions = ['gif', 'jpg', 'png', 'jpeg']
+        const fileExtension = file.name.split('.').reverse()[0].toLowerCase()
+
+        if (!allowedExtensions.includes(fileExtension)) {
+          $submitButton.disabled = false
+          $submitButton.innerHTML = `
+            Dejar comentario
+            <i class="fa fa-comment-dots"></i>
+          `.trim()
+          Swal.fire({
+            title: 'Error con el archivo.',
+            text: `Formatos permitidos: ${ allowedExtensions.join(', ') }`,
+            icon: 'error',
+            confirmButtonColor: "var(--primary)",
+          })
+          return null
+        }
+
+        if (file.size > 2e6) {
+          $submitButton.disabled = false
+          $submitButton.innerHTML = `
+            Dejar comentario
+            <i class="fa fa-comment-dots"></i>
+          `.trim()
+          Swal.fire({
+            title: 'Error con el archivo.',
+            text: `El archivo debe pesar 2mb o menos`,
+            icon: 'error',
+            confirmButtonColor: "var(--primary)",
+          })
+          return null
+        }
+
+        const filename = `${ Date.now() }.${ fileExtension }`
+        const imageKitFormData = new FormData()
+        imageKitFormData.append('file', file)
+        imageKitFormData.append('fileName', filename)
+        imageKitFormData.append('folder', 'testimonials')
+
+        const uploadRes = await fetch('https://upload.imagekit.io/api/v1/files/upload', {
+          method: 'POST',
+          headers: {
+            Authorization: 'Basic ' + btoa(import.meta.env.PUBLIC_IMAGE_KIT_PRIVATE_KEY + ':')
+          },
+          body: imageKitFormData
         })
-        return null
+
+        if (!uploadRes.ok) throw new Error('Error al subir la imagen')
+        const uploadData = await uploadRes.json()
+        avatarUrl = uploadData.url
       }
 
-      if(file.size > 2e6) {
-        $submitButton.disabled = false
-        $submitButton.innerHTML = $submitButton.innerHTML = `
-          Dejar comentario
-          <i class="fa fa-comment-dots"></i>
-        `.trim()
-        Swal.fire({
-          title: 'Error con el archivo.',
-          text: `El archivo debe pesar 2mb o menos`,
-          icon: 'error',
-          confirmButtonColor: "var(--primary)",
-        })
-        return null
-      }
-
-      await uploadBytes(storageRef, file)
-      
       await addDoc(collection(db, 'testimonials'), {
-        avatar: 'testimonials/' + filename,
+        ...(avatarUrl && { avatar: avatarUrl }),
         name: fd.get('name'),
         role: fd.get('role'),
         testimonial: fd.get('testimonial'),

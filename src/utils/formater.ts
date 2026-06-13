@@ -13,7 +13,9 @@ export const formatTestimonials = (qs: any): TestimonialInterface[] => {
       role: doc.get('role'),
       name: doc.get('name'),
       testimonial: doc.get('testimonial'),
-      avatar: `${baseUrl}${encodeURIComponent(avatarPath)}?alt=media` // Concatenar la URL base con la ruta del avatar
+      avatar: avatarPath?.startsWith('http')
+        ? avatarPath
+        : `${baseUrl}${encodeURIComponent(avatarPath)}?alt=media`
     });
   });
 
