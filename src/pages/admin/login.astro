@@ -1,0 +1,75 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+import Input from '../../components/Form/Input.astro'
+---
+
+<AdminLayout title="Login">
+	<div class="admin-auth">
+		<div class="admin-auth__card">
+			<span class="admin-auth__logo">PANEL</span>
+			<form id="form-login">
+				<Input
+					type="email"
+					id="email"
+					label="Email"
+					placeholder="tu@email.com"
+					required
+				/>
+				<Input
+					type="password"
+					id="password"
+					label="Contraseña"
+					placeholder="••••••••"
+					required
+				/>
+				<button type="submit" class="button button--primary button--block">
+					Entrar
+				</button>
+			</form>
+		</div>
+	</div>
+</AdminLayout>
+
+<style>
+	.button--block {
+		width: 100%;
+		justify-content: center;
+		margin-top: .5rem;
+	}
+</style>
+
+<!-- src/pages/admin/login.astro -->
+<script>
+  import { signInWithEmailAndPassword } from "firebase/auth";
+  import { auth } from "../../config/firebase";
+
+  async function handleLogin(email: string, password: string) {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+    const idToken = await userCredential.user.getIdToken();
+
+    const res = await fetch("/api/auth/signin", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${idToken}` },
+    });
+
+    if (res.ok) {
+      window.location.href = "/admin";
+    }
+  }
+
+  const form = document.getElementById("form-login") as HTMLFormElement;
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const email = (document.getElementById("email") as HTMLInputElement).value;
+        const password = (document.getElementById("password") as HTMLInputElement).value;
+    
+        try {
+            await handleLogin(email, password);
+        } catch (error) {
+            console.error("Error during login:", error);
+            alert("Error al iniciar sesión. Por favor, verifica tus credenciales.");
+        }
+    });
+</script>

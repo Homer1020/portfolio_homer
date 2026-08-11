@@ -1,0 +1,89 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+
+const navItems = [
+	{ label: 'Dashboard', href: '/admin', active: true },
+	{ label: 'Proyectos', href: '/admin/proyectos' },
+	{ label: 'Testimonios', href: '/admin/testimonios' },
+]
+
+const stats = [
+	{ label: 'Proyectos', value: '—' },
+	{ label: 'Testimonios pendientes', value: '—' },
+	{ label: 'Mensajes de contacto', value: '—' },
+]
+---
+
+<AdminLayout title="Dashboard">
+	<div class="admin">
+		<aside class="admin-sidebar">
+			<span class="admin-sidebar__logo">Admin</span>
+			<nav>
+				{navItems.map(item => (
+					<a href={item.href} class:list={[{ 'is-active': item.active }]}>{item.label}</a>
+				))}
+				<a id="logout-btn" href="javascript:void(0);">Cerrar sesión</a>
+			</nav>
+		</aside>
+
+		<div class="admin-main">
+			<header class="admin-topbar">
+				<h1>Dashboard</h1>
+			</header>
+
+			<div class="admin-content">
+				<div class="admin-stats">
+					{stats.map(stat => (
+						<div class="admin-card">
+							<span class="admin-card__label">{stat.label}</span>
+							<strong class="admin-card__value">{stat.value}</strong>
+						</div>
+					))}
+				</div>
+			</div>
+		</div>
+	</div>
+</AdminLayout>
+
+<style>
+	.admin-stats {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.admin-card__label {
+		display: block;
+		font-size: 1.3rem;
+		color: #6b7280;
+		margin-bottom: .5rem;
+	}
+
+	.admin-card__value {
+		font-size: 2.4rem;
+	}
+</style>
+
+<script>
+  import { getAuth, signOut } from "firebase/auth";
+  import { app } from "../../config/firebase"; // Tu config de Firebase cliente
+
+  const logoutBtn = document.getElementById("logout-btn");
+
+  logoutBtn?.addEventListener("click", async () => {
+    try {
+      const auth = getAuth(app);
+      
+      // 1. Cerrar sesión en la SDK del cliente (borra IndexedDB/LocalStorage)
+      await signOut(auth);
+
+      // 2. Destruir la cookie del servidor en Astro
+      await fetch("/api/auth/signout", { method: "POST" });
+
+      // 3. Redirigir al login
+      window.location.href = "/admin/login";
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+  });
+</script>

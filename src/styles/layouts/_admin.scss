@@ -1,0 +1,104 @@
+.admin {
+  min-height: 100vh;
+  display: flex;
+  background-color: #f1f3f5;
+}
+
+.admin-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background-color: #1a1d23;
+  color: #fff;
+  padding: 2rem 1.5rem;
+
+  &__logo {
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 3rem;
+    display: block;
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+
+  a {
+    color: #b4b8bf;
+    text-decoration: none;
+    font-size: 1.4rem;
+    padding: .8rem 1rem;
+    border-radius: 6px;
+    transition: background-color .2s, color .2s;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, .06);
+      color: #fff;
+    }
+
+    &.is-active {
+      background-color: var(--primary);
+      color: #fff;
+    }
+  }
+}
+
+.admin-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2.5rem;
+  background-color: #fff;
+  border-bottom: 1px solid #e5e7eb;
+
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+.admin-content {
+  padding: 2.5rem;
+}
+
+.admin-card {
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 2rem;
+}
+
+// Standalone screen (login) — no sidebar/topbar
+.admin-auth {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f3f5;
+
+  &__card {
+    width: 100%;
+    max-width: 380px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .06);
+  }
+
+  &__logo {
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 1.8rem;
+    color: #000;
+    margin-bottom: 2rem;
+    display: block;
+  }
+}
