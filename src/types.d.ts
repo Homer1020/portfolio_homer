@@ -5,3 +5,14 @@ export interface TestimonialInterface {
   testimonial: string,
   avatar: string
 }
+
+export interface ProjectInterface {
+  title: string
+  slug: string
+  mockup: string
+  image: string
+  stacks?: string[]
+  description?: string
+  url?: string | null
+  github?: string | null
+}

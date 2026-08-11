@@ -1,9 +1,23 @@
 ---
 import Project from "./Project.astro"
-import data from '../data/projects.json'
+import { db } from "../config/firebase"
+import { collection, getDocs } from "firebase/firestore"
+import type { ProjectInterface } from "../types"
+
+// 1. Obtener los proyectos directamente desde Firestore
+const querySnapshot = await getDocs(collection(db, "projects"))
+
+const projects = querySnapshot.docs.map(doc => {
+  const data = doc.data()
+  return {
+    ...data,
+    slug: doc.id, // Aseguramos el slug usando el ID del documento
+  }
+}) as ProjectInterface[]
 ---
+
 <div id="filter-portfolio">
-  <button class="button button--sm" data-filter="*">Mostra todo</button>
+  <button class="button button--sm" data-filter="*">Mostrar todo</button>
   <button class="button button--sm" data-filter=".php">PHP</button>
   <button class="button button--sm" data-filter=".laravel">Laravel</button>
   <button class="button button--sm" data-filter=".javascript">JavaScript</button>
@@ -11,9 +25,15 @@ import data from '../data/projects.json'
   <button class="button button--sm" data-filter=".wordpress">Wordpress</button>
   <button class="button button--sm" data-filter=".nodejs">NodeJS</button>
 </div>
-<div class="l-portfolio" id="portfolio">
+
+<!-- Guardamos los proyectos mapeados en data-projects para consumirlos desde el script -->
+<div 
+  class="l-portfolio" 
+  id="portfolio" 
+  data-projects={JSON.stringify(projects)}
+>
   {
-    data.map(project => (
+    projects.map(project => (
       <Project
         { ...project }
         image={ project.mockup }
@@ -52,11 +72,16 @@ import data from '../data/projects.json'
 <script>
   import Isotope from 'isotope-layout'
   import imagesLoaded from 'imagesloaded'
-  import projectsJSON from '../data/projects.json'
+  import { generateModal } from '../utils/modal'
+  import type { ProjectInterface } from '../types'
 
   const $grid = document.getElementById('portfolio') as HTMLElement
   const $filterPortfolio = document.getElementById('filter-portfolio') as HTMLElement
 
+  // 2. Extraer la lista de proyectos inyectada desde Astro
+  const projectsData: ProjectInterface[] = JSON.parse($grid.dataset.projects || '[]')
+
+  // Inicialización de Isotope
   const grid = new Isotope($grid, {
     itemSelector: '#portfolio article',
     masonry: {
@@ -65,6 +90,7 @@ import data from '../data/projects.json'
     }
   })
 
+  // Filtros de categoría
   $filterPortfolio.addEventListener('click', e => {
     const target = e.target as HTMLElement
 
@@ -78,26 +104,26 @@ import data from '../data/projects.json'
       })
     }
   })
-  
 
+  // Recalcular layout cuando carguen las imágenes
   imagesLoaded($grid).on('progress', function() {
     grid.layout();
   });
 
-
   /**
-   * MODAL
+   * MODAL (Ahora busca sobre la data traída dinámicamente de Firestore)
    */
-  import {generateModal} from '../utils/modal'
-
   const handleShowModal = (e: MouseEvent) => {
     const $target = e.target as HTMLElement
     if($target.classList.contains('project-img')) {
       e.preventDefault()
       const slug = $target.parentElement?.parentElement?.dataset.projectSlug
-      const project = projectsJSON.find(p => p.slug === slug)
-      const $modal = generateModal(project)
-      if($modal) document.body.appendChild($modal) // this can be optimizated
+      const project = projectsData.find(p => p.slug === slug)
+      
+      if (project) {
+        const $modal = generateModal(project)
+        if($modal) document.body.appendChild($modal)
+      }
     }
   }
 
