@@ -13,3 +13,10 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+declare namespace App {
+  interface Locals {
+    // Define el tipo de la propiedad 'user'
+    user?: import("firebase-admin/auth").DecodedIdToken;
+  }
+}
