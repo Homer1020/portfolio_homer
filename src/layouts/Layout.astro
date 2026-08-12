@@ -2,12 +2,15 @@
 import '../styles/style.scss'
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
+import { registrarVisita } from '../utils/analytics';
 
 interface Props {
 	title: string;
 }
 
 const { title } = Astro.props;
+
+const { totalVisits, datos } = await registrarVisita(Astro);
 ---
 
 <!doctype html>

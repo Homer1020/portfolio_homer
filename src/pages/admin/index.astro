@@ -5,19 +5,36 @@ import { getFirestore } from 'firebase-admin/firestore';
 
 const db = getFirestore();
 
-const [testimoniosSnap, proyectosSnap] = await Promise.all([
+const [testimoniosSnap, proyectosSnap, visitasSnap, visitasSnapshot] = await Promise.all([
   db.collection('testimonials').where('published', '==', false).count().get(),
-  db.collection('projects').count().get()
+  db.collection('projects').count().get(),
+  db.collection('analytics').count().get(),
+  db.collection('analytics').orderBy('fecha', 'desc').limit(50).get()
 ]);
 
 const totalTestimonios = testimoniosSnap.data().count;
 const totalProyectos = proyectosSnap.data().count;
+const totalVisitas = visitasSnap.data().count;
 
 const stats = [
 	{ label: 'Proyectos', value: totalProyectos },
 	{ label: 'Testimonios pendientes', value: totalTestimonios },
-	{ label: 'Mensajes de contacto', value: '0' },
+	{ label: 'Visitas totales', value: totalVisitas },
 ]
+
+const visitas = visitasSnapshot.docs.map(doc => {
+	const data = doc.data();
+	const fecha = data.fecha?.toDate ? data.fecha.toDate() : null;
+	return {
+		id: doc.id,
+		fecha: fecha ? fecha.toLocaleString('es-VE') : '-',
+		ip: data.ip || '-',
+		pais: data.pais || '-',
+		ruta: data.ruta || '-',
+		referrer: data.referrer || '-',
+		userAgent: data.userAgent || '-',
+	};
+});
 ---
 
 <AdminLayout title="Dashboard">
@@ -28,6 +45,40 @@ const stats = [
 				<strong class="admin-card__value">{stat.value}</strong>
 			</div>
 		))}
+	</div>
+
+	<div class="admin-toolbar">
+		<h2>Últimas visitas</h2>
+	</div>
+
+	<div class="admin-table-wrapper">
+		<table class="admin-table">
+			<thead>
+				<tr>
+					<th>Fecha</th>
+					<th>IP</th>
+					<th>País</th>
+					<th>Ruta</th>
+					<th>Referrer</th>
+					<th>User Agent</th>
+				</tr>
+			</thead>
+			<tbody>
+				{visitas.length === 0 && (
+					<tr><td colspan="6" class="admin-table__empty-state">Sin visitas registradas.</td></tr>
+				)}
+				{visitas.map(visita => (
+					<tr>
+						<td>{visita.fecha}</td>
+						<td>{visita.ip}</td>
+						<td>{visita.pais}</td>
+						<td>{visita.ruta}</td>
+						<td class="admin-table__truncate" title={visita.referrer}>{visita.referrer}</td>
+						<td class="admin-table__truncate" title={visita.userAgent}>{visita.userAgent}</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
 	</div>
 </AdminLayout>
 
@@ -47,6 +98,59 @@ const stats = [
 
 	.admin-card__value {
 		font-size: 2.4rem;
+	}
+
+	.admin-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin: 2.5rem 0 2rem;
+
+		h2 {
+			font-size: 2.2rem;
+		}
+	}
+
+	.admin-table-wrapper {
+		background-color: #fff;
+		border: 1px solid #e5e7eb;
+		border-radius: 10px;
+		overflow-x: auto;
+	}
+
+	.admin-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 1.4rem;
+
+		th, td {
+			text-align: left;
+			padding: 1.2rem 1.5rem;
+			white-space: nowrap;
+		}
+
+		thead th {
+			background-color: #f8f9fa;
+			color: #6b7280;
+			font-weight: 600;
+			border-bottom: 1px solid #e5e7eb;
+		}
+
+		tbody tr:not(:last-child) td {
+			border-bottom: 1px solid #f1f3f5;
+		}
+	}
+
+	.admin-table__truncate {
+		max-width: 260px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.admin-table__empty-state {
+		text-align: center;
+		color: #9ca3af;
+		padding: 3rem;
 	}
 </style>
 
