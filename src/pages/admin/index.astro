@@ -1,47 +1,33 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro'
 
-const navItems = [
-	{ label: 'Dashboard', href: '/admin', active: true },
-	{ label: 'Proyectos', href: '/admin/proyectos' },
-	{ label: 'Testimonios', href: '/admin/testimonios' },
-]
+import { getFirestore } from 'firebase-admin/firestore';
+
+const db = getFirestore();
+
+const [testimoniosSnap, proyectosSnap] = await Promise.all([
+  db.collection('testimonials').where('published', '==', false).count().get(),
+  db.collection('projects').count().get()
+]);
+
+const totalTestimonios = testimoniosSnap.data().count;
+const totalProyectos = proyectosSnap.data().count;
 
 const stats = [
-	{ label: 'Proyectos', value: '—' },
-	{ label: 'Testimonios pendientes', value: '—' },
-	{ label: 'Mensajes de contacto', value: '—' },
+	{ label: 'Proyectos', value: totalProyectos },
+	{ label: 'Testimonios pendientes', value: totalTestimonios },
+	{ label: 'Mensajes de contacto', value: '0' },
 ]
 ---
 
 <AdminLayout title="Dashboard">
-	<div class="admin">
-		<aside class="admin-sidebar">
-			<span class="admin-sidebar__logo">Admin</span>
-			<nav>
-				{navItems.map(item => (
-					<a href={item.href} class:list={[{ 'is-active': item.active }]}>{item.label}</a>
-				))}
-				<a id="logout-btn" href="javascript:void(0);">Cerrar sesión</a>
-			</nav>
-		</aside>
-
-		<div class="admin-main">
-			<header class="admin-topbar">
-				<h1>Dashboard</h1>
-			</header>
-
-			<div class="admin-content">
-				<div class="admin-stats">
-					{stats.map(stat => (
-						<div class="admin-card">
-							<span class="admin-card__label">{stat.label}</span>
-							<strong class="admin-card__value">{stat.value}</strong>
-						</div>
-					))}
-				</div>
+	<div class="admin-stats">
+		{stats.map(stat => (
+			<div class="admin-card">
+				<span class="admin-card__label">{stat.label}</span>
+				<strong class="admin-card__value">{stat.value}</strong>
 			</div>
-		</div>
+		))}
 	</div>
 </AdminLayout>
 

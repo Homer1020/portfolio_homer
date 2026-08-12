@@ -1,0 +1,401 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+import Input from '../../components/Form/Input.astro'
+import Textarea from '../../components/Form/Textarea.astro'
+
+import { getFirestore } from 'firebase-admin/firestore'
+import type { ProjectInterface } from '../../types'
+
+const db = getFirestore()
+
+const proyectosSnap = await db.collection('projects').get()
+
+const proyectos = proyectosSnap.docs.map(doc => {
+	const data = doc.data()
+	return {
+		slug: doc.id,
+		title: data.title ?? '',
+		mockup: data.mockup ?? '',
+		image: data.image ?? '',
+		stacks: data.stacks ?? [],
+		description: data.description ?? '',
+		url: data.url ?? null,
+		github: data.github ?? null,
+	}
+}) as ProjectInterface[]
+---
+
+<AdminLayout title="Proyectos">
+	<div class="admin-toolbar">
+		<h2>Proyectos</h2>
+		<button type="button" class="button button--primary button--sm" id="new-project-btn">Nuevo proyecto</button>
+	</div>
+
+	<div class="admin-table-wrapper">
+		<table class="admin-table">
+			<thead>
+				<tr>
+					<th>Imagen</th>
+					<th>Título</th>
+					<th>Slug</th>
+					<th>Stacks</th>
+					<th>Links</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody id="projects-tbody">
+				{proyectos.length === 0 && (
+					<tr id="empty-row">
+						<td colspan="6" class="admin-table__empty-state">No hay proyectos aún.</td>
+					</tr>
+				)}
+				{proyectos.map(proyecto => (
+					<tr data-row-slug={proyecto.slug}>
+						<td>
+							<img class="admin-table__thumb" src={proyecto.mockup} alt={proyecto.title} />
+						</td>
+						<td>{proyecto.title}</td>
+						<td><code>{proyecto.slug}</code></td>
+						<td>
+							<div class="admin-table__tags">
+								{(proyecto.stacks ?? []).map(stack => (
+									<span class="admin-tag">{stack}</span>
+								))}
+							</div>
+						</td>
+						<td>
+							<div class="admin-table__links">
+								{proyecto.url && <a href={proyecto.url} target="_blank">Sitio</a>}
+								{proyecto.github && <a href={proyecto.github} target="_blank">GitHub</a>}
+								{!proyecto.url && !proyecto.github && <span class="admin-table__empty">—</span>}
+							</div>
+						</td>
+						<td>
+							<div class="admin-table__actions">
+								<button
+									type="button"
+									class="button button--sm button--primary-o"
+									data-action="edit"
+									data-title={proyecto.title}
+									data-slug={proyecto.slug}
+									data-mockup={proyecto.mockup}
+									data-image={proyecto.image}
+									data-stacks={(proyecto.stacks ?? []).join(', ')}
+									data-description={proyecto.description}
+									data-url={proyecto.url ?? ''}
+									data-github={proyecto.github ?? ''}
+								>Editar</button>
+								<button type="button" class="button button--sm button--dark-o" data-action="delete" data-slug={proyecto.slug}>Eliminar</button>
+							</div>
+						</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="admin-modal" id="project-modal">
+		<div class="admin-modal__content">
+			<button type="button" class="admin-modal__close" id="close-project-modal">
+				<i class="fa fa-times"></i>
+			</button>
+			<h2 id="project-modal-title">Nuevo proyecto</h2>
+			<form id="form-project">
+				<Input type="text" id="title" label="Título" placeholder="Mi proyecto" required />
+				<Input type="text" id="slug" label="Slug (ID único)" placeholder="mi-proyecto" required />
+				<Input type="url" id="mockup" label="Imagen (miniatura del listado)" placeholder="https://..." required />
+				<Input type="url" id="image" label="Imagen (detalle del proyecto)" placeholder="https://..." required />
+				<Input type="text" id="stacks" label="Stacks (separados por coma)" placeholder="Astro, SCSS, Firebase" />
+				<Textarea id="description" label="Descripción" rows={4} placeholder="Descripción del proyecto..." />
+				<Input type="url" id="url" label="URL del sitio" placeholder="https://..." />
+				<Input type="url" id="github" label="URL de GitHub" placeholder="https://..." />
+
+				<div class="admin-modal__actions">
+					<button type="submit" class="button button--primary" id="submit-project-btn">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</AdminLayout>
+
+<style>
+	.admin-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 2rem;
+
+		h2 {
+			font-size: 2.2rem;
+		}
+	}
+
+	.admin-table-wrapper {
+		background-color: #fff;
+		border: 1px solid #e5e7eb;
+		border-radius: 10px;
+		overflow-x: auto;
+	}
+
+	.admin-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 1.4rem;
+
+		th, td {
+			text-align: left;
+			padding: 1.2rem 1.5rem;
+			white-space: nowrap;
+		}
+
+		thead th {
+			background-color: #f8f9fa;
+			color: #6b7280;
+			font-weight: 600;
+			border-bottom: 1px solid #e5e7eb;
+		}
+
+		tbody tr:not(:last-child) td {
+			border-bottom: 1px solid #f1f3f5;
+		}
+	}
+
+	.admin-table__thumb {
+		width: 56px;
+		height: 40px;
+		object-fit: cover;
+		border-radius: 6px;
+		background-color: #f1f3f5;
+	}
+
+	.admin-table__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: .4rem;
+	}
+
+	.admin-tag {
+		background-color: #eef2ff;
+		color: #4338ca;
+		font-size: 1.2rem;
+		font-weight: 500;
+		padding: .3rem .7rem;
+		border-radius: 20px;
+	}
+
+	.admin-table__links {
+		display: flex;
+		gap: 1rem;
+
+		a {
+			color: var(--primary);
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	.admin-table__empty {
+		color: #9ca3af;
+	}
+
+	.admin-table__empty-state {
+		text-align: center;
+		color: #9ca3af;
+		padding: 3rem;
+	}
+
+	.admin-table__actions {
+		display: flex;
+		gap: .8rem;
+	}
+
+	.admin-modal {
+		display: none;
+		position: fixed;
+		inset: 0;
+		background-color: rgba(0, 0, 0, .5);
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+		z-index: 100;
+	}
+
+	.admin-modal.open {
+		display: flex;
+	}
+
+	.admin-modal__content {
+		position: relative;
+		width: min(600px, 100%);
+		max-height: 90vh;
+		overflow-y: auto;
+		background-color: #fff;
+		border-radius: 10px;
+		padding: 2.5rem;
+	}
+
+	.admin-modal__close {
+		position: absolute;
+		top: 1.5rem;
+		right: 1.5rem;
+		background: none;
+		border: none;
+		font-size: 1.8rem;
+		cursor: pointer;
+		color: #6b7280;
+	}
+
+	.admin-modal__actions {
+		margin-top: 1.5rem;
+	}
+
+	.admin-modal h2 {
+		font-size: 2rem;
+		margin-bottom: 2rem;
+	}
+</style>
+
+<script>
+	import { collection, doc, setDoc, deleteDoc } from 'firebase/firestore'
+	import { db } from '../../config/firebase'
+	import Swal from 'sweetalert2'
+
+	const $modal = document.getElementById('project-modal') as HTMLElement
+	const $modalTitle = document.getElementById('project-modal-title') as HTMLElement
+	const $newProjectBtn = document.getElementById('new-project-btn') as HTMLElement
+	const $closeModalBtn = document.getElementById('close-project-modal') as HTMLElement
+	const $form = document.getElementById('form-project') as HTMLFormElement
+	const $slugInput = document.getElementById('slug') as HTMLInputElement
+	const $submitBtn = document.getElementById('submit-project-btn') as HTMLButtonElement
+	const $tbody = document.getElementById('projects-tbody') as HTMLElement
+
+	let mode: 'create' | 'edit' = 'create'
+
+	const openModal = () => {
+		$modal.classList.add('open')
+		document.body.style.overflow = 'hidden'
+	}
+
+	const closeModal = () => {
+		$modal.classList.remove('open')
+		document.body.style.overflow = ''
+	}
+
+	const openCreateModal = () => {
+		mode = 'create'
+		$modalTitle.textContent = 'Nuevo proyecto'
+		$form.reset()
+		$slugInput.disabled = false
+		openModal()
+	}
+
+	const openEditModal = (button: HTMLElement) => {
+		mode = 'edit'
+		$modalTitle.textContent = 'Editar proyecto'
+		$form.reset()
+		;(document.getElementById('title') as HTMLInputElement).value = button.dataset.title ?? ''
+		;(document.getElementById('slug') as HTMLInputElement).value = button.dataset.slug ?? ''
+		;(document.getElementById('mockup') as HTMLInputElement).value = button.dataset.mockup ?? ''
+		;(document.getElementById('image') as HTMLInputElement).value = button.dataset.image ?? ''
+		;(document.getElementById('stacks') as HTMLInputElement).value = button.dataset.stacks ?? ''
+		;(document.getElementById('description') as HTMLTextAreaElement).value = button.dataset.description ?? ''
+		;(document.getElementById('url') as HTMLInputElement).value = button.dataset.url ?? ''
+		;(document.getElementById('github') as HTMLInputElement).value = button.dataset.github ?? ''
+		$slugInput.disabled = true
+		openModal()
+	}
+
+	$newProjectBtn.addEventListener('click', openCreateModal)
+	$closeModalBtn.addEventListener('click', closeModal)
+
+	$modal.addEventListener('click', e => {
+		if (e.target === $modal) closeModal()
+	})
+
+	$tbody.addEventListener('click', async e => {
+		const $button = (e.target as HTMLElement).closest('button[data-action]') as HTMLButtonElement | null
+		if (!$button) return
+
+		const slug = $button.dataset.slug as string
+
+		if ($button.dataset.action === 'edit') {
+			openEditModal($button)
+		}
+
+		if ($button.dataset.action === 'delete') {
+			const confirm = await Swal.fire({
+				title: `¿Eliminar "${slug}"?`,
+				text: 'Esta acción no se puede deshacer.',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Eliminar',
+				cancelButtonText: 'Cancelar',
+				confirmButtonColor: '#444',
+			})
+
+			if (!confirm.isConfirmed) return
+
+			try {
+				await deleteDoc(doc(db, 'projects', slug))
+				document.querySelector(`tr[data-row-slug="${slug}"]`)?.remove()
+				Swal.fire({
+					title: 'Proyecto eliminado.',
+					icon: 'success',
+					confirmButtonColor: 'var(--secondary)',
+				})
+			} catch (err) {
+				Swal.fire({
+					title: 'Error al eliminar el proyecto.',
+					icon: 'error',
+					confirmButtonColor: 'var(--primary)',
+				})
+			}
+		}
+	})
+
+	$form.addEventListener('submit', async e => {
+		e.preventDefault()
+
+		const fd = new FormData($form)
+		const slug = String(fd.get('slug') ?? '').trim()
+		const stacks = String(fd.get('stacks') ?? '')
+			.split(',')
+			.map(stack => stack.trim())
+			.filter(Boolean)
+
+		$submitBtn.disabled = true
+		$submitBtn.textContent = 'Guardando...'
+
+		try {
+			await setDoc(doc(collection(db, 'projects'), slug), {
+				title: fd.get('title'),
+				mockup: fd.get('mockup'),
+				image: fd.get('image'),
+				stacks,
+				description: fd.get('description') ?? '',
+				url: fd.get('url') || null,
+				github: fd.get('github') || null,
+			}, { merge: true })
+
+			closeModal()
+			await Swal.fire({
+				title: mode === 'create' ? 'Proyecto creado.' : 'Proyecto actualizado.',
+				icon: 'success',
+				confirmButtonColor: 'var(--secondary)',
+			})
+			window.location.reload()
+		} catch (err) {
+			Swal.fire({
+				title: 'Error al guardar el proyecto.',
+				icon: 'error',
+				confirmButtonColor: 'var(--primary)',
+			})
+		} finally {
+			$submitBtn.disabled = false
+			$submitBtn.textContent = 'Guardar'
+		}
+	})
+</script>

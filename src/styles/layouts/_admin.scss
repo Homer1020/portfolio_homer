@@ -26,6 +26,21 @@
     gap: .5rem;
   }
 
+  @media (max-width: 991px) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform .3s ease;
+
+    &.show {
+      transform: translateX(0);
+    }
+  }
+
   a {
     color: #b4b8bf;
     text-decoration: none;
@@ -46,6 +61,22 @@
   }
 }
 
+.admin-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, .5);
+  z-index: 999;
+
+  &.show {
+    display: block;
+  }
+
+  @media (min-width: 992px) {
+    display: none;
+  }
+}
+
 .admin-main {
   flex: 1;
   min-width: 0;
@@ -54,10 +85,14 @@
 .admin-topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 1rem;
   padding: 1.5rem 2.5rem;
   background-color: #fff;
   border-bottom: 1px solid #e5e7eb;
+
+  .burger {
+    font-size: 30px;
+  }
 
   h1 {
     font-size: 2rem;
