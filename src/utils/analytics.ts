@@ -11,7 +11,11 @@ export interface DatosVisita {
   ruta: string;
 }
 
-export async function registrarVisita(Astro: AstroGlobal): Promise<{ totalVisits: number; datos: DatosVisita }> {
+export async function registrarVisita(Astro: AstroGlobal): Promise<{ totalVisits: number; datos?: DatosVisita }> {
+  if (import.meta.env.DEV) {
+    return { totalVisits: 0 };
+  }
+
   // 1. Extraer datos de la petición HTTP
   const clientIP = 
     Astro.request.headers.get('x-forwarded-for')?.split(',')[0] || 

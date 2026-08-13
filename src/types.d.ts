@@ -4,6 +4,7 @@ export interface TestimonialInterface {
   name: string
   testimonial: string,
   avatar: string
+  published?: boolean
 }
 
 export interface ProjectInterface {

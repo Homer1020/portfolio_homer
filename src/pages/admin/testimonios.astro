@@ -1,0 +1,416 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+import Input from '../../components/Form/Input.astro'
+import Textarea from '../../components/Form/Textarea.astro'
+
+import { getFirestore } from 'firebase-admin/firestore'
+import type { TestimonialInterface } from '../../types'
+
+const db = getFirestore()
+
+const testimoniosSnap = await db.collection('testimonials').get()
+
+const testimonios = testimoniosSnap.docs
+	.map(doc => {
+		const data = doc.data()
+		return {
+			id: doc.id,
+			name: data.name ?? '',
+			role: data.role ?? '',
+			testimonial: data.testimonial ?? '',
+			avatar: data.avatar ?? '',
+			published: data.published ?? false,
+		}
+	})
+	.sort((a, b) => Number(a.published) - Number(b.published)) as (TestimonialInterface & { published: boolean })[]
+---
+
+<AdminLayout title="Testimonios">
+	<div class="admin-toolbar">
+		<h2>Testimonios</h2>
+		<button type="button" class="button button--primary button--sm" id="new-testimonial-btn">Nuevo testimonio</button>
+	</div>
+
+	<div class="admin-table-wrapper">
+		<table class="admin-table">
+			<thead>
+				<tr>
+					<th>Avatar</th>
+					<th>Nombre</th>
+					<th>Rol</th>
+					<th>Testimonio</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody id="testimonials-tbody">
+				{testimonios.length === 0 && (
+					<tr id="empty-row">
+						<td colspan="6" class="admin-table__empty-state">No hay testimonios aún.</td>
+					</tr>
+				)}
+				{testimonios.map(testimonio => (
+					<tr data-row-id={testimonio.id}>
+						<td>
+							{testimonio.avatar
+								? <img class="admin-table__avatar" src={testimonio.avatar} alt={testimonio.name} />
+								: <span class="admin-table__empty">—</span>}
+						</td>
+						<td>{testimonio.name}</td>
+						<td>{testimonio.role}</td>
+						<td class="admin-table__truncate" title={testimonio.testimonial}>{testimonio.testimonial}</td>
+						<td>
+							<span class:list={['admin-badge', { 'admin-badge--success': testimonio.published }]}>
+								{testimonio.published ? 'Publicado' : 'Pendiente'}
+							</span>
+						</td>
+						<td>
+							<div class="admin-table__actions">
+								<button
+									type="button"
+									class="button button--sm button--secondary-o"
+									data-action="toggle"
+									data-id={testimonio.id}
+									data-published={String(testimonio.published)}
+								>{testimonio.published ? 'Despublicar' : 'Publicar'}</button>
+								<button
+									type="button"
+									class="button button--sm button--primary-o"
+									data-action="edit"
+									data-id={testimonio.id}
+									data-name={testimonio.name}
+									data-role={testimonio.role}
+									data-testimonial={testimonio.testimonial}
+									data-avatar={testimonio.avatar}
+									data-published={String(testimonio.published)}
+								>Editar</button>
+								<button type="button" class="button button--sm button--dark-o" data-action="delete" data-id={testimonio.id}>Eliminar</button>
+							</div>
+						</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="admin-modal" id="testimonial-modal">
+		<div class="admin-modal__content">
+			<button type="button" class="admin-modal__close" id="close-testimonial-modal">
+				<i class="fa fa-times"></i>
+			</button>
+			<h2 id="testimonial-modal-title">Nuevo testimonio</h2>
+			<form id="form-testimonial">
+				<Input type="text" id="name" label="Nombre completo" placeholder="John Doe" required />
+				<Input type="text" id="role" label="Ocupación y empresa" placeholder="CEO de Facebook" required />
+				<Textarea id="testimonial" label="Testimonio" rows={4} placeholder="Homer es un programador excepcional..." required />
+				<Input type="url" id="avatar" label="Avatar (URL)" placeholder="https://..." />
+
+				<div class="admin-checkbox">
+					<input type="checkbox" id="published" name="published" />
+					<label for="published">Publicado (visible en el sitio)</label>
+				</div>
+
+				<div class="admin-modal__actions">
+					<button type="submit" class="button button--primary" id="submit-testimonial-btn">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</AdminLayout>
+
+<style>
+	.admin-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 2rem;
+
+		h2 {
+			font-size: 2.2rem;
+		}
+	}
+
+	.admin-table-wrapper {
+		background-color: #fff;
+		border: 1px solid #e5e7eb;
+		border-radius: 10px;
+		overflow-x: auto;
+	}
+
+	.admin-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 1.4rem;
+
+		th, td {
+			text-align: left;
+			padding: 1.2rem 1.5rem;
+			white-space: nowrap;
+		}
+
+		thead th {
+			background-color: #f8f9fa;
+			color: #6b7280;
+			font-weight: 600;
+			border-bottom: 1px solid #e5e7eb;
+		}
+
+		tbody tr:not(:last-child) td {
+			border-bottom: 1px solid #f1f3f5;
+		}
+	}
+
+	.admin-table__avatar {
+		width: 40px;
+		height: 40px;
+		object-fit: cover;
+		border-radius: 50%;
+		background-color: #f1f3f5;
+	}
+
+	.admin-table__truncate {
+		max-width: 260px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.admin-table__empty {
+		color: #9ca3af;
+	}
+
+	.admin-table__empty-state {
+		text-align: center;
+		color: #9ca3af;
+		padding: 3rem;
+	}
+
+	.admin-table__actions {
+		display: flex;
+		gap: .8rem;
+	}
+
+	.admin-badge {
+		display: inline-block;
+		font-size: 1.2rem;
+		font-weight: 500;
+		padding: .3rem .8rem;
+		border-radius: 20px;
+		background-color: #f1f3f5;
+		color: #6b7280;
+	}
+
+	.admin-badge--success {
+		background-color: #dcfce7;
+		color: #15803d;
+	}
+
+	.admin-checkbox {
+		display: flex;
+		align-items: center;
+		gap: .8rem;
+		margin: 1.5rem 0;
+
+		label {
+			font-size: 1.4rem;
+		}
+	}
+
+	.admin-modal {
+		display: none;
+		position: fixed;
+		inset: 0;
+		background-color: rgba(0, 0, 0, .5);
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+		z-index: 100;
+	}
+
+	.admin-modal.open {
+		display: flex;
+	}
+
+	.admin-modal__content {
+		position: relative;
+		width: min(600px, 100%);
+		max-height: 90vh;
+		overflow-y: auto;
+		background-color: #fff;
+		border-radius: 10px;
+		padding: 2.5rem;
+	}
+
+	.admin-modal__close {
+		position: absolute;
+		top: 1.5rem;
+		right: 1.5rem;
+		background: none;
+		border: none;
+		font-size: 1.8rem;
+		cursor: pointer;
+		color: #6b7280;
+	}
+
+	.admin-modal__actions {
+		margin-top: 1.5rem;
+	}
+
+	.admin-modal h2 {
+		font-size: 2rem;
+		margin-bottom: 2rem;
+	}
+</style>
+
+<script>
+	import { collection, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore'
+	import { db } from '../../config/firebase'
+	import Swal from 'sweetalert2'
+
+	const $modal = document.getElementById('testimonial-modal') as HTMLElement
+	const $modalTitle = document.getElementById('testimonial-modal-title') as HTMLElement
+	const $newTestimonialBtn = document.getElementById('new-testimonial-btn') as HTMLElement
+	const $closeModalBtn = document.getElementById('close-testimonial-modal') as HTMLElement
+	const $form = document.getElementById('form-testimonial') as HTMLFormElement
+	const $publishedInput = document.getElementById('published') as HTMLInputElement
+	const $submitBtn = document.getElementById('submit-testimonial-btn') as HTMLButtonElement
+	const $tbody = document.getElementById('testimonials-tbody') as HTMLElement
+
+	let mode: 'create' | 'edit' = 'create'
+	let editingId: string | null = null
+
+	const openModal = () => {
+		$modal.classList.add('open')
+		document.body.style.overflow = 'hidden'
+	}
+
+	const closeModal = () => {
+		$modal.classList.remove('open')
+		document.body.style.overflow = ''
+	}
+
+	const openCreateModal = () => {
+		mode = 'create'
+		editingId = null
+		$modalTitle.textContent = 'Nuevo testimonio'
+		$form.reset()
+		$publishedInput.checked = true
+		openModal()
+	}
+
+	const openEditModal = (button: HTMLElement) => {
+		mode = 'edit'
+		editingId = button.dataset.id ?? null
+		$modalTitle.textContent = 'Editar testimonio'
+		$form.reset()
+		;(document.getElementById('name') as HTMLInputElement).value = button.dataset.name ?? ''
+		;(document.getElementById('role') as HTMLInputElement).value = button.dataset.role ?? ''
+		;(document.getElementById('testimonial') as HTMLTextAreaElement).value = button.dataset.testimonial ?? ''
+		;(document.getElementById('avatar') as HTMLInputElement).value = button.dataset.avatar ?? ''
+		$publishedInput.checked = button.dataset.published === 'true'
+		openModal()
+	}
+
+	$newTestimonialBtn.addEventListener('click', openCreateModal)
+	$closeModalBtn.addEventListener('click', closeModal)
+
+	$modal.addEventListener('click', e => {
+		if (e.target === $modal) closeModal()
+	})
+
+	$tbody.addEventListener('click', async e => {
+		const $button = (e.target as HTMLElement).closest('button[data-action]') as HTMLButtonElement | null
+		if (!$button) return
+
+		const id = $button.dataset.id as string
+
+		if ($button.dataset.action === 'edit') {
+			openEditModal($button)
+		}
+
+		if ($button.dataset.action === 'toggle') {
+			const published = $button.dataset.published === 'true'
+
+			try {
+				await updateDoc(doc(db, 'testimonials', id), { published: !published })
+				window.location.reload()
+			} catch (err) {
+				Swal.fire({
+					title: 'Error al actualizar el testimonio.',
+					icon: 'error',
+					confirmButtonColor: 'var(--primary)',
+				})
+			}
+		}
+
+		if ($button.dataset.action === 'delete') {
+			const confirm = await Swal.fire({
+				title: '¿Eliminar este testimonio?',
+				text: 'Esta acción no se puede deshacer.',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Eliminar',
+				cancelButtonText: 'Cancelar',
+				confirmButtonColor: '#444',
+			})
+
+			if (!confirm.isConfirmed) return
+
+			try {
+				await deleteDoc(doc(db, 'testimonials', id))
+				document.querySelector(`tr[data-row-id="${id}"]`)?.remove()
+				Swal.fire({
+					title: 'Testimonio eliminado.',
+					icon: 'success',
+					confirmButtonColor: 'var(--secondary)',
+				})
+			} catch (err) {
+				Swal.fire({
+					title: 'Error al eliminar el testimonio.',
+					icon: 'error',
+					confirmButtonColor: 'var(--primary)',
+				})
+			}
+		}
+	})
+
+	$form.addEventListener('submit', async e => {
+		e.preventDefault()
+
+		const fd = new FormData($form)
+		const payload = {
+			name: fd.get('name'),
+			role: fd.get('role'),
+			testimonial: fd.get('testimonial'),
+			avatar: fd.get('avatar') || '',
+			published: $publishedInput.checked,
+		}
+
+		$submitBtn.disabled = true
+		$submitBtn.textContent = 'Guardando...'
+
+		try {
+			if (mode === 'create') {
+				await addDoc(collection(db, 'testimonials'), payload)
+			} else if (editingId) {
+				await updateDoc(doc(db, 'testimonials', editingId), payload)
+			}
+
+			closeModal()
+			await Swal.fire({
+				title: mode === 'create' ? 'Testimonio creado.' : 'Testimonio actualizado.',
+				icon: 'success',
+				confirmButtonColor: 'var(--secondary)',
+			})
+			window.location.reload()
+		} catch (err) {
+			Swal.fire({
+				title: 'Error al guardar el testimonio.',
+				icon: 'error',
+				confirmButtonColor: 'var(--primary)',
+			})
+		} finally {
+			$submitBtn.disabled = false
+			$submitBtn.textContent = 'Guardar'
+		}
+	})
+</script>

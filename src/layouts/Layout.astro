@@ -10,7 +10,7 @@ interface Props {
 
 const { title } = Astro.props;
 
-const { totalVisits, datos } = await registrarVisita(Astro);
+await registrarVisita(Astro);
 ---
 
 <!doctype html>

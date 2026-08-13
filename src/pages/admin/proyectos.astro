@@ -103,8 +103,8 @@ const proyectos = proyectosSnap.docs.map(doc => {
 			<form id="form-project">
 				<Input type="text" id="title" label="Título" placeholder="Mi proyecto" required />
 				<Input type="text" id="slug" label="Slug (ID único)" placeholder="mi-proyecto" required />
-				<Input type="url" id="mockup" label="Imagen (miniatura del listado)" placeholder="https://..." required />
-				<Input type="url" id="image" label="Imagen (detalle del proyecto)" placeholder="https://..." required />
+				<Input type="text" id="mockup" label="Imagen (miniatura del listado)" placeholder="https://..." required />
+				<Input type="text" id="image" label="Imagen (detalle del proyecto)" placeholder="https://..." required />
 				<Input type="text" id="stacks" label="Stacks (separados por coma)" placeholder="Astro, SCSS, Firebase" />
 				<Textarea id="description" label="Descripción" rows={4} placeholder="Descripción del proyecto..." />
 				<Input type="url" id="url" label="URL del sitio" placeholder="https://..." />
@@ -288,7 +288,7 @@ const proyectos = proyectosSnap.docs.map(doc => {
 		mode = 'create'
 		$modalTitle.textContent = 'Nuevo proyecto'
 		$form.reset()
-		$slugInput.disabled = false
+		$slugInput.readOnly = false
 		openModal()
 	}
 
@@ -304,7 +304,7 @@ const proyectos = proyectosSnap.docs.map(doc => {
 		;(document.getElementById('description') as HTMLTextAreaElement).value = button.dataset.description ?? ''
 		;(document.getElementById('url') as HTMLInputElement).value = button.dataset.url ?? ''
 		;(document.getElementById('github') as HTMLInputElement).value = button.dataset.github ?? ''
-		$slugInput.disabled = true
+		$slugInput.readOnly = true
 		openModal()
 	}
 

@@ -9,7 +9,7 @@ const [testimoniosSnap, proyectosSnap, visitasSnap, visitasSnapshot] = await Pro
   db.collection('testimonials').where('published', '==', false).count().get(),
   db.collection('projects').count().get(),
   db.collection('analytics').count().get(),
-  db.collection('analytics').orderBy('fecha', 'desc').limit(50).get()
+  db.collection('analytics').orderBy('fecha', 'desc').limit(10).get()
 ]);
 
 const totalTestimonios = testimoniosSnap.data().count;
