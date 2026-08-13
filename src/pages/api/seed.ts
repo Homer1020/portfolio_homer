@@ -5,6 +5,13 @@ import projectsData from '../../data/projects.json'; // Ajusta la ruta a tu data
 import { doc, setDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 export const GET: APIRoute = async () => {
+  if (import.meta.env.PROD) {
+    return new Response(
+      JSON.stringify({ success: false, error: 'Ruta deshabilitada en producción.' }),
+      { status: 403, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
   try {
     const projects = projectsData;
     const results: string[] = [];

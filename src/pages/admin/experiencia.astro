@@ -1,0 +1,347 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+import Input from '../../components/Form/Input.astro'
+import Textarea from '../../components/Form/Textarea.astro'
+
+import { getFirestore } from 'firebase-admin/firestore'
+import type { ExperienceInterface } from '../../types'
+
+const db = getFirestore()
+
+const experienciasSnap = await db.collection('experiences').orderBy('order', 'asc').get()
+
+const experiencias = experienciasSnap.docs.map(doc => {
+	const data = doc.data()
+	return {
+		id: doc.id,
+		role: data.role ?? '',
+		business: data.business ?? '',
+		date: data.date ?? '',
+		description: data.description ?? [],
+		order: data.order ?? 0,
+	}
+}) as ExperienceInterface[]
+---
+
+<AdminLayout title="Experiencia">
+	<div class="admin-toolbar">
+		<h2>Experiencia laboral</h2>
+		<button type="button" class="button button--primary button--sm" id="new-experience-btn">Nueva experiencia</button>
+	</div>
+
+	<div class="admin-table-wrapper">
+		<table class="admin-table">
+			<thead>
+				<tr>
+					<th>Orden</th>
+					<th>Rol</th>
+					<th>Empresa</th>
+					<th>Fecha</th>
+					<th>Descripción</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody id="experiences-tbody">
+				{experiencias.length === 0 && (
+					<tr id="empty-row">
+						<td colspan="6" class="admin-table__empty-state">No hay experiencias aún.</td>
+					</tr>
+				)}
+				{experiencias.map(experiencia => (
+					<tr data-row-id={experiencia.id}>
+						<td>{experiencia.order}</td>
+						<td>{experiencia.role}</td>
+						<td>{experiencia.business}</td>
+						<td>{experiencia.date}</td>
+						<td class="admin-table__truncate" title={experiencia.description.join(' | ')}>{experiencia.description.join(' | ')}</td>
+						<td>
+							<div class="admin-table__actions">
+								<button
+									type="button"
+									class="button button--sm button--primary-o"
+									data-action="edit"
+									data-id={experiencia.id}
+									data-role={experiencia.role}
+									data-business={experiencia.business}
+									data-date={experiencia.date}
+									data-description={experiencia.description.join('\n')}
+									data-order={String(experiencia.order)}
+								>Editar</button>
+								<button type="button" class="button button--sm button--dark-o" data-action="delete" data-id={experiencia.id}>Eliminar</button>
+							</div>
+						</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="admin-modal" id="experience-modal">
+		<div class="admin-modal__content">
+			<button type="button" class="admin-modal__close" id="close-experience-modal">
+				<i class="fa fa-times"></i>
+			</button>
+			<h2 id="experience-modal-title">Nueva experiencia</h2>
+			<form id="form-experience">
+				<Input type="text" id="role" label="Rol / cargo" placeholder="FrontEnd Developer" required />
+				<Input type="text" id="business" label="Empresa" placeholder="MOWOMO" required />
+				<Input type="text" id="date" label="Fecha" placeholder="2026 - Actualidad" required />
+				<Textarea id="description" label="Descripción (una viñeta por línea)" rows={4} placeholder="Colaboro en equipos multidisciplinarios..." required />
+				<Input type="number" id="order" label="Orden (menor = primero en la lista)" placeholder="0" required />
+
+				<div class="admin-modal__actions">
+					<button type="submit" class="button button--primary" id="submit-experience-btn">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</AdminLayout>
+
+<style>
+	.admin-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 2rem;
+
+		h2 {
+			font-size: 2.2rem;
+		}
+	}
+
+	.admin-table-wrapper {
+		background-color: #fff;
+		border: 1px solid #e5e7eb;
+		border-radius: 10px;
+		overflow-x: auto;
+	}
+
+	.admin-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 1.4rem;
+
+		th, td {
+			text-align: left;
+			padding: 1.2rem 1.5rem;
+			white-space: nowrap;
+		}
+
+		thead th {
+			background-color: #f8f9fa;
+			color: #6b7280;
+			font-weight: 600;
+			border-bottom: 1px solid #e5e7eb;
+		}
+
+		tbody tr:not(:last-child) td {
+			border-bottom: 1px solid #f1f3f5;
+		}
+	}
+
+	.admin-table__truncate {
+		max-width: 320px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.admin-table__empty-state {
+		text-align: center;
+		color: #9ca3af;
+		padding: 3rem;
+	}
+
+	.admin-table__actions {
+		display: flex;
+		gap: .8rem;
+	}
+
+	.admin-modal {
+		display: none;
+		position: fixed;
+		inset: 0;
+		background-color: rgba(0, 0, 0, .5);
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+		z-index: 100;
+	}
+
+	.admin-modal.open {
+		display: flex;
+	}
+
+	.admin-modal__content {
+		position: relative;
+		width: min(600px, 100%);
+		max-height: 90vh;
+		overflow-y: auto;
+		background-color: #fff;
+		border-radius: 10px;
+		padding: 2.5rem;
+	}
+
+	.admin-modal__close {
+		position: absolute;
+		top: 1.5rem;
+		right: 1.5rem;
+		background: none;
+		border: none;
+		font-size: 1.8rem;
+		cursor: pointer;
+		color: #6b7280;
+	}
+
+	.admin-modal__actions {
+		margin-top: 1.5rem;
+	}
+
+	.admin-modal h2 {
+		font-size: 2rem;
+		margin-bottom: 2rem;
+	}
+</style>
+
+<script>
+	import { collection, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore'
+	import { db } from '../../config/firebase'
+	import Swal from 'sweetalert2'
+
+	const $modal = document.getElementById('experience-modal') as HTMLElement
+	const $modalTitle = document.getElementById('experience-modal-title') as HTMLElement
+	const $newExperienceBtn = document.getElementById('new-experience-btn') as HTMLElement
+	const $closeModalBtn = document.getElementById('close-experience-modal') as HTMLElement
+	const $form = document.getElementById('form-experience') as HTMLFormElement
+	const $orderInput = document.getElementById('order') as HTMLInputElement
+	const $submitBtn = document.getElementById('submit-experience-btn') as HTMLButtonElement
+	const $tbody = document.getElementById('experiences-tbody') as HTMLElement
+
+	let mode: 'create' | 'edit' = 'create'
+	let editingId: string | null = null
+
+	const openModal = () => {
+		$modal.classList.add('open')
+		document.body.style.overflow = 'hidden'
+	}
+
+	const closeModal = () => {
+		$modal.classList.remove('open')
+		document.body.style.overflow = ''
+	}
+
+	const openCreateModal = () => {
+		mode = 'create'
+		editingId = null
+		$modalTitle.textContent = 'Nueva experiencia'
+		$form.reset()
+		$orderInput.value = '0'
+		openModal()
+	}
+
+	const openEditModal = (button: HTMLElement) => {
+		mode = 'edit'
+		editingId = button.dataset.id ?? null
+		$modalTitle.textContent = 'Editar experiencia'
+		$form.reset()
+		;(document.getElementById('role') as HTMLInputElement).value = button.dataset.role ?? ''
+		;(document.getElementById('business') as HTMLInputElement).value = button.dataset.business ?? ''
+		;(document.getElementById('date') as HTMLInputElement).value = button.dataset.date ?? ''
+		;(document.getElementById('description') as HTMLTextAreaElement).value = button.dataset.description ?? ''
+		$orderInput.value = button.dataset.order ?? '0'
+		openModal()
+	}
+
+	$newExperienceBtn.addEventListener('click', openCreateModal)
+	$closeModalBtn.addEventListener('click', closeModal)
+
+	$modal.addEventListener('click', e => {
+		if (e.target === $modal) closeModal()
+	})
+
+	$tbody.addEventListener('click', async e => {
+		const $button = (e.target as HTMLElement).closest('button[data-action]') as HTMLButtonElement | null
+		if (!$button) return
+
+		const id = $button.dataset.id as string
+
+		if ($button.dataset.action === 'edit') {
+			openEditModal($button)
+		}
+
+		if ($button.dataset.action === 'delete') {
+			const confirm = await Swal.fire({
+				title: '¿Eliminar esta experiencia?',
+				text: 'Esta acción no se puede deshacer.',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Eliminar',
+				cancelButtonText: 'Cancelar',
+				confirmButtonColor: '#444',
+			})
+
+			if (!confirm.isConfirmed) return
+
+			try {
+				await deleteDoc(doc(db, 'experiences', id))
+				document.querySelector(`tr[data-row-id="${id}"]`)?.remove()
+				Swal.fire({
+					title: 'Experiencia eliminada.',
+					icon: 'success',
+					confirmButtonColor: 'var(--secondary)',
+				})
+			} catch (err) {
+				Swal.fire({
+					title: 'Error al eliminar la experiencia.',
+					icon: 'error',
+					confirmButtonColor: 'var(--primary)',
+				})
+			}
+		}
+	})
+
+	$form.addEventListener('submit', async e => {
+		e.preventDefault()
+
+		const fd = new FormData($form)
+		const description = String(fd.get('description') ?? '')
+			.split('\n')
+			.map(line => line.trim())
+			.filter(Boolean)
+
+		const payload = {
+			role: fd.get('role'),
+			business: fd.get('business'),
+			date: fd.get('date'),
+			description,
+			order: Number(fd.get('order') ?? 0),
+		}
+
+		$submitBtn.disabled = true
+		$submitBtn.textContent = 'Guardando...'
+
+		try {
+			if (mode === 'create') {
+				await addDoc(collection(db, 'experiences'), payload)
+			} else if (editingId) {
+				await updateDoc(doc(db, 'experiences', editingId), payload)
+			}
+
+			closeModal()
+			await Swal.fire({
+				title: mode === 'create' ? 'Experiencia creada.' : 'Experiencia actualizada.',
+				icon: 'success',
+				confirmButtonColor: 'var(--secondary)',
+			})
+			window.location.reload()
+		} catch (err) {
+			Swal.fire({
+				title: 'Error al guardar la experiencia.',
+				icon: 'error',
+				confirmButtonColor: 'var(--primary)',
+			})
+		} finally {
+			$submitBtn.disabled = false
+			$submitBtn.textContent = 'Guardar'
+		}
+	})
+</script>

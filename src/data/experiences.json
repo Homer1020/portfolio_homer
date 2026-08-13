@@ -1,0 +1,39 @@
+[
+  {
+    "role": "FrontEnd Developer",
+    "business": "MOWOMO",
+    "date": "2026 - Actualidad",
+    "description": [
+      "Colaboro en equipos multidisciplinarios para diseñar e implementar interfaces de usuario modernas, responsivas y optimizadas en rendimiento, asegurando una experiencia de usuario (UX) intuitiva."
+    ],
+    "order": 0
+  },
+  {
+    "role": "Programador FullStack",
+    "business": "Soluzionitech",
+    "date": "2024 - 2026",
+    "description": [
+      "Creación y mantenimiento de aplicaciones web completas utilizando tecnologías modernas como React, Node.js y MongoDB."
+    ],
+    "order": 1
+  },
+  {
+    "role": "Programador FullStack",
+    "business": "Soluciones Tecnológicas Tepuy 21",
+    "date": "Mar 2024 - Jul 2024",
+    "description": [
+      "Desarrollo de sistemas de información robustos y escalables con Laravel para empresas venezolanas."
+    ],
+    "order": 2
+  },
+  {
+    "role": "FrontEnd Developer",
+    "business": "HI4AI Human Intelligence for Artificial Intelligence",
+    "date": "2023 - 2024",
+    "description": [
+      "Programación y mantenimiento de bots inteligentes para extraer información publica en sitios web con el fin de analizar datos para machine learning.",
+      "Desarrollo de sistema para escraping utilizando NextJS y Prisma ORM, trabajando en equipo."
+    ],
+    "order": 3
+  }
+]

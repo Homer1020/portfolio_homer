@@ -7,6 +7,15 @@ export interface TestimonialInterface {
   published?: boolean
 }
 
+export interface ExperienceInterface {
+  id: string
+  role: string
+  business: string
+  date: string
+  description: string[]
+  order?: number
+}
+
 export interface ProjectInterface {
   title: string
   slug: string
