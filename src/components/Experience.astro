@@ -6,16 +6,19 @@ import type { ExperienceInterface } from '../types'
 const q = query(collection(db, 'experiences'), orderBy('order', 'asc'))
 const querySnapshot = await getDocs(q)
 
-const experiences = querySnapshot.docs.map(doc => {
-	const data = doc.data()
-	return {
-		id: doc.id,
-		role: data.role ?? '',
-		business: data.business ?? '',
-		date: data.date ?? '',
-		description: data.description ?? [],
-	}
-}) as ExperienceInterface[]
+const experiences = querySnapshot.docs
+	.map(doc => {
+		const data = doc.data()
+		return {
+			id: doc.id,
+			role: data.role ?? '',
+			business: data.business ?? '',
+			date: data.date ?? '',
+			description: data.description ?? [],
+			draft: data.draft ?? false,
+		}
+	})
+	.filter(experience => !experience.draft) as ExperienceInterface[]
 ---
 
 <div class="l-jobs">

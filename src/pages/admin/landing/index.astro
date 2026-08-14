@@ -1,6 +1,8 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro'
+import Input from '../../../components/Form/Input.astro'
 import { getFirestore } from 'firebase-admin/firestore'
+import type { HeroContent, AboutContent } from '../../../types'
 
 const db = getFirestore()
 
@@ -12,6 +14,18 @@ const cvFileName: string = landingData.cvFileName ?? ''
 const cvUpdatedAt = landingData.cvUpdatedAt?.toDate
 	? landingData.cvUpdatedAt.toDate().toLocaleString('es-VE')
 	: ''
+
+const hero: HeroContent = {
+	badge: landingData.hero?.badge || 'Hola! yo soy',
+	title: landingData.hero?.title || 'Homer Moncayo',
+	subtitleHtml: landingData.hero?.subtitleHtml || 'Un competente <strong>Programador web FullStack</strong>, apacionado por el mundo del software y con más de 5 años de experiencia.',
+}
+
+const about: AboutContent = {
+	badge: landingData.about?.badge || 'Sobre mi',
+	title: landingData.about?.title || 'Un creador de software limpio, moderno y escalable para la web y móviles.',
+	bodyHtml: landingData.about?.bodyHtml || '<p>Soy un programador web FullStack especializado en el área del FrontEnd. Incursioné en el mundo de la programación a los 16 años de edad y quedé fascinado. Mi capacidad para entender y resolver temas complejos me ayudó a convertirme en un programador competente a día de hoy.</p><p>Soy un experto en la creación de interfaces de usuario intuitivas, adaptables a dispositivos y amigables al SEO. Me destaco por brindar servicios de calidad y poner esmero en mis desarrollos. Soy muy comprometido con mi trabajo y trato de dar un esfuerzo adicional en cada proyecto que emprendo.</p>',
+}
 ---
 
 <AdminLayout title="Landing">
@@ -39,12 +53,72 @@ const cvUpdatedAt = landingData.cvUpdatedAt?.toDate
 			<input type="file" id="cv-input" accept="application/pdf" hidden />
 		</div>
 
+		<div class="admin-card admin-card--module">
+			<div class="admin-card__header">
+				<h3>Hero</h3>
+				<p>Encabezado principal que se muestra al abrir la landing.</p>
+			</div>
+			<button type="button" class="button button--secondary-o button--sm" id="edit-hero-btn">Editar</button>
+		</div>
+
+		<div class="admin-card admin-card--module">
+			<div class="admin-card__header">
+				<h3>Sobre mí</h3>
+				<p>Texto de presentación de la sección "Sobre mí".</p>
+			</div>
+			<button type="button" class="button button--secondary-o button--sm" id="edit-about-btn">Editar</button>
+		</div>
+
 		<div class="admin-card admin-card--placeholder">
 			<h3>Más módulos próximamente</h3>
-			<p>Hero, Sobre mí, Experiencia y Stack se podrán editar aquí.</p>
+			<p>Experiencia y Stack se podrán editar aquí.</p>
+		</div>
+	</div>
+
+	<div class="admin-modal" id="hero-modal">
+		<div class="admin-modal__content">
+			<button type="button" class="admin-modal__close" id="close-hero-modal">
+				<i class="fa fa-times"></i>
+			</button>
+			<h2>Editar Hero</h2>
+			<form id="form-hero">
+				<Input type="text" id="hero-badge" label="Etiqueta" placeholder="Hola! yo soy" required />
+				<Input type="text" id="hero-title" label="Título" placeholder="Homer Moncayo" required />
+				<div class="editor-group">
+					<label class="editor-label">Subtítulo</label>
+					<div id="hero-subtitle-editor" class="wysiwyg"></div>
+				</div>
+				<div class="admin-modal__actions">
+					<button type="submit" class="button button--primary" id="submit-hero-btn">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="admin-modal" id="about-modal">
+		<div class="admin-modal__content">
+			<button type="button" class="admin-modal__close" id="close-about-modal">
+				<i class="fa fa-times"></i>
+			</button>
+			<h2>Editar Sobre mí</h2>
+			<form id="form-about">
+				<Input type="text" id="about-badge" label="Etiqueta" placeholder="Sobre mi" required />
+				<Input type="text" id="about-title" label="Título" placeholder="Un creador de software..." required />
+				<div class="editor-group">
+					<label class="editor-label">Texto (un párrafo por línea)</label>
+					<div id="about-body-editor" class="wysiwyg"></div>
+				</div>
+				<div class="admin-modal__actions">
+					<button type="submit" class="button button--primary" id="submit-about-btn">Guardar</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </AdminLayout>
+
+<script define:vars={{ hero, about }} is:inline>
+	window.__LANDING__ = { hero, about }
+</script>
 
 <style>
 	.admin-toolbar {
@@ -105,6 +179,42 @@ const cvUpdatedAt = landingData.cvUpdatedAt?.toDate
 		color: #9ca3af;
 	}
 
+	.admin-card--module {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	.editor-group {
+		margin-bottom: 1.5rem;
+	}
+
+	.editor-label {
+		display: block;
+		margin-bottom: .75rem;
+		font-size: 1.4rem;
+		font-weight: 500;
+		font-family: "Poppins", sans-serif;
+	}
+
+	.wysiwyg {
+		background-color: #fff;
+		font-size: 1.4rem;
+	}
+
+	.wysiwyg :global(.ql-toolbar) {
+		border-radius: 5px 5px 0 0;
+	}
+
+	.wysiwyg :global(.ql-container) {
+		border-radius: 0 0 5px 5px;
+		font-family: inherit;
+	}
+
+	.wysiwyg :global(.ql-editor) {
+		min-height: 120px;
+	}
+
 	.admin-card--placeholder {
 		display: flex;
 		flex-direction: column;
@@ -121,6 +231,51 @@ const cvUpdatedAt = landingData.cvUpdatedAt?.toDate
 		p {
 			font-size: 1.3rem;
 		}
+	}
+
+	.admin-modal {
+		display: none;
+		position: fixed;
+		inset: 0;
+		background-color: rgba(0, 0, 0, .5);
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+		z-index: 100;
+	}
+
+	.admin-modal.open {
+		display: flex;
+	}
+
+	.admin-modal__content {
+		position: relative;
+		width: min(600px, 100%);
+		max-height: 90vh;
+		overflow-y: auto;
+		background-color: #fff;
+		border-radius: 10px;
+		padding: 2.5rem;
+	}
+
+	.admin-modal__close {
+		position: absolute;
+		top: 1.5rem;
+		right: 1.5rem;
+		background: none;
+		border: none;
+		font-size: 1.8rem;
+		cursor: pointer;
+		color: #6b7280;
+	}
+
+	.admin-modal__actions {
+		margin-top: 1.5rem;
+	}
+
+	.admin-modal h2 {
+		font-size: 2rem;
+		margin-bottom: 2rem;
 	}
 </style>
 
@@ -183,6 +338,149 @@ const cvUpdatedAt = landingData.cvUpdatedAt?.toDate
 			$label.textContent = originalLabel
 			$input.disabled = false
 			$input.value = ''
+		}
+	})
+</script>
+
+<script>
+	import Quill from 'quill'
+	import 'quill/dist/quill.snow.css'
+	import { doc, setDoc } from 'firebase/firestore'
+	import { db } from '../../../config/firebase'
+	import Swal from 'sweetalert2'
+
+	const landing = (window as any).__LANDING__ ?? { hero: {}, about: {} }
+	const toolbarOptions = ['bold', 'italic', 'underline', 'link']
+
+	const openModal = (modal: HTMLElement) => {
+		modal.classList.add('open')
+		document.body.style.overflow = 'hidden'
+	}
+
+	const closeModal = (modal: HTMLElement) => {
+		modal.classList.remove('open')
+		document.body.style.overflow = ''
+	}
+
+	// --- Hero ---
+	const $heroModal = document.getElementById('hero-modal') as HTMLElement
+	const $editHeroBtn = document.getElementById('edit-hero-btn') as HTMLElement
+	const $closeHeroModal = document.getElementById('close-hero-modal') as HTMLElement
+	const $formHero = document.getElementById('form-hero') as HTMLFormElement
+	const $heroBadge = document.getElementById('hero-badge') as HTMLInputElement
+	const $heroTitle = document.getElementById('hero-title') as HTMLInputElement
+	const $submitHeroBtn = document.getElementById('submit-hero-btn') as HTMLButtonElement
+
+	const heroSubtitleQuill = new Quill('#hero-subtitle-editor', {
+		theme: 'snow',
+		modules: { toolbar: toolbarOptions },
+	})
+
+	$editHeroBtn.addEventListener('click', () => {
+		$heroBadge.value = landing.hero?.badge ?? ''
+		$heroTitle.value = landing.hero?.title ?? ''
+		heroSubtitleQuill.setText('')
+		heroSubtitleQuill.clipboard.dangerouslyPasteHTML(landing.hero?.subtitleHtml ?? '')
+		openModal($heroModal)
+	})
+
+	$closeHeroModal.addEventListener('click', () => closeModal($heroModal))
+	$heroModal.addEventListener('click', e => {
+		if (e.target === $heroModal) closeModal($heroModal)
+	})
+
+	$formHero.addEventListener('submit', async e => {
+		e.preventDefault()
+		$submitHeroBtn.disabled = true
+		$submitHeroBtn.textContent = 'Guardando...'
+
+		try {
+			const payload = {
+				hero: {
+					badge: $heroBadge.value,
+					title: $heroTitle.value,
+					subtitleHtml: heroSubtitleQuill.root.innerHTML,
+				},
+			}
+			await setDoc(doc(db, 'landing', 'content'), payload, { merge: true })
+			landing.hero = payload.hero
+			closeModal($heroModal)
+			await Swal.fire({
+				title: 'Hero actualizado.',
+				icon: 'success',
+				confirmButtonColor: 'var(--secondary)',
+			})
+			window.location.reload()
+		} catch (err) {
+			Swal.fire({
+				title: 'Error al guardar el hero.',
+				icon: 'error',
+				confirmButtonColor: 'var(--primary)',
+			})
+		} finally {
+			$submitHeroBtn.disabled = false
+			$submitHeroBtn.textContent = 'Guardar'
+		}
+	})
+
+	// --- Sobre mí ---
+	const $aboutModal = document.getElementById('about-modal') as HTMLElement
+	const $editAboutBtn = document.getElementById('edit-about-btn') as HTMLElement
+	const $closeAboutModal = document.getElementById('close-about-modal') as HTMLElement
+	const $formAbout = document.getElementById('form-about') as HTMLFormElement
+	const $aboutBadge = document.getElementById('about-badge') as HTMLInputElement
+	const $aboutTitle = document.getElementById('about-title') as HTMLInputElement
+	const $submitAboutBtn = document.getElementById('submit-about-btn') as HTMLButtonElement
+
+	const aboutBodyQuill = new Quill('#about-body-editor', {
+		theme: 'snow',
+		modules: { toolbar: toolbarOptions },
+	})
+
+	$editAboutBtn.addEventListener('click', () => {
+		$aboutBadge.value = landing.about?.badge ?? ''
+		$aboutTitle.value = landing.about?.title ?? ''
+		aboutBodyQuill.setText('')
+		aboutBodyQuill.clipboard.dangerouslyPasteHTML(landing.about?.bodyHtml ?? '')
+		openModal($aboutModal)
+	})
+
+	$closeAboutModal.addEventListener('click', () => closeModal($aboutModal))
+	$aboutModal.addEventListener('click', e => {
+		if (e.target === $aboutModal) closeModal($aboutModal)
+	})
+
+	$formAbout.addEventListener('submit', async e => {
+		e.preventDefault()
+		$submitAboutBtn.disabled = true
+		$submitAboutBtn.textContent = 'Guardando...'
+
+		try {
+			const payload = {
+				about: {
+					badge: $aboutBadge.value,
+					title: $aboutTitle.value,
+					bodyHtml: aboutBodyQuill.root.innerHTML,
+				},
+			}
+			await setDoc(doc(db, 'landing', 'content'), payload, { merge: true })
+			landing.about = payload.about
+			closeModal($aboutModal)
+			await Swal.fire({
+				title: 'Sección actualizada.',
+				icon: 'success',
+				confirmButtonColor: 'var(--secondary)',
+			})
+			window.location.reload()
+		} catch (err) {
+			Swal.fire({
+				title: 'Error al guardar la sección.',
+				icon: 'error',
+				confirmButtonColor: 'var(--primary)',
+			})
+		} finally {
+			$submitAboutBtn.disabled = false
+			$submitAboutBtn.textContent = 'Guardar'
 		}
 	})
 </script>

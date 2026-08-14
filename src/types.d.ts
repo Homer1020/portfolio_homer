@@ -14,6 +14,19 @@ export interface ExperienceInterface {
   date: string
   description: string[]
   order?: number
+  draft?: boolean
+}
+
+export interface HeroContent {
+  badge: string
+  title: string
+  subtitleHtml: string
+}
+
+export interface AboutContent {
+  badge: string
+  title: string
+  bodyHtml: string
 }
 
 export interface ProjectInterface {
@@ -25,4 +38,5 @@ export interface ProjectInterface {
   description?: string
   url?: string | null
   github?: string | null
+  draft?: boolean
 }

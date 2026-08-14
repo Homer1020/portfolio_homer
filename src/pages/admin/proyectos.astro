@@ -21,6 +21,7 @@ const proyectos = proyectosSnap.docs.map(doc => {
 		description: data.description ?? '',
 		url: data.url ?? null,
 		github: data.github ?? null,
+		draft: data.draft ?? false,
 	}
 }) as ProjectInterface[]
 ---
@@ -40,13 +41,14 @@ const proyectos = proyectosSnap.docs.map(doc => {
 					<th>Slug</th>
 					<th>Stacks</th>
 					<th>Links</th>
+					<th>Estado</th>
 					<th>Acciones</th>
 				</tr>
 			</thead>
 			<tbody id="projects-tbody">
 				{proyectos.length === 0 && (
 					<tr id="empty-row">
-						<td colspan="6" class="admin-table__empty-state">No hay proyectos aún.</td>
+						<td colspan="7" class="admin-table__empty-state">No hay proyectos aún.</td>
 					</tr>
 				)}
 				{proyectos.map(proyecto => (
@@ -71,7 +73,19 @@ const proyectos = proyectosSnap.docs.map(doc => {
 							</div>
 						</td>
 						<td>
+							<span class:list={['admin-badge', { 'admin-badge--success': !proyecto.draft }]}>
+								{proyecto.draft ? 'Borrador' : 'Público'}
+							</span>
+						</td>
+						<td>
 							<div class="admin-table__actions">
+								<button
+									type="button"
+									class="button button--sm button--secondary-o"
+									data-action="toggle"
+									data-slug={proyecto.slug}
+									data-draft={String(proyecto.draft)}
+								>{proyecto.draft ? 'Publicar' : 'Despublicar'}</button>
 								<button
 									type="button"
 									class="button button--sm button--primary-o"
@@ -84,6 +98,7 @@ const proyectos = proyectosSnap.docs.map(doc => {
 									data-description={proyecto.description}
 									data-url={proyecto.url ?? ''}
 									data-github={proyecto.github ?? ''}
+									data-draft={String(proyecto.draft)}
 								>Editar</button>
 								<button type="button" class="button button--sm button--dark-o" data-action="delete" data-slug={proyecto.slug}>Eliminar</button>
 							</div>
@@ -109,6 +124,11 @@ const proyectos = proyectosSnap.docs.map(doc => {
 				<Textarea id="description" label="Descripción" rows={4} placeholder="Descripción del proyecto..." />
 				<Input type="url" id="url" label="URL del sitio" placeholder="https://..." />
 				<Input type="url" id="github" label="URL de GitHub" placeholder="https://..." />
+
+				<div class="admin-checkbox">
+					<input type="checkbox" id="draft" name="draft" />
+					<label for="draft">Guardar como borrador (oculto del sitio)</label>
+				</div>
 
 				<div class="admin-modal__actions">
 					<button type="submit" class="button button--primary" id="submit-project-btn">Guardar</button>
@@ -212,6 +232,32 @@ const proyectos = proyectosSnap.docs.map(doc => {
 		gap: .8rem;
 	}
 
+	.admin-badge {
+		display: inline-block;
+		font-size: 1.2rem;
+		font-weight: 500;
+		padding: .3rem .8rem;
+		border-radius: 20px;
+		background-color: #f1f3f5;
+		color: #6b7280;
+	}
+
+	.admin-badge--success {
+		background-color: #dcfce7;
+		color: #15803d;
+	}
+
+	.admin-checkbox {
+		display: flex;
+		align-items: center;
+		gap: .8rem;
+		margin: 1.5rem 0;
+
+		label {
+			font-size: 1.4rem;
+		}
+	}
+
 	.admin-modal {
 		display: none;
 		position: fixed;
@@ -259,7 +305,7 @@ const proyectos = proyectosSnap.docs.map(doc => {
 </style>
 
 <script>
-	import { collection, doc, setDoc, deleteDoc } from 'firebase/firestore'
+	import { collection, doc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore'
 	import { db } from '../../config/firebase'
 	import Swal from 'sweetalert2'
 
@@ -269,6 +315,7 @@ const proyectos = proyectosSnap.docs.map(doc => {
 	const $closeModalBtn = document.getElementById('close-project-modal') as HTMLElement
 	const $form = document.getElementById('form-project') as HTMLFormElement
 	const $slugInput = document.getElementById('slug') as HTMLInputElement
+	const $draftInput = document.getElementById('draft') as HTMLInputElement
 	const $submitBtn = document.getElementById('submit-project-btn') as HTMLButtonElement
 	const $tbody = document.getElementById('projects-tbody') as HTMLElement
 
@@ -289,6 +336,7 @@ const proyectos = proyectosSnap.docs.map(doc => {
 		$modalTitle.textContent = 'Nuevo proyecto'
 		$form.reset()
 		$slugInput.readOnly = false
+		$draftInput.checked = true
 		openModal()
 	}
 
@@ -305,6 +353,7 @@ const proyectos = proyectosSnap.docs.map(doc => {
 		;(document.getElementById('url') as HTMLInputElement).value = button.dataset.url ?? ''
 		;(document.getElementById('github') as HTMLInputElement).value = button.dataset.github ?? ''
 		$slugInput.readOnly = true
+		$draftInput.checked = button.dataset.draft === 'true'
 		openModal()
 	}
 
@@ -323,6 +372,21 @@ const proyectos = proyectosSnap.docs.map(doc => {
 
 		if ($button.dataset.action === 'edit') {
 			openEditModal($button)
+		}
+
+		if ($button.dataset.action === 'toggle') {
+			const draft = $button.dataset.draft === 'true'
+
+			try {
+				await updateDoc(doc(db, 'projects', slug), { draft: !draft })
+				window.location.reload()
+			} catch (err) {
+				Swal.fire({
+					title: 'Error al actualizar el proyecto.',
+					icon: 'error',
+					confirmButtonColor: 'var(--primary)',
+				})
+			}
 		}
 
 		if ($button.dataset.action === 'delete') {
@@ -378,6 +442,7 @@ const proyectos = proyectosSnap.docs.map(doc => {
 				description: fd.get('description') ?? '',
 				url: fd.get('url') || null,
 				github: fd.get('github') || null,
+				draft: $draftInput.checked,
 			}, { merge: true })
 
 			closeModal()

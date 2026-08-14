@@ -19,6 +19,7 @@ const experiencias = experienciasSnap.docs.map(doc => {
 		date: data.date ?? '',
 		description: data.description ?? [],
 		order: data.order ?? 0,
+		draft: data.draft ?? false,
 	}
 }) as ExperienceInterface[]
 ---
@@ -38,13 +39,14 @@ const experiencias = experienciasSnap.docs.map(doc => {
 					<th>Empresa</th>
 					<th>Fecha</th>
 					<th>Descripción</th>
+					<th>Estado</th>
 					<th>Acciones</th>
 				</tr>
 			</thead>
 			<tbody id="experiences-tbody">
 				{experiencias.length === 0 && (
 					<tr id="empty-row">
-						<td colspan="6" class="admin-table__empty-state">No hay experiencias aún.</td>
+						<td colspan="7" class="admin-table__empty-state">No hay experiencias aún.</td>
 					</tr>
 				)}
 				{experiencias.map(experiencia => (
@@ -55,7 +57,19 @@ const experiencias = experienciasSnap.docs.map(doc => {
 						<td>{experiencia.date}</td>
 						<td class="admin-table__truncate" title={experiencia.description.join(' | ')}>{experiencia.description.join(' | ')}</td>
 						<td>
+							<span class:list={['admin-badge', { 'admin-badge--success': !experiencia.draft }]}>
+								{experiencia.draft ? 'Borrador' : 'Público'}
+							</span>
+						</td>
+						<td>
 							<div class="admin-table__actions">
+								<button
+									type="button"
+									class="button button--sm button--secondary-o"
+									data-action="toggle"
+									data-id={experiencia.id}
+									data-draft={String(experiencia.draft)}
+								>{experiencia.draft ? 'Publicar' : 'Despublicar'}</button>
 								<button
 									type="button"
 									class="button button--sm button--primary-o"
@@ -66,6 +80,7 @@ const experiencias = experienciasSnap.docs.map(doc => {
 									data-date={experiencia.date}
 									data-description={experiencia.description.join('\n')}
 									data-order={String(experiencia.order)}
+									data-draft={String(experiencia.draft)}
 								>Editar</button>
 								<button type="button" class="button button--sm button--dark-o" data-action="delete" data-id={experiencia.id}>Eliminar</button>
 							</div>
@@ -88,6 +103,11 @@ const experiencias = experienciasSnap.docs.map(doc => {
 				<Input type="text" id="date" label="Fecha" placeholder="2026 - Actualidad" required />
 				<Textarea id="description" label="Descripción (una viñeta por línea)" rows={4} placeholder="Colaboro en equipos multidisciplinarios..." required />
 				<Input type="number" id="order" label="Orden (menor = primero en la lista)" placeholder="0" required />
+
+				<div class="admin-checkbox">
+					<input type="checkbox" id="draft" name="draft" />
+					<label for="draft">Guardar como borrador (oculto del sitio)</label>
+				</div>
 
 				<div class="admin-modal__actions">
 					<button type="submit" class="button button--primary" id="submit-experience-btn">Guardar</button>
@@ -156,6 +176,32 @@ const experiencias = experienciasSnap.docs.map(doc => {
 		gap: .8rem;
 	}
 
+	.admin-badge {
+		display: inline-block;
+		font-size: 1.2rem;
+		font-weight: 500;
+		padding: .3rem .8rem;
+		border-radius: 20px;
+		background-color: #f1f3f5;
+		color: #6b7280;
+	}
+
+	.admin-badge--success {
+		background-color: #dcfce7;
+		color: #15803d;
+	}
+
+	.admin-checkbox {
+		display: flex;
+		align-items: center;
+		gap: .8rem;
+		margin: 1.5rem 0;
+
+		label {
+			font-size: 1.4rem;
+		}
+	}
+
 	.admin-modal {
 		display: none;
 		position: fixed;
@@ -213,6 +259,7 @@ const experiencias = experienciasSnap.docs.map(doc => {
 	const $closeModalBtn = document.getElementById('close-experience-modal') as HTMLElement
 	const $form = document.getElementById('form-experience') as HTMLFormElement
 	const $orderInput = document.getElementById('order') as HTMLInputElement
+	const $draftInput = document.getElementById('draft') as HTMLInputElement
 	const $submitBtn = document.getElementById('submit-experience-btn') as HTMLButtonElement
 	const $tbody = document.getElementById('experiences-tbody') as HTMLElement
 
@@ -235,6 +282,7 @@ const experiencias = experienciasSnap.docs.map(doc => {
 		$modalTitle.textContent = 'Nueva experiencia'
 		$form.reset()
 		$orderInput.value = '0'
+		$draftInput.checked = true
 		openModal()
 	}
 
@@ -248,6 +296,7 @@ const experiencias = experienciasSnap.docs.map(doc => {
 		;(document.getElementById('date') as HTMLInputElement).value = button.dataset.date ?? ''
 		;(document.getElementById('description') as HTMLTextAreaElement).value = button.dataset.description ?? ''
 		$orderInput.value = button.dataset.order ?? '0'
+		$draftInput.checked = button.dataset.draft === 'true'
 		openModal()
 	}
 
@@ -266,6 +315,21 @@ const experiencias = experienciasSnap.docs.map(doc => {
 
 		if ($button.dataset.action === 'edit') {
 			openEditModal($button)
+		}
+
+		if ($button.dataset.action === 'toggle') {
+			const draft = $button.dataset.draft === 'true'
+
+			try {
+				await updateDoc(doc(db, 'experiences', id), { draft: !draft })
+				window.location.reload()
+			} catch (err) {
+				Swal.fire({
+					title: 'Error al actualizar la experiencia.',
+					icon: 'error',
+					confirmButtonColor: 'var(--primary)',
+				})
+			}
 		}
 
 		if ($button.dataset.action === 'delete') {
@@ -314,6 +378,7 @@ const experiencias = experienciasSnap.docs.map(doc => {
 			date: fd.get('date'),
 			description,
 			order: Number(fd.get('order') ?? 0),
+			draft: $draftInput.checked,
 		}
 
 		$submitBtn.disabled = true

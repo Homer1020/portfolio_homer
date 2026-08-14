@@ -7,13 +7,15 @@ import type { ProjectInterface } from "../types"
 // 1. Obtener los proyectos directamente desde Firestore
 const querySnapshot = await getDocs(collection(db, "projects"))
 
-const projects = querySnapshot.docs.map(doc => {
-  const data = doc.data()
-  return {
-    ...data,
-    slug: doc.id, // Aseguramos el slug usando el ID del documento
-  }
-}) as ProjectInterface[]
+const projects = (querySnapshot.docs
+  .map(doc => {
+    const data = doc.data()
+    return {
+      ...data,
+      slug: doc.id, // Aseguramos el slug usando el ID del documento
+    }
+  }) as ProjectInterface[])
+  .filter(project => !project.draft)
 ---
 
 <div id="filter-portfolio">
