@@ -1,10 +1,20 @@
-export const generateProjectTemplate = ({title, image, description, stacks, github, url}) => {
+export const generateProjectTemplate = ({title, image, description, stacks, github, url, gallery}) => {
   return `
     <img class="banner" src="${image}" alt='${ title }'>
     <div>
       <h2 class="title">${title || ''}</h2>
       <h3 class="subtitle">Descripción:</h3>
-      <div>${description || '<p>Inserte contenido aqui</p>'}</div>
+      <div class="styled-content">${description || '<p>Inserte contenido aqui</p>'}</div>
+      ${gallery && gallery.length ? `
+        <h3 class="subtitle">Galería:</h3>
+        <div class="modal-gallery">
+          ${gallery.map(url => (
+            `<button type="button" class="modal-gallery__item${url === image ? ' active' : ''}" data-image="${url}">
+              <img src="${url}" alt="${title || ''}" loading="lazy">
+            </button>`
+          )).join('')}
+        </div>
+      ` : ''}
       <h3 class="subtitle">Tecnologías:</h3>
       <ul class="list">
         ${stacks.map(stack => (
@@ -43,6 +53,19 @@ const handleCloseModal = (e) => {
   }
 }
 
+const handleGalleryClick = (e) => {
+  const $item = e.target.closest('.modal-gallery__item')
+  if (!$item) return
+
+  const $modal = $item.closest('.modal')
+  const $banner = $modal?.querySelector('.banner')
+  if (!$banner || !$item.dataset.image) return
+
+  $banner.src = $item.dataset.image
+  $modal.querySelectorAll('.modal-gallery__item.active').forEach($el => $el.classList.remove('active'))
+  $item.classList.add('active')
+}
+
 export const showModal = (content, config = {}) => {
   const $modal = config?.modalSelector
     ? document.getElementById(config.modalSelector)
@@ -61,6 +84,7 @@ export const showModal = (content, config = {}) => {
   `.trim()
 
   $modal.addEventListener('click', handleCloseModal)
+  $modal.addEventListener('click', handleGalleryClick)
 
   document.body.style.overflow = 'hidden'
 

@@ -1,12 +1,32 @@
 ---
 import Layout from "../../layouts/Layout.astro"
-import data from '../../data/projects.json'
+import { db } from '../../config/firebase-server'
+import type { ProjectInterface } from '../../types'
 
-const {project:slug} = Astro.params
+const { project: slug } = Astro.params
 
-const project = data.find(p => p.slug === slug)
+const projectSnap = slug ? await db.collection('projects').doc(slug).get() : null
 
-if(!project) {
+if (!projectSnap?.exists) {
+  return Astro.redirect('/', 301)
+}
+
+const data = projectSnap.data() ?? {}
+
+const project: ProjectInterface = {
+  slug: projectSnap.id,
+  title: data.title ?? '',
+  mockup: data.mockup ?? '',
+  image: data.image ?? '',
+  stacks: data.stacks ?? [],
+  description: data.description ?? '',
+  gallery: data.gallery ?? [],
+  url: data.url ?? null,
+  github: data.github ?? null,
+  draft: data.draft ?? false,
+}
+
+if (project.draft) {
   return Astro.redirect('/', 301)
 }
 ---
@@ -14,17 +34,29 @@ if(!project) {
   title={ project.title }
 >
   <div class="container">
-    <img class="banner" src={project.image} alt='Gomishot'>
+    <img class="banner" src={project.image} alt={project.title}>
     <div>
       <h1 class="title">{project.title}</h1>
       <h3 class="subtitle">Descripción:</h3>
-      <div set:html={project.description || `
+      <div class="styled-content" set:html={project.description || `
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum itaque nam quam et? Inventore accusantium iure excepturi quam expedita enim natus blanditiis vero ea, harum quis cupiditate, voluptatem quia fugit.</p>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum itaque nam quam et? Inventore accusantium iure excepturi quam expedita enim natus blanditiis vero ea, harum quis cupiditate, voluptatem quia fugit.</p>
       `.trim()}></div>
+      {project.gallery && project.gallery.length > 0 && (
+        <>
+          <h3 class="subtitle">Galería:</h3>
+          <div class="gallery">
+            {project.gallery.map(url => (
+              <a href={url} target="_blank" rel="noopener">
+                <img src={url} alt={project.title} loading="lazy">
+              </a>
+            ))}
+          </div>
+        </>
+      )}
       <h3 class="subtitle">Tecnologías:</h3>
       <ul class="list">
-        {project.stacks.map(stack => (
+        {(project.stacks ?? []).map(stack => (
           <li>{stack}</li>
         ))}
       </ul>
@@ -104,6 +136,21 @@ if(!project) {
 
   .list li:not(:last-child) {
     margin-right: 1rem;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .gallery img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
   }
 
   .buttons {

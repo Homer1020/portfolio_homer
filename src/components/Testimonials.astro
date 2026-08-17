@@ -22,6 +22,10 @@
       testimonial={ testimonial.testimonial }
     />
   )) }
+
+  { testimonials.length === 0 && (
+    <p class="text-center">No hay testimonios disponibles.</p>
+  ) }
 </div>
 
 <style is:global>

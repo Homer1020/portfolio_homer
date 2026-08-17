@@ -1,7 +1,6 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro'
 import Input from '../../components/Form/Input.astro'
-import Textarea from '../../components/Form/Textarea.astro'
 
 import { getFirestore } from 'firebase-admin/firestore'
 import type { ProjectInterface } from '../../types'
@@ -19,6 +18,7 @@ const proyectos = proyectosSnap.docs.map(doc => {
 		image: data.image ?? '',
 		stacks: data.stacks ?? [],
 		description: data.description ?? '',
+		gallery: data.gallery ?? [],
 		url: data.url ?? null,
 		github: data.github ?? null,
 		draft: data.draft ?? false,
@@ -96,6 +96,7 @@ const proyectos = proyectosSnap.docs.map(doc => {
 									data-image={proyecto.image}
 									data-stacks={(proyecto.stacks ?? []).join(', ')}
 									data-description={proyecto.description}
+									data-gallery={JSON.stringify(proyecto.gallery ?? [])}
 									data-url={proyecto.url ?? ''}
 									data-github={proyecto.github ?? ''}
 									data-draft={String(proyecto.draft)}
@@ -118,10 +119,40 @@ const proyectos = proyectosSnap.docs.map(doc => {
 			<form id="form-project">
 				<Input type="text" id="title" label="Título" placeholder="Mi proyecto" required />
 				<Input type="text" id="slug" label="Slug (ID único)" placeholder="mi-proyecto" required />
-				<Input type="text" id="mockup" label="Imagen (miniatura del listado)" placeholder="https://..." required />
-				<Input type="text" id="image" label="Imagen (detalle del proyecto)" placeholder="https://..." required />
+				<div class="editor-group">
+					<label class="editor-label">Imagen (miniatura del listado)</label>
+					<div class="cover-upload">
+						<img id="mockup-preview" class="cover-upload__preview" alt="" />
+						<label class="button button--secondary-o button--sm" for="mockup-input" id="mockup-upload-label">Subir imagen</label>
+						<input type="file" id="mockup-input" accept="image/*" hidden />
+					</div>
+					<input type="hidden" id="mockup" name="mockup" />
+				</div>
+
+				<div class="editor-group">
+					<label class="editor-label">Imagen (detalle del proyecto)</label>
+					<div class="cover-upload">
+						<img id="image-preview" class="cover-upload__preview" alt="" />
+						<label class="button button--secondary-o button--sm" for="image-input" id="image-upload-label">Subir imagen</label>
+						<input type="file" id="image-input" accept="image/*" hidden />
+					</div>
+					<input type="hidden" id="image" name="image" />
+				</div>
+
 				<Input type="text" id="stacks" label="Stacks (separados por coma)" placeholder="Astro, SCSS, Firebase" />
-				<Textarea id="description" label="Descripción" rows={4} placeholder="Descripción del proyecto..." />
+
+				<div class="editor-group">
+					<label class="editor-label">Descripción</label>
+					<div id="description-editor" class="wysiwyg"></div>
+				</div>
+
+				<div class="editor-group">
+					<label class="editor-label">Galería de imágenes</label>
+					<div class="gallery-list" id="gallery-list"></div>
+					<label class="button button--secondary-o button--sm" for="gallery-input" id="gallery-upload-label">Agregar imágenes</label>
+					<input type="file" id="gallery-input" accept="image/*" multiple hidden />
+				</div>
+
 				<Input type="url" id="url" label="URL del sitio" placeholder="https://..." />
 				<Input type="url" id="github" label="URL de GitHub" placeholder="https://..." />
 
@@ -258,6 +289,100 @@ const proyectos = proyectosSnap.docs.map(doc => {
 		}
 	}
 
+	.editor-group {
+		margin-bottom: 1.5rem;
+	}
+
+	.editor-label {
+		display: block;
+		margin-bottom: .75rem;
+		font-size: 1.4rem;
+		font-weight: 500;
+		font-family: "Poppins", sans-serif;
+	}
+
+	.wysiwyg {
+		background-color: #fff;
+		font-size: 1.4rem;
+	}
+
+	.wysiwyg :global(.ql-toolbar) {
+		border-radius: 5px 5px 0 0;
+	}
+
+	.wysiwyg :global(.ql-container) {
+		border-radius: 0 0 5px 5px;
+		font-family: inherit;
+	}
+
+	.wysiwyg :global(.ql-editor) {
+		min-height: 120px;
+	}
+
+	.cover-upload {
+		display: flex;
+		align-items: center;
+		gap: 1.2rem;
+	}
+
+	.cover-upload__preview {
+		width: 96px;
+		height: 68px;
+		object-fit: cover;
+		border-radius: 6px;
+		border: 1px solid #e5e7eb;
+		background-color: #f1f3f5;
+		display: none;
+	}
+
+	.cover-upload__preview.has-image {
+		display: block;
+	}
+
+	.gallery-list {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+		gap: .8rem;
+		margin-bottom: 1rem;
+	}
+
+	.gallery-list :global(.gallery-item) {
+		position: relative;
+		aspect-ratio: 1;
+		border-radius: 6px;
+		overflow: hidden;
+	}
+
+	.gallery-list :global(.gallery-item img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border: 1px solid #e5e7eb;
+		display: block;
+	}
+
+	.gallery-list :global(.gallery-item__remove) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, .55);
+		color: #fff;
+		border: none;
+		font-size: 1.8rem;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 0;
+		transition: opacity .15s;
+	}
+
+	.gallery-list :global(.gallery-item:hover .gallery-item__remove),
+	.gallery-list :global(.gallery-item:focus-within .gallery-item__remove) {
+		opacity: 1;
+	}
+
 	.admin-modal {
 		display: none;
 		position: fixed;
@@ -308,6 +433,8 @@ const proyectos = proyectosSnap.docs.map(doc => {
 	import { collection, doc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore'
 	import { db } from '../../config/firebase'
 	import Swal from 'sweetalert2'
+	import Quill from 'quill'
+	import 'quill/dist/quill.snow.css'
 
 	const $modal = document.getElementById('project-modal') as HTMLElement
 	const $modalTitle = document.getElementById('project-modal-title') as HTMLElement
@@ -318,8 +445,153 @@ const proyectos = proyectosSnap.docs.map(doc => {
 	const $draftInput = document.getElementById('draft') as HTMLInputElement
 	const $submitBtn = document.getElementById('submit-project-btn') as HTMLButtonElement
 	const $tbody = document.getElementById('projects-tbody') as HTMLElement
+	const $galleryList = document.getElementById('gallery-list') as HTMLElement
+	const $galleryInput = document.getElementById('gallery-input') as HTMLInputElement
+	const $galleryUploadLabel = document.getElementById('gallery-upload-label') as HTMLElement
+	const $mockupInput = document.getElementById('mockup-input') as HTMLInputElement
+	const $mockupPreview = document.getElementById('mockup-preview') as HTMLImageElement
+	const $mockupUploadLabel = document.getElementById('mockup-upload-label') as HTMLElement
+	const $mockupField = document.getElementById('mockup') as HTMLInputElement
+	const $imageInput = document.getElementById('image-input') as HTMLInputElement
+	const $imagePreview = document.getElementById('image-preview') as HTMLImageElement
+	const $imageUploadLabel = document.getElementById('image-upload-label') as HTMLElement
+	const $imageField = document.getElementById('image') as HTMLInputElement
+
+	const descriptionQuill = new Quill('#description-editor', {
+		theme: 'snow',
+		modules: {
+			toolbar: [
+				[{ header: [3, 4, false] }],
+				['bold', 'italic', 'underline'],
+				[{ list: 'ordered' }, { list: 'bullet' }],
+				['link'],
+			],
+		},
+	})
 
 	let mode: 'create' | 'edit' = 'create'
+	let galleryUrls: string[] = []
+
+	const renderGallery = () => {
+		$galleryList.innerHTML = ''
+		galleryUrls.forEach((url, index) => {
+			const $item = document.createElement('div')
+			$item.className = 'gallery-item'
+			$item.innerHTML = `<img src="${url}" alt=""><button type="button" class="gallery-item__remove" data-index="${index}" aria-label="Eliminar"><i class="fa fa-trash"></i></button>`
+			$galleryList.appendChild($item)
+		})
+	}
+
+	$galleryList.addEventListener('click', e => {
+		const $btn = (e.target as HTMLElement).closest('button[data-index]') as HTMLButtonElement | null
+		if (!$btn) return
+		galleryUrls.splice(Number($btn.dataset.index), 1)
+		renderGallery()
+	})
+
+	$galleryInput.addEventListener('change', async () => {
+		const files = Array.from($galleryInput.files ?? [])
+		if (!files.length) return
+
+		$galleryInput.disabled = true
+		$galleryUploadLabel.textContent = 'Subiendo...'
+
+		for (const file of files) {
+			if (!file.type.startsWith('image/')) {
+				Swal.fire({ title: 'Archivo inválido', text: `"${file.name}" no es una imagen.`, icon: 'error', confirmButtonColor: 'var(--primary)' })
+				continue
+			}
+
+			if (file.size > 5e6) {
+				Swal.fire({ title: 'Archivo muy pesado', text: `"${file.name}" debe pesar 5mb o menos.`, icon: 'error', confirmButtonColor: 'var(--primary)' })
+				continue
+			}
+
+			try {
+				const fd = new FormData()
+				fd.append('file', file)
+				const res = await fetch('/api/admin/upload-project-image', { method: 'POST', body: fd })
+				if (!res.ok) throw new Error(await res.text())
+				const data = await res.json()
+				galleryUrls.push(data.url)
+				renderGallery()
+			} catch (err) {
+				Swal.fire({ title: 'Error al subir una imagen.', icon: 'error', confirmButtonColor: 'var(--primary)' })
+			}
+		}
+
+		$galleryInput.disabled = false
+		$galleryInput.value = ''
+		$galleryUploadLabel.textContent = 'Agregar imágenes'
+	})
+
+	const setCoverPreview = ($preview: HTMLImageElement, $label: HTMLElement, url: string) => {
+		$preview.src = url
+		$preview.classList.toggle('has-image', Boolean(url))
+		$label.textContent = url ? 'Reemplazar imagen' : 'Subir imagen'
+	}
+
+	const handleCoverUpload = async (
+		file: File,
+		field: 'mockup' | 'image',
+		$hiddenField: HTMLInputElement,
+		$preview: HTMLImageElement,
+		$label: HTMLElement,
+		$input: HTMLInputElement,
+	) => {
+		if (!$slugInput.value.trim()) {
+			Swal.fire({ title: 'Completa el slug primero', icon: 'error', confirmButtonColor: 'var(--primary)' })
+			$input.value = ''
+			return
+		}
+
+		if (!file.type.startsWith('image/')) {
+			Swal.fire({ title: 'Archivo inválido', text: 'Solo se permiten imágenes.', icon: 'error', confirmButtonColor: 'var(--primary)' })
+			$input.value = ''
+			return
+		}
+
+		if (file.size > 5e6) {
+			Swal.fire({ title: 'Archivo muy pesado', text: 'La imagen debe pesar 5mb o menos.', icon: 'error', confirmButtonColor: 'var(--primary)' })
+			$input.value = ''
+			return
+		}
+
+		const originalLabel = $label.textContent
+		$input.disabled = true
+		$label.textContent = 'Subiendo...'
+
+		try {
+			const fd = new FormData()
+			fd.append('file', file)
+			fd.append('slug', $slugInput.value.trim())
+			fd.append('field', field)
+
+			const res = await fetch('/api/admin/upload-project-image', { method: 'POST', body: fd })
+			if (!res.ok) throw new Error(await res.text())
+			const data = await res.json()
+			const bustedUrl = `${data.url}?updatedAt=${Date.now()}`
+
+			$hiddenField.value = bustedUrl
+			setCoverPreview($preview, $label, bustedUrl)
+		} catch (err) {
+			Swal.fire({ title: 'Error al subir la imagen.', icon: 'error', confirmButtonColor: 'var(--primary)' })
+			$label.textContent = originalLabel
+		} finally {
+			$input.disabled = false
+			$input.value = ''
+		}
+	}
+
+	$mockupInput.addEventListener('change', () => {
+		const file = $mockupInput.files?.[0]
+		if (file) handleCoverUpload(file, 'mockup', $mockupField, $mockupPreview, $mockupUploadLabel, $mockupInput)
+	})
+
+	$imageInput.addEventListener('change', () => {
+		const file = $imageInput.files?.[0]
+		if (file) handleCoverUpload(file, 'image', $imageField, $imagePreview, $imageUploadLabel, $imageInput)
+	})
 
 	const openModal = () => {
 		$modal.classList.add('open')
@@ -337,6 +609,11 @@ const proyectos = proyectosSnap.docs.map(doc => {
 		$form.reset()
 		$slugInput.readOnly = false
 		$draftInput.checked = true
+		descriptionQuill.setText('')
+		galleryUrls = []
+		renderGallery()
+		setCoverPreview($mockupPreview, $mockupUploadLabel, '')
+		setCoverPreview($imagePreview, $imageUploadLabel, '')
 		openModal()
 	}
 
@@ -348,8 +625,13 @@ const proyectos = proyectosSnap.docs.map(doc => {
 		;(document.getElementById('slug') as HTMLInputElement).value = button.dataset.slug ?? ''
 		;(document.getElementById('mockup') as HTMLInputElement).value = button.dataset.mockup ?? ''
 		;(document.getElementById('image') as HTMLInputElement).value = button.dataset.image ?? ''
+		setCoverPreview($mockupPreview, $mockupUploadLabel, button.dataset.mockup ?? '')
+		setCoverPreview($imagePreview, $imageUploadLabel, button.dataset.image ?? '')
 		;(document.getElementById('stacks') as HTMLInputElement).value = button.dataset.stacks ?? ''
-		;(document.getElementById('description') as HTMLTextAreaElement).value = button.dataset.description ?? ''
+		descriptionQuill.setText('')
+		descriptionQuill.clipboard.dangerouslyPasteHTML(button.dataset.description ?? '')
+		galleryUrls = JSON.parse(button.dataset.gallery ?? '[]')
+		renderGallery()
 		;(document.getElementById('url') as HTMLInputElement).value = button.dataset.url ?? ''
 		;(document.getElementById('github') as HTMLInputElement).value = button.dataset.github ?? ''
 		$slugInput.readOnly = true
@@ -430,6 +712,16 @@ const proyectos = proyectosSnap.docs.map(doc => {
 			.map(stack => stack.trim())
 			.filter(Boolean)
 
+		if (!fd.get('mockup') || !fd.get('image')) {
+			Swal.fire({
+				title: 'Faltan imágenes',
+				text: 'Sube la miniatura y la imagen de detalle antes de guardar.',
+				icon: 'error',
+				confirmButtonColor: 'var(--primary)',
+			})
+			return
+		}
+
 		$submitBtn.disabled = true
 		$submitBtn.textContent = 'Guardando...'
 
@@ -439,7 +731,8 @@ const proyectos = proyectosSnap.docs.map(doc => {
 				mockup: fd.get('mockup'),
 				image: fd.get('image'),
 				stacks,
-				description: fd.get('description') ?? '',
+				description: descriptionQuill.root.innerHTML,
+				gallery: galleryUrls,
 				url: fd.get('url') || null,
 				github: fd.get('github') || null,
 				draft: $draftInput.checked,

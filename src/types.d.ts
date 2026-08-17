@@ -36,6 +36,7 @@ export interface ProjectInterface {
   image: string
   stacks?: string[]
   description?: string
+  gallery?: string[]
   url?: string | null
   github?: string | null
   draft?: boolean
