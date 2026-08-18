@@ -1,16 +1,18 @@
-  .job {
-    border-left: 2px solid rgba(#000, .1);
+@use '../mixins/theme' as theme;
+
+.job {
+    @include theme.theme-property('border-left', 'articleLine');
     padding-left: 2rem;
     padding-top: 1rem;
     padding-bottom: 2rem;
     position: relative;
-    color: #111;
+    @include theme.theme-property('color', 'articleColor');
     margin-left: .5rem;
     &::after {
       content: '';
       position: absolute;
       top: 3.5rem;
-      left: 0;
+      left: -1px;
       transform: translate(-50%, -50%);
       width: 15px;
       height: 15px;
@@ -42,7 +44,7 @@
     &__date {
       margin: 0;
       font-weight: 500;
-      color: #333;
+      @include theme.theme-property('color', 'legendText')
     }
     &__business,
     &__role {

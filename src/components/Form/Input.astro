@@ -1,6 +1,4 @@
 ---
-import styles from './input.module.css'
-
 interface Props extends astroHTML.JSX.InputHTMLAttributes {
   label?: string,
   errors?: string[]
@@ -9,13 +7,13 @@ interface Props extends astroHTML.JSX.InputHTMLAttributes {
 const {errors, id, type = 'text', label = '', placeholder = '', ...rest} = Astro.props
 ---
 
-<div class={styles.group}>
-  <label class={styles.label} for={id}>{label}</label>
+<div class="group">
+  <label class="label" for={id}>{label}</label>
   <input
     type={type}
     class:list={[
-      styles.input,
-      {[styles.invalid]: errors?.length}
+      'input',
+      {'invalid': errors?.length}
     ]}
     id={id}
     name={id}
@@ -23,6 +21,6 @@ const {errors, id, type = 'text', label = '', placeholder = '', ...rest} = Astro
     {...rest}
   >
   {errors?.map(error => (
-    <small class={styles.invalidFeedback}>{error}</small>
+    <small class="invalidFeedback">{error}</small>
   ))}
 </div>

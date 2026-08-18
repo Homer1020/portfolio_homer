@@ -1,0 +1,30 @@
+
+@use '../config' as vars;
+
+@mixin theme-property($property, $key) {
+  #{$property}: map-get(map-get(vars.$themes, light), $key);
+
+  @media (prefers-color-scheme: dark) {
+    @at-root html:not(.light) & {
+      #{$property}: map-get(map-get(vars.$themes, dark), $key);
+    }
+  }
+
+  @at-root html.dark & {
+    #{$property}: map-get(map-get(vars.$themes, dark), $key);
+  }
+}
+
+@mixin themed-property($property, $whiteValue, $darkValue) {
+  #{$property}: $whiteValue;
+
+  @media (prefers-color-scheme: dark) {
+    @at-root html:not(.light) & {
+      #{$property}: $darkValue;
+    }
+  }
+
+  @at-root html.dark & {
+    #{$property}: $darkValue;
+  }
+}

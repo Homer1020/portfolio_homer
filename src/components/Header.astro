@@ -15,13 +15,16 @@
       <a href="/#portafolio" class="nav__link">Proyectos</a>
       <a href="/#testimonios" class="nav__link">Testimonios</a>
       <a href="/#contacto" class="nav__link">Contacto</a>
-      <a href="https://www.workana.com/freelancer/592e65dcdeb09899960ddca5f588ee35" target="_blank" class="button button--primary-o">
+      <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+        <i class="fas fa-moon"></i>
+      </button>
+      <!-- <a href="https://www.workana.com/freelancer/592e65dcdeb09899960ddca5f588ee35" target="_blank" class="button button--primary-o">
         Contrátame
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
         </svg>
         
-      </a>
+      </a> -->
     </nav>
   </div>
 </header>
@@ -67,4 +70,42 @@
   if($burger) $burger.addEventListener('click', handleToggleNavbar)
   if($header) window.addEventListener('scroll', handleToggleWhiteHeader)
   if($navbar && isMovil) $navbar.addEventListener('click', handleClickOnNavbar)
+
+  // theme toggle
+  const $themeToggle = document.getElementById('theme-toggle');
+  const $themeIcon = $themeToggle?.querySelector('i');
+
+  // 1. Obtener el tema actual analizando las clases en <html> o la preferencia del sistema
+  function getCurrentTheme() {
+    if (document.documentElement.classList.contains('dark')) return 'dark';
+    if (document.documentElement.classList.contains('light')) return 'light';
+
+    // Si no hay clase explicita, consultar al sistema operativo
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function updateThemeIcon(theme: string) {
+    if(!$themeIcon) return;
+    $themeIcon.classList.toggle('fa-moon', theme === 'light');
+    $themeIcon.classList.toggle('fa-sun', theme === 'dark');
+  }
+
+  updateThemeIcon(getCurrentTheme());
+
+  // 2. Evento del botón
+  if($themeToggle) {
+     $themeToggle.addEventListener('click', () => {
+      const currentTheme = getCurrentTheme();
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      // Quitar ambas clases y aplicar la nueva
+      document.documentElement.classList.remove('dark', 'light');
+      document.documentElement.classList.add(newTheme);
+
+      updateThemeIcon(newTheme);
+
+      // Guardar en localStorage
+      localStorage.setItem('theme', newTheme);
+    });
+  }
 </script>

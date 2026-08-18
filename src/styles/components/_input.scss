@@ -1,7 +1,11 @@
+@use '../mixins/theme' as theme;
+
 .input {
   padding: 1.3rem;
   font-size: 1.4rem;
-  border: 1px solid #ddd;
+  @include theme.theme-property('border', 'inputBorder');
+  @include theme.theme-property('background-color', 'sectionBg');
+  @include theme.theme-property('color', 'articleText');
   width: 100%;
   border-radius: 5px;
   font-weight: normal;
@@ -9,7 +13,7 @@
 }
 
 .invalid {
-  border-color: red;
+  border-color: red !important;
 }
 
 textarea.input {
@@ -22,7 +26,7 @@ textarea.input {
 
 .input:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--primary) !important;
 }
 
 .group {

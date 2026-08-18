@@ -2,6 +2,43 @@ $primary: #0F81C7;
 $secondary: lightseagreen;
 $bodyBg: #f9f9f9;
 $bodyText: #555;
+$darkBodyBg: #1a1a1a;
+$darkBodyText: #f9f9f9;
+
+$themes:(
+  light: (
+    primary: $primary,
+    secondary: $secondary,
+    bodyBg: $bodyBg,
+    bodyText: $bodyText,
+    headings: #000,
+    navLink: #555,
+    sectionBg: #ffffff,
+    fixedHeaderBg: #ffffff,
+    articleText: #111,
+    legendText: #333,
+    articleLine: 2px solid rgba(#000, .1),
+    contactBg: #f6f6f6,
+    figureBorder: 1px solid #eee,
+    inputBorder: 1px solid #ddd
+  ),
+  dark: (
+    primary: $primary,
+    secondary: $secondary,
+    bodyBg: $darkBodyBg,
+    bodyText: $darkBodyText,
+    headings: #fff,
+    navLink: #f9f9f9,
+    sectionBg: #000000,    
+    fixedHeaderBg: #000000,
+    articleText: #f5f5f5,
+    legendText: #959595,
+    articleLine: 2px solid rgba(#fff, .1),
+    contactBg: #141414,
+    figureBorder: 1px solid rgba(#fff, .08),
+    inputBorder: 1px solid rgba(#fff, .15)
+  )
+);
 
 :root {
   --primary: #{$primary};

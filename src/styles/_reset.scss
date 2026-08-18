@@ -1,3 +1,5 @@
+@use 'mixins/theme' as theme;
+
 *,
 *::before,
 *::after {
@@ -14,8 +16,11 @@ body {
   font-size: 1.6rem;
   font-family: "Open Sans", sans-serif;
   font-optical-sizing: auto;
-  color: $bodyText;
-  background-color: $bodyBg;
+}
+
+body {
+  @include theme.theme-property('background-color', 'bodyBg');
+  @include theme.theme-property('color', 'bodyText');
 }
 
 h1,
@@ -25,7 +30,7 @@ h4,
 h5,
 h6,
 strong {
-  color: #000;
+  @include theme.theme-property('color', 'headings');
   font-family: "Poppins", sans-serif;
   font-weight: 600;
 }
@@ -42,10 +47,10 @@ img {
 
 figure {
   text-align: center;
-  background-color: #fff;
+  @include theme.theme-property('background-color', 'sectionBg');
   padding: 3rem 2rem;
   border-radius: 10px;
-  border: 1px solid #eee;
+  @include theme.theme-property('border', 'figureBorder');
   img {
     display: block;
     margin-right: auto;
@@ -55,7 +60,7 @@ figure {
 
   figcaption {
     font-weight: 600;
-    color: #000;
+    @include theme.theme-property('color', 'headings');
     font-family: "Poppins", sans-serif;
   }
 }

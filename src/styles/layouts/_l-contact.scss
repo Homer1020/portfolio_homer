@@ -1,3 +1,5 @@
+@use '../mixins/theme' as theme;
+
 @media screen and (min-width: 992px) {
   .cols {
     display: flex;
@@ -5,5 +7,43 @@
   }
   .cols > * {
     width: 50%;
+  }
+}
+
+.section-contact {
+  margin-top: 3.5rem;
+}
+
+.image-section img {
+  display: none;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  background-image: url(/assets/img/astronauta.jpg);
+  border-radius: 10px;
+  background-position: center;
+}
+
+@media (min-width: 1200px) {
+  .section-contact {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .contact-section {
+    @include theme.theme-property('background-color', 'contactBg');
+    border-radius: 10px;
+    width: 60%;
+    padding: 4rem;
+  }
+
+  .image-section {
+    width: 40%;
+  }
+
+  .image-section img {
+    display: block;
   }
 }

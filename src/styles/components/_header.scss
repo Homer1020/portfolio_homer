@@ -1,3 +1,5 @@
+@use '../mixins/theme' as theme;
+
 .header {
   padding: 1.5rem 0;
   position: fixed;
@@ -5,18 +7,18 @@
   top: 0;
   left: 0;
   z-index: 100;
-  background-color: #fff;
+  @include theme.theme-property('background-color', 'fixedHeaderBg');
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, .05);
 
   @media (min-width: 992px) {
-    background-color: transparent;
+    @include theme.themed-property('background-color', transparent, transparent);
     box-shadow: 0 0 0 0 rgba(0, 0, 0, .05);
   }
 
   transition: box-shadow .2s, background-color .2s;
 
   &--white {
-    background-color: #fff;
+    @include theme.theme-property('background-color', 'fixedHeaderBg');
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, .05);
   }
 
