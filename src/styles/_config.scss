@@ -20,7 +20,8 @@ $themes:(
     articleLine: 2px solid rgba(#000, .1),
     contactBg: #f6f6f6,
     figureBorder: 1px solid #eee,
-    inputBorder: 1px solid #ddd
+    inputBorder: 1px solid #ddd,
+    modalBg: rgba(0, 0, 0, .7)
   ),
   dark: (
     primary: $primary,
@@ -36,7 +37,8 @@ $themes:(
     articleLine: 2px solid rgba(#fff, .1),
     contactBg: #141414,
     figureBorder: 1px solid rgba(#fff, .08),
-    inputBorder: 1px solid rgba(#fff, .15)
+    inputBorder: 1px solid rgba(#fff, .15),
+    modalBg: rgba(0, 0, 0, .85)
   )
 );
 

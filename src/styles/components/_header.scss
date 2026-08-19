@@ -25,7 +25,7 @@
   > .container {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     flex-wrap: wrap;
   }
 
@@ -35,5 +35,14 @@
       display: inherit;
       height: 40px;
     }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 16px;
+    flex: 1 1 auto;
   }
 }

@@ -1,3 +1,5 @@
+@use '../mixins/theme' as theme;
+
 @keyframes modalShow {
   from {
     opacity: 0;
@@ -17,7 +19,7 @@
 }
 
 .modal {
-  background-color: rgba(0, 0, 0, .7);
+  @include theme.theme-property('background-color', 'modalBg');
   animation: modalShow .4s ease forwards;
   position: fixed;
   top: 0;
@@ -67,7 +69,7 @@
   &__content {
     position: relative;
     animation: modalContentShow .4s cubic-bezier(.22,.68,0,1.71) forwards;
-    background-color: #fff;
+    @include theme.theme-property('background-color', 'sectionBg');
     border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
     width: min(1200px, 95%);
