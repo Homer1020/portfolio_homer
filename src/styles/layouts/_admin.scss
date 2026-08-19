@@ -1,7 +1,9 @@
+@use '../mixins/theme' as theme;
+
 .admin {
   min-height: 100vh;
   display: flex;
-  background-color: #f1f3f5;
+  @include theme.theme-property('background-color', 'bodyBg');
 }
 
 .admin-sidebar {
@@ -87,8 +89,8 @@
   align-items: center;
   gap: 1rem;
   padding: 1.5rem 2.5rem;
-  background-color: #fff;
-  border-bottom: 1px solid #e5e7eb;
+  @include theme.theme-property('background-color', 'sectionBg');
+  @include theme.theme-property('border-bottom', 'figureBorder');
 
   .burger {
     font-size: 30px;
@@ -97,6 +99,10 @@
   h1 {
     font-size: 2rem;
   }
+
+  .theme-switch {
+    margin-left: auto;
+  }
 }
 
 .admin-content {
@@ -104,8 +110,8 @@
 }
 
 .admin-card {
-  background-color: #fff;
-  border: 1px solid #e5e7eb;
+  @include theme.theme-property('background-color', 'sectionBg');
+  @include theme.theme-property('border', 'figureBorder');
   border-radius: 10px;
   padding: 2rem;
 }
@@ -116,12 +122,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f1f3f5;
+  @include theme.theme-property('background-color', 'bodyBg');
 
   &__card {
     width: 100%;
     max-width: 380px;
-    background-color: #fff;
+    @include theme.theme-property('background-color', 'sectionBg');
     border-radius: 10px;
     padding: 2.5rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, .06);
@@ -132,8 +138,15 @@
     font-family: "Poppins", sans-serif;
     font-weight: 600;
     font-size: 1.8rem;
-    color: #000;
+    @include theme.theme-property('color', 'headings');
     margin-bottom: 2rem;
     display: block;
   }
+}
+
+.admin-auth-toggle {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 10;
 }

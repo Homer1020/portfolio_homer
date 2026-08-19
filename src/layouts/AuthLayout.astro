@@ -1,5 +1,6 @@
 ---
 import '../styles/admin.scss'
+import ThemeToggle from '../components/ThemeToggle.astro'
 
 interface Props {
 	title: string;
@@ -11,6 +12,15 @@ const { title } = Astro.props;
 <!doctype html>
 <html lang="es">
 	<head>
+		<script is:inline>
+			(function () {
+				var theme = localStorage.getItem('theme');
+				if (theme !== 'dark' && theme !== 'light') {
+					theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				}
+				document.documentElement.classList.add(theme);
+			})();
+		</script>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="generator" content={Astro.generator} />
@@ -26,6 +36,9 @@ const { title } = Astro.props;
 		<title>{title} · Admin</title>
 	</head>
 	<body>
+		<div class="admin-auth-toggle">
+			<ThemeToggle />
+		</div>
 		<slot />
 	</body>
 </html>

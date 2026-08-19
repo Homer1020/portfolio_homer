@@ -82,7 +82,9 @@ const visitas = visitasSnapshot.docs.map(doc => {
 	</div>
 </AdminLayout>
 
-<style>
+<style lang="scss">
+	@use '../../styles/mixins/theme' as theme;
+
 	.admin-stats {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -92,7 +94,7 @@ const visitas = visitasSnapshot.docs.map(doc => {
 	.admin-card__label {
 		display: block;
 		font-size: 1.3rem;
-		color: #6b7280;
+		@include theme.theme-property('color', 'legendText');
 		margin-bottom: .5rem;
 	}
 
@@ -112,8 +114,8 @@ const visitas = visitasSnapshot.docs.map(doc => {
 	}
 
 	.admin-table-wrapper {
-		background-color: #fff;
-		border: 1px solid #e5e7eb;
+		@include theme.theme-property('background-color', 'sectionBg');
+		@include theme.theme-property('border', 'figureBorder');
 		border-radius: 10px;
 		overflow-x: auto;
 	}
@@ -130,14 +132,14 @@ const visitas = visitasSnapshot.docs.map(doc => {
 		}
 
 		thead th {
-			background-color: #f8f9fa;
-			color: #6b7280;
+			@include theme.theme-property('background-color', 'contactBg');
+			@include theme.theme-property('color', 'legendText');
 			font-weight: 600;
-			border-bottom: 1px solid #e5e7eb;
+			@include theme.theme-property('border-bottom', 'figureBorder');
 		}
 
 		tbody tr:not(:last-child) td {
-			border-bottom: 1px solid #f1f3f5;
+			@include theme.theme-property('border-bottom', 'figureBorder');
 		}
 	}
 
@@ -149,7 +151,7 @@ const visitas = visitasSnapshot.docs.map(doc => {
 
 	.admin-table__empty-state {
 		text-align: center;
-		color: #9ca3af;
+		@include theme.theme-property('color', 'legendText');
 		padding: 3rem;
 	}
 </style>

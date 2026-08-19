@@ -1,5 +1,6 @@
 ---
 import '../styles/admin.scss'
+import ThemeToggle from '../components/ThemeToggle.astro'
 
 interface Props {
 	title: string;
@@ -21,6 +22,15 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/admin';
 <!doctype html>
 <html lang="es">
 	<head>
+		<script is:inline>
+			(function () {
+				var theme = localStorage.getItem('theme');
+				if (theme !== 'dark' && theme !== 'light') {
+					theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				}
+				document.documentElement.classList.add(theme);
+			})();
+		</script>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="generator" content={Astro.generator} />
@@ -58,6 +68,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/admin';
 						<span></span>
 					</button>
 					<h1>Dashboard</h1>
+					<ThemeToggle />
 				</header>
 
 				<div class="admin-content">

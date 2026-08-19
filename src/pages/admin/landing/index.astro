@@ -120,7 +120,9 @@ const about: AboutContent = {
 	window.__LANDING__ = { hero, about }
 </script>
 
-<style>
+<style lang="scss">
+	@use '../../../styles/mixins/theme' as theme;
+
 	.admin-toolbar {
 		display: flex;
 		align-items: center;
@@ -139,8 +141,8 @@ const about: AboutContent = {
 	}
 
 	.admin-card {
-		background-color: #fff;
-		border: 1px solid #e5e7eb;
+		@include theme.theme-property('background-color', 'sectionBg');
+		@include theme.theme-property('border', 'figureBorder');
 		border-radius: 10px;
 		padding: 2rem;
 	}
@@ -152,7 +154,7 @@ const about: AboutContent = {
 
 	.admin-card__header p {
 		font-size: 1.3rem;
-		color: #6b7280;
+		@include theme.theme-property('color', 'legendText');
 		margin-bottom: 1.5rem;
 	}
 
@@ -170,13 +172,13 @@ const about: AboutContent = {
 		}
 
 		small {
-			color: #9ca3af;
+			@include theme.theme-property('color', 'legendText');
 			font-size: 1.2rem;
 		}
 	}
 
 	.cv-status__empty {
-		color: #9ca3af;
+		@include theme.theme-property('color', 'legendText');
 	}
 
 	.admin-card--module {
@@ -198,33 +200,57 @@ const about: AboutContent = {
 	}
 
 	.wysiwyg {
-		background-color: #fff;
+		@include theme.theme-property('background-color', 'sectionBg');
 		font-size: 1.4rem;
 	}
 
 	.wysiwyg :global(.ql-toolbar) {
 		border-radius: 5px 5px 0 0;
+		@include theme.theme-property('border', 'figureBorder');
 	}
 
 	.wysiwyg :global(.ql-container) {
 		border-radius: 0 0 5px 5px;
 		font-family: inherit;
+		@include theme.theme-property('border', 'figureBorder');
+		@include theme.theme-property('color', 'articleText');
 	}
 
 	.wysiwyg :global(.ql-editor) {
 		min-height: 120px;
 	}
 
+	.wysiwyg :global(.ql-editor.ql-blank::before) {
+		@include theme.theme-property('color', 'legendText');
+	}
+
+	.wysiwyg :global(.ql-stroke) {
+		@include theme.theme-property('stroke', 'legendText');
+	}
+
+	.wysiwyg :global(.ql-fill) {
+		@include theme.theme-property('fill', 'legendText');
+	}
+
+	.wysiwyg :global(.ql-picker) {
+		@include theme.theme-property('color', 'legendText');
+	}
+
+	.wysiwyg :global(.ql-picker-options) {
+		@include theme.theme-property('background-color', 'sectionBg');
+		@include theme.theme-property('border', 'figureBorder');
+	}
+
 	.admin-card--placeholder {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		color: #9ca3af;
+		@include theme.theme-property('color', 'legendText');
 		border-style: dashed;
 
 		h3 {
 			font-size: 1.6rem;
-			color: #6b7280;
+			@include theme.theme-property('color', 'legendText');
 			margin-bottom: .3rem;
 		}
 
@@ -237,7 +263,7 @@ const about: AboutContent = {
 		display: none;
 		position: fixed;
 		inset: 0;
-		background-color: rgba(0, 0, 0, .5);
+		@include theme.theme-property('background-color', 'modalBg');
 		align-items: center;
 		justify-content: center;
 		padding: 2rem;
@@ -253,7 +279,7 @@ const about: AboutContent = {
 		width: min(600px, 100%);
 		max-height: 90vh;
 		overflow-y: auto;
-		background-color: #fff;
+		@include theme.theme-property('background-color', 'sectionBg');
 		border-radius: 10px;
 		padding: 2.5rem;
 	}
@@ -266,7 +292,7 @@ const about: AboutContent = {
 		border: none;
 		font-size: 1.8rem;
 		cursor: pointer;
-		color: #6b7280;
+		@include theme.theme-property('color', 'legendText');
 	}
 
 	.admin-modal__actions {

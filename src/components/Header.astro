@@ -1,3 +1,7 @@
+---
+import ThemeToggle from './ThemeToggle.astro'
+---
+
 <header class="header" id="header">
   <div class="container">
     <a href="/" class="brand">
@@ -5,15 +9,7 @@
     </a>
 
     <div class="header__actions">
-      <label class="theme-switch" for="theme-toggle" aria-label="Cambiar tema">
-        <input type="checkbox" id="theme-toggle" class="theme-switch__input">
-        <span class="theme-switch__track">
-          <span class="theme-switch__thumb">
-            <i class="fas fa-sun theme-switch__icon theme-switch__icon--sun"></i>
-            <i class="fas fa-moon theme-switch__icon theme-switch__icon--moon"></i>
-          </span>
-        </span>
-      </label>
+      <ThemeToggle />
 
       <button class="burger" id="burger" aria-expanded="false">
         <span></span>
@@ -79,37 +75,4 @@
   if($burger) $burger.addEventListener('click', handleToggleNavbar)
   if($header) window.addEventListener('scroll', handleToggleWhiteHeader)
   if($navbar && isMovil) $navbar.addEventListener('click', handleClickOnNavbar)
-
-  // theme toggle
-  const $themeToggle = document.getElementById('theme-toggle') as HTMLInputElement | null;
-
-  // 1. Obtener el tema actual analizando las clases en <html> o la preferencia del sistema
-  function getCurrentTheme() {
-    if (document.documentElement.classList.contains('dark')) return 'dark';
-    if (document.documentElement.classList.contains('light')) return 'light';
-
-    // Si no hay clase explicita, consultar al sistema operativo
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-
-  function syncThemeToggle(theme: string) {
-    if(!$themeToggle) return;
-    $themeToggle.checked = theme === 'dark';
-  }
-
-  syncThemeToggle(getCurrentTheme());
-
-  // 2. Evento del switch
-  if($themeToggle) {
-    $themeToggle.addEventListener('change', () => {
-      const newTheme = $themeToggle.checked ? 'dark' : 'light';
-
-      // Quitar ambas clases y aplicar la nueva
-      document.documentElement.classList.remove('dark', 'light');
-      document.documentElement.classList.add(newTheme);
-
-      // Guardar en localStorage
-      localStorage.setItem('theme', newTheme);
-    });
-  }
 </script>

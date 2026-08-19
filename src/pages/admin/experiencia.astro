@@ -117,7 +117,9 @@ const experiencias = experienciasSnap.docs.map(doc => {
 	</div>
 </AdminLayout>
 
-<style>
+<style lang="scss">
+	@use '../../styles/mixins/theme' as theme;
+
 	.admin-toolbar {
 		display: flex;
 		align-items: center;
@@ -130,8 +132,8 @@ const experiencias = experienciasSnap.docs.map(doc => {
 	}
 
 	.admin-table-wrapper {
-		background-color: #fff;
-		border: 1px solid #e5e7eb;
+		@include theme.theme-property('background-color', 'sectionBg');
+		@include theme.theme-property('border', 'figureBorder');
 		border-radius: 10px;
 		overflow-x: auto;
 	}
@@ -148,14 +150,14 @@ const experiencias = experienciasSnap.docs.map(doc => {
 		}
 
 		thead th {
-			background-color: #f8f9fa;
-			color: #6b7280;
+			@include theme.theme-property('background-color', 'contactBg');
+			@include theme.theme-property('color', 'legendText');
 			font-weight: 600;
-			border-bottom: 1px solid #e5e7eb;
+			@include theme.theme-property('border-bottom', 'figureBorder');
 		}
 
 		tbody tr:not(:last-child) td {
-			border-bottom: 1px solid #f1f3f5;
+			@include theme.theme-property('border-bottom', 'figureBorder');
 		}
 	}
 
@@ -167,7 +169,7 @@ const experiencias = experienciasSnap.docs.map(doc => {
 
 	.admin-table__empty-state {
 		text-align: center;
-		color: #9ca3af;
+		@include theme.theme-property('color', 'legendText');
 		padding: 3rem;
 	}
 
@@ -182,8 +184,8 @@ const experiencias = experienciasSnap.docs.map(doc => {
 		font-weight: 500;
 		padding: .3rem .8rem;
 		border-radius: 20px;
-		background-color: #f1f3f5;
-		color: #6b7280;
+		@include theme.theme-property('background-color', 'contactBg');
+		@include theme.theme-property('color', 'legendText');
 	}
 
 	.admin-badge--success {
@@ -206,7 +208,7 @@ const experiencias = experienciasSnap.docs.map(doc => {
 		display: none;
 		position: fixed;
 		inset: 0;
-		background-color: rgba(0, 0, 0, .5);
+		@include theme.theme-property('background-color', 'modalBg');
 		align-items: center;
 		justify-content: center;
 		padding: 2rem;
@@ -222,7 +224,7 @@ const experiencias = experienciasSnap.docs.map(doc => {
 		width: min(600px, 100%);
 		max-height: 90vh;
 		overflow-y: auto;
-		background-color: #fff;
+		@include theme.theme-property('background-color', 'sectionBg');
 		border-radius: 10px;
 		padding: 2.5rem;
 	}
@@ -235,7 +237,7 @@ const experiencias = experienciasSnap.docs.map(doc => {
 		border: none;
 		font-size: 1.8rem;
 		cursor: pointer;
-		color: #6b7280;
+		@include theme.theme-property('color', 'legendText');
 	}
 
 	.admin-modal__actions {
