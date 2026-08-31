@@ -25,4 +25,32 @@
       max-width: 90px;
     }
   }
+
+  &__img--dark {
+    display: none;
+
+    @media (prefers-color-scheme: dark) {
+      @at-root html:not(.light) & {
+        display: block;
+      }
+    }
+
+    @at-root html.dark & {
+      display: block;
+    }
+  }
+
+  &__img--light {
+    display: block;
+
+    @media (prefers-color-scheme: dark) {
+      @at-root html:not(.light) & {
+        display: none;
+      }
+    }
+
+    @at-root html.dark & {
+      display: none;
+    }
+  }
 }

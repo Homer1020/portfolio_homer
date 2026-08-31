@@ -6,6 +6,7 @@ const techs = [
   },
   {
     path: '/assets/img/astro-icon.svg',
+    darkPath: '/assets/img/astro-icon-white.svg',
     tech: 'Astro'
   },
   {
@@ -34,6 +35,7 @@ const techs = [
   },
   {
     path: '/assets/img/wordpress-icon.svg',
+    darkPath: '/assets/img/wordpress-icon-white.svg',
     tech: 'Wordpress'
   },
   {
@@ -52,10 +54,19 @@ const techs = [
 ---
 <ul class="l-stack">
   {
-    techs.map(({ path, tech }) => (
+    techs.map(({ path, darkPath, tech }) => (
       <li class="l-stack__item">
         <figure>
-          <img src={path} alt={tech}>
+          {
+            darkPath ? (
+              <>
+                <img src={path} alt={tech} class="l-stack__img--light" />
+                <img src={darkPath} alt={tech} class="l-stack__img--dark" />
+              </>
+            ) : (
+              <img src={path} alt={tech} />
+            )
+          }
           <figcaption>{tech}</figcaption>
         </figure>
       </li>
