@@ -1,7 +1,10 @@
+@use '../mixins/theme' as theme;
+
 @mixin makeColorButton($type, $bg, $text: #fff) {
   &--#{ $type } {
     background-color: $bg;
     color: $text;
+
     &:hover {
       background-color: darken($bg, 5);
     }
@@ -12,6 +15,7 @@
     text-decoration: none;
     border: 1px solid $bg;
     background-color: transparent;
+
     &:hover {
       color: #fff;
       background-color: $bg;
@@ -74,6 +78,7 @@
     text-decoration: none;
     border: 1px solid $primary;
     background-color: transparent;
+
     &:hover {
       color: #fff;
       background-color: $primary;
@@ -85,6 +90,7 @@
     text-decoration: none;
     border: 1px solid #fff;
     background-color: transparent;
+
     &:hover {
       color: $primary;
       background-color: #fff;
@@ -93,4 +99,14 @@
 
   @include makeColorButton(secondary, lightseagreen);
   @include makeColorButton(dark, #444);
+
+  &--dark-o {
+    @include theme.themed-property('color', #444, #ccc);
+    @include theme.themed-property('border-color', #444, #ccc);
+
+    &:hover {
+      @include theme.themed-property('background-color', #444, #ccc);
+      @include theme.themed-property('color', #fff, #1a1a1a);
+    }
+  }
 }

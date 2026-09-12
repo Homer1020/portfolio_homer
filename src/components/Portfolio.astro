@@ -1,50 +1,59 @@
 ---
-import Project from "./Project.astro"
-import { db } from "../config/firebase"
-import { collection, getDocs } from "firebase/firestore"
-import type { ProjectInterface } from "../types"
+import Project from "./Project.astro";
+import { db } from "../config/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import type { ProjectInterface } from "../types";
 
 // 1. Obtener los proyectos directamente desde Firestore
-const querySnapshot = await getDocs(collection(db, "projects"))
+const querySnapshot = await getDocs(collection(db, "projects"));
 
-const projects = (querySnapshot.docs
-  .map(doc => {
-    const data = doc.data()
+const projects = (
+  querySnapshot.docs.map((doc) => {
+    const data = doc.data();
     return {
       ...data,
       slug: doc.id, // Aseguramos el slug usando el ID del documento
-    }
-  }) as ProjectInterface[])
-  .filter(project => !project.draft)
+    };
+  }) as ProjectInterface[]
+).filter((project) => !project.draft);
 ---
 
 <div id="filter-portfolio">
-  <button class="button button--sm" data-filter="*">Mostrar todo</button>
-  <button class="button button--sm" data-filter=".php">PHP</button>
-  <button class="button button--sm" data-filter=".laravel">Laravel</button>
-  <button class="button button--sm" data-filter=".javascript">JavaScript</button>
-  <button class="button button--sm" data-filter=".reactjs">ReactJS</button>
-  <button class="button button--sm" data-filter=".wordpress">Wordpress</button>
-  <button class="button button--sm" data-filter=".nodejs">NodeJS</button>
+  <button class="button button--sm button--dark-o" data-filter="*"
+    >Mostrar todo</button
+  >
+  <button class="button button--sm button--dark-o" data-filter=".php"
+    >PHP</button
+  >
+  <button class="button button--sm button--dark-o" data-filter=".laravel"
+    >Laravel</button
+  >
+  <button class="button button--sm button--dark-o" data-filter=".javascript"
+    >JavaScript</button
+  >
+  <button class="button button--sm button--dark-o" data-filter=".reactjs"
+    >ReactJS</button
+  >
+  <button class="button button--sm button--dark-o" data-filter=".wordpress"
+    >Wordpress</button
+  >
+  <button class="button button--sm button--dark-o" data-filter=".nodejs"
+    >NodeJS</button
+  >
 </div>
 
 <!-- Guardamos los proyectos mapeados en data-projects para consumirlos desde el script -->
-<div 
-  class="l-portfolio" 
-  id="portfolio" 
+<div
+  class="l-portfolio"
+  id="portfolio"
   data-projects={JSON.stringify(projects)}
 >
-  {
-    projects.map(project => (
-      <Project
-        { ...project }
-        image={ project.mockup }
-      />
-    ))
-  }
+  {projects.map((project) => <Project {...project} image={project.mockup} />)}
 </div>
 
-<style>
+<style lang="scss">
+  @use '../styles/mixins/theme' as theme;
+
   .l-portfolio {
     margin-top: 3rem;
   }
@@ -57,8 +66,8 @@ const projects = (querySnapshot.docs
   }
 
   .active {
-    background-color: #333;
-    color: #fff;
+    @include theme.themed-property('background-color', #444, #ccc);
+    @include theme.themed-property('color', #fff, #1a1a1a);
   }
 
   #filter-portfolio {
@@ -66,49 +75,53 @@ const projects = (querySnapshot.docs
   }
 
   #filter-portfolio button {
-    margin-right: .5rem;
+    margin-right: 0.5rem;
     margin-bottom: 1rem;
   }
 </style>
 
 <script>
-  import Isotope from 'isotope-layout'
-  import imagesLoaded from 'imagesloaded'
-  import { generateModal } from '../utils/modal'
-  import type { ProjectInterface } from '../types'
+  import Isotope from "isotope-layout";
+  import imagesLoaded from "imagesloaded";
+  import { generateModal } from "../utils/modal";
+  import type { ProjectInterface } from "../types";
 
-  const $grid = document.getElementById('portfolio') as HTMLElement
-  const $filterPortfolio = document.getElementById('filter-portfolio') as HTMLElement
+  const $grid = document.getElementById("portfolio") as HTMLElement;
+  const $filterPortfolio = document.getElementById(
+    "filter-portfolio",
+  ) as HTMLElement;
 
   // 2. Extraer la lista de proyectos inyectada desde Astro
-  const projectsData: ProjectInterface[] = JSON.parse($grid.dataset.projects || '[]')
+  const projectsData: ProjectInterface[] = JSON.parse(
+    $grid.dataset.projects || "[]",
+  );
 
   // Inicialización de Isotope
   const grid = new Isotope($grid, {
-    itemSelector: '#portfolio article',
+    itemSelector: "#portfolio article",
     masonry: {
-      columnWidth: '#portfolio article',
-      gutter: 30
-    }
-  })
+      columnWidth: "#portfolio article",
+      gutter: 30,
+    },
+  });
 
   // Filtros de categoría
-  $filterPortfolio.addEventListener('click', e => {
-    const target = e.target as HTMLElement
+  $filterPortfolio.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
 
-    if(target.dataset.filter) {
-      $filterPortfolio.querySelectorAll('.button').forEach($btn => {
-        $btn.classList.remove('active')
+    if (target.dataset.filter) {
+      $filterPortfolio.querySelectorAll(".button").forEach(($btn) => {
+        $btn.classList.remove("active");
       });
-      target.classList.add('active')
+      target.classList.add("active");
       grid.arrange({
-        filter: target.dataset.filter
-      })
+        filter: target.dataset.filter,
+      });
     }
-  })
+  });
 
   // Recalcular layout cuando carguen las imágenes
-  imagesLoaded($grid).on('progress', function() {
+  imagesLoaded($grid).on("progress", function () {
     grid.layout();
   });
 
@@ -116,18 +129,18 @@ const projects = (querySnapshot.docs
    * MODAL (Ahora busca sobre la data traída dinámicamente de Firestore)
    */
   const handleShowModal = (e: MouseEvent) => {
-    const $target = e.target as HTMLElement
-    if($target.classList.contains('project-img')) {
-      e.preventDefault()
-      const slug = $target.parentElement?.parentElement?.dataset.projectSlug
-      const project = projectsData.find(p => p.slug === slug)
-      
+    const $target = e.target as HTMLElement;
+    if ($target.classList.contains("project-img")) {
+      e.preventDefault();
+      const slug = $target.parentElement?.parentElement?.dataset.projectSlug;
+      const project = projectsData.find((p) => p.slug === slug);
+
       if (project) {
-        const $modal = generateModal(project)
-        if($modal) document.body.appendChild($modal)
+        const $modal = generateModal(project);
+        if ($modal) document.body.appendChild($modal);
       }
     }
-  }
+  };
 
-  $grid.addEventListener('click', handleShowModal)
+  $grid.addEventListener("click", handleShowModal);
 </script>

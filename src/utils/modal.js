@@ -1,39 +1,38 @@
-export const generateProjectTemplate = ({title, image, description, stacks, github, url, gallery}) => {
+export const generateProjectTemplate = ({ title, image, description, stacks, github, url, gallery }) => {
   return `
-    <img class="banner" src="${image}" alt='${ title }'>
+    <img class="banner" src="${image}" alt='${title}'>
     <div>
       <h2 class="title">${title || ''}</h2>
-      <h3 class="subtitle">Descripción:</h3>
       <div class="styled-content">${description || '<p>Inserte contenido aqui</p>'}</div>
       ${gallery && gallery.length ? `
         <h3 class="subtitle">Galería:</h3>
         <div class="modal-gallery">
           ${gallery.map(url => (
-            `<button type="button" class="modal-gallery__item${url === image ? ' active' : ''}" data-image="${url}">
+    `<button type="button" class="modal-gallery__item${url === image ? ' active' : ''}" data-image="${url}">
               <img src="${url}" alt="${title || ''}" loading="lazy">
             </button>`
-          )).join('')}
+  )).join('')}
         </div>
       ` : ''}
       <h3 class="subtitle">Tecnologías:</h3>
       <ul class="list">
         ${stacks.map(stack => (
-          `<li>${stack}</li>`
-        )).join('')}
+    `<li>${stack}</li>`
+  )).join('')}
       </ul>
       <div class="buttons">
         ${github ? (
-          `<a target="_blank" href="${github}" class="button button--secondary">
+      `<a target="_blank" href="${github}" class="button button--secondary">
             Código
             <i class="fab fa-github"></i>
           </a>`
-        ) : ''}
+    ) : ''}
         ${url ? (
-          `<a href="${url}" target="_blank" class="button button--primary">
+      `<a href="${url}" target="_blank" class="button button--primary">
             Preview
             <i class="fa fa-link"></i>
           </a>`
-        ) : ''}
+    ) : ''}
       </div>
     </div>
   `
@@ -42,9 +41,9 @@ export const generateProjectTemplate = ({title, image, description, stacks, gith
 const handleCloseModal = (e) => {
   let $target = e.target
 
-  if($target.classList.contains('modal') || $target.classList.contains('modal__close')) {
+  if ($target.classList.contains('modal') || $target.classList.contains('modal__close')) {
     document.body.style.overflow = ''
-    while(!$target.classList.contains('modal')) {
+    while (!$target.classList.contains('modal')) {
       console.log('Executing')
       $target = $target.parentElement
     }
@@ -73,7 +72,7 @@ export const showModal = (content, config = {}) => {
   $modal.classList.add('modal')
 
   $modal.innerHTML = `
-    <article class="modal__content" ${ config?.contentStyle ? `style="${ config.contentStyle }"` : '' }>
+    <article class="modal__content" ${config?.contentStyle ? `style="${config.contentStyle}"` : ''}>
       <div class="modal__body">
         <button class="modal__close">
           <i class="fa fa-times"></i>

@@ -1,14 +1,17 @@
 .styled-content ol,
 .styled-content ul {
-    list-style-position: inside;
+    // list-style-position: inside;
     list-style: none;
     margin: 1.5rem 0;
     list-style: disc;
-    list-style-position: inside;
+    padding-left: 1.75rem;
+    // list-style-position: inside;
+
     li {
         margin: .6rem 0;
     }
-    & > li:not(:last-child) {
+
+    &>li:not(:last-child) {
         margin-bottom: 1.5rem;
     }
 }
