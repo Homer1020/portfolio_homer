@@ -1,37 +1,45 @@
 ---
 interface Props {
-  image: string,
-  title: string,
-  stacks?: string[],
-  slug: string
+  image: string;
+  title: string;
+  stacks?: string[];
+  slug: string;
 }
 
-const { title, image, stacks = [], slug } = Astro.props
-
+const { title, image, stacks = [], slug } = Astro.props;
 ---
-<article data-project-slug={slug} class={stacks.map(stack => stack.toLowerCase()).join(' ')}>
+
+<article
+  data-project-slug={slug}
+  class={stacks.map((stack) => stack.toLowerCase()).join(" ")}
+>
   <a href={`#${slug}`} class="project-wrapper">
-    <img class="project-img" src={image} alt={title}>
+    <img class="project-img" src={image} alt={title} />
   </a>
   <h3>
-    <a href={`/proyectos/${ slug }`}>{title}</a>
+    <!-- <a href={`/proyectos/${ slug }`}>{title}</a> -->
+    <a href="javascript:void(0);">{title}</a>
   </h3>
-  {stacks.map(stack => (
-    <a class="category" href="#">{stack}</a>
-  ))}
+  {
+    stacks.map((stack) => (
+      <a class="category" href="#">
+        {stack}
+      </a>
+    ))
+  }
 </article>
 <style>
   .project-wrapper {
     overflow: hidden;
     border-radius: 10px;
     margin-bottom: 1rem;
-    transition: transform .3s;
+    transition: transform 0.3s;
   }
 
   article:hover .project-wrapper {
     transform: scale(1.03);
   }
-  
+
   img {
     display: block;
     aspect-ratio: 3/2;
@@ -70,10 +78,10 @@ const { title, image, stacks = [], slug } = Astro.props
   }
 
   .category::before {
-    content: '#';
+    content: "#";
   }
 
   .category:not(:last-child)::after {
-    content: ', ';
+    content: ", ";
   }
 </style>

@@ -1,50 +1,57 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro'
+import AdminLayout from "../../layouts/AdminLayout.astro";
 
-import { getFirestore } from 'firebase-admin/firestore';
+import { getFirestore } from "firebase-admin/firestore";
 
 const db = getFirestore();
 
-const [testimoniosSnap, proyectosSnap, visitasSnap, visitasSnapshot] = await Promise.all([
-  db.collection('testimonials').where('published', '==', false).count().get(),
-  db.collection('projects').count().get(),
-  db.collection('analytics').count().get(),
-  db.collection('analytics').orderBy('fecha', 'desc').limit(10).get()
-]);
+const [testimoniosSnap, proyectosSnap, visitasSnap, visitasSnapshot] =
+	await Promise.all([
+		db
+			.collection("testimonials")
+			.where("published", "==", false)
+			.count()
+			.get(),
+		db.collection("projects").count().get(),
+		db.collection("analytics").count().get(),
+		db.collection("analytics").orderBy("fecha", "desc").limit(10).get(),
+	]);
 
 const totalTestimonios = testimoniosSnap.data().count;
 const totalProyectos = proyectosSnap.data().count;
 const totalVisitas = visitasSnap.data().count;
 
 const stats = [
-	{ label: 'Proyectos', value: totalProyectos },
-	{ label: 'Testimonios pendientes', value: totalTestimonios },
-	{ label: 'Visitas totales', value: totalVisitas },
-]
+	{ label: "Proyectos", value: totalProyectos },
+	{ label: "Testimonios pendientes", value: totalTestimonios },
+	{ label: "Visitas totales", value: totalVisitas },
+];
 
-const visitas = visitasSnapshot.docs.map(doc => {
+const visitas = visitasSnapshot.docs.map((doc) => {
 	const data = doc.data();
 	const fecha = data.fecha?.toDate ? data.fecha.toDate() : null;
 	return {
 		id: doc.id,
-		fecha: fecha ? fecha.toLocaleString('es-VE') : '-',
-		ip: data.ip || '-',
-		pais: data.pais || '-',
-		ruta: data.ruta || '-',
-		referrer: data.referrer || '-',
-		userAgent: data.userAgent || '-',
+		fecha: fecha ? fecha.toLocaleString("es-VE") : "-",
+		ip: data.ip || "-",
+		pais: data.pais || "-",
+		ruta: data.ruta || "-",
+		referrer: data.referrer || "-",
+		userAgent: data.userAgent || "-",
 	};
 });
 ---
 
 <AdminLayout title="Dashboard">
 	<div class="admin-stats">
-		{stats.map(stat => (
-			<div class="admin-card">
-				<span class="admin-card__label">{stat.label}</span>
-				<strong class="admin-card__value">{stat.value}</strong>
-			</div>
-		))}
+		{
+			stats.map((stat) => (
+				<div class="admin-card">
+					<span class="admin-card__label">{stat.label}</span>
+					<strong class="admin-card__value">{stat.value}</strong>
+				</div>
+			))
+		}
 	</div>
 
 	<div class="admin-toolbar">
@@ -64,26 +71,44 @@ const visitas = visitasSnapshot.docs.map(doc => {
 				</tr>
 			</thead>
 			<tbody>
-				{visitas.length === 0 && (
-					<tr><td colspan="6" class="admin-table__empty-state">Sin visitas registradas.</td></tr>
-				)}
-				{visitas.map(visita => (
-					<tr>
-						<td>{visita.fecha}</td>
-						<td>{visita.ip}</td>
-						<td>{visita.pais}</td>
-						<td>{visita.ruta}</td>
-						<td class="admin-table__truncate" title={visita.referrer}>{visita.referrer}</td>
-						<td class="admin-table__truncate" title={visita.userAgent}>{visita.userAgent}</td>
-					</tr>
-				))}
+				{
+					visitas.length === 0 && (
+						<tr>
+							<td colspan="6" class="admin-table__empty-state">
+								Sin visitas registradas.
+							</td>
+						</tr>
+					)
+				}
+				{
+					visitas.map((visita) => (
+						<tr>
+							<td>{visita.fecha}</td>
+							<td>{visita.ip}</td>
+							<td>{visita.pais}</td>
+							<td>{visita.ruta}</td>
+							<td
+								class="admin-table__truncate"
+								title={visita.referrer}
+							>
+								{visita.referrer}
+							</td>
+							<td
+								class="admin-table__truncate"
+								title={visita.userAgent}
+							>
+								{visita.userAgent}
+							</td>
+						</tr>
+					))
+				}
 			</tbody>
 		</table>
 	</div>
 </AdminLayout>
 
 <style lang="scss">
-	@use '../../styles/mixins/theme' as theme;
+	@use "../../styles/mixins/theme" as theme;
 
 	.admin-stats {
 		display: grid;
@@ -94,8 +119,8 @@ const visitas = visitasSnapshot.docs.map(doc => {
 	.admin-card__label {
 		display: block;
 		font-size: 1.3rem;
-		@include theme.theme-property('color', 'legendText');
-		margin-bottom: .5rem;
+		@include theme.theme-property("color", "legendText");
+		margin-bottom: 0.5rem;
 	}
 
 	.admin-card__value {
@@ -114,8 +139,8 @@ const visitas = visitasSnapshot.docs.map(doc => {
 	}
 
 	.admin-table-wrapper {
-		@include theme.theme-property('background-color', 'sectionBg');
-		@include theme.theme-property('border', 'figureBorder');
+		@include theme.theme-property("background-color", "sectionBg");
+		@include theme.theme-property("border", "figureBorder");
 		border-radius: 10px;
 		overflow-x: auto;
 	}
@@ -125,21 +150,22 @@ const visitas = visitasSnapshot.docs.map(doc => {
 		border-collapse: collapse;
 		font-size: 1.4rem;
 
-		th, td {
+		th,
+		td {
 			text-align: left;
 			padding: 1.2rem 1.5rem;
 			white-space: nowrap;
 		}
 
 		thead th {
-			@include theme.theme-property('background-color', 'contactBg');
-			@include theme.theme-property('color', 'legendText');
+			@include theme.theme-property("background-color", "contactBg");
+			@include theme.theme-property("color", "legendText");
 			font-weight: 600;
-			@include theme.theme-property('border-bottom', 'figureBorder');
+			@include theme.theme-property("border-bottom", "figureBorder");
 		}
 
 		tbody tr:not(:last-child) td {
-			@include theme.theme-property('border-bottom', 'figureBorder');
+			@include theme.theme-property("border-bottom", "figureBorder");
 		}
 	}
 
@@ -151,31 +177,7 @@ const visitas = visitasSnapshot.docs.map(doc => {
 
 	.admin-table__empty-state {
 		text-align: center;
-		@include theme.theme-property('color', 'legendText');
+		@include theme.theme-property("color", "legendText");
 		padding: 3rem;
 	}
 </style>
-
-<script>
-  import { getAuth, signOut } from "firebase/auth";
-  import { app } from "../../config/firebase"; // Tu config de Firebase cliente
-
-  const logoutBtn = document.getElementById("logout-btn");
-
-  logoutBtn?.addEventListener("click", async () => {
-    try {
-      const auth = getAuth(app);
-      
-      // 1. Cerrar sesión en la SDK del cliente (borra IndexedDB/LocalStorage)
-      await signOut(auth);
-
-      // 2. Destruir la cookie del servidor en Astro
-      await fetch("/api/auth/signout", { method: "POST" });
-
-      // 3. Redirigir al login
-      window.location.href = "/admin/login";
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-    }
-  });
-</script>

@@ -1,5 +1,6 @@
 $primary: #0F81C7;
 $secondary: lightseagreen;
+$danger: #e53e3e;
 $bodyBg: #f9f9f9;
 $bodyText: #555;
 $darkBodyBg: #1a1a1a;
@@ -45,4 +46,5 @@ $themes:(
 :root {
   --primary: #{$primary};
   --secondary: #{$secondary};
+  --danger: #{$danger};
 }
