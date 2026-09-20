@@ -18,10 +18,13 @@
     </div>
   </blockquote>
 
-  <style>
+  <style lang="scss">
+    @use '../styles/mixins/theme' as theme;
+
     .decoration {
       color: var(--secondary);
       font-size: 5.5rem;
+      opacity: 0.9;
     }
 
     .avatar {
@@ -29,6 +32,7 @@
       height: 6rem !important;
       object-fit: cover;
       border-radius: 50%;
+      border: 2px solid var(--primary);
     }
 
     .profile {
@@ -48,27 +52,36 @@
     .profile__name {
       font-weight: bold;
       font-size: 1.6rem;
-      color: #000;
+      @include theme.theme-property('color', 'headings');
     }
 
     .profile__role {
       font-size: 1.4rem;
+      @include theme.theme-property('color', 'legendText');
     }
 
     blockquote {
-      box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.02);
-      background-color: #fff;
-      border-radius: 5px;
+      @include theme.theme-property('background-color', 'sectionBg');
+      @include theme.theme-property('border', 'figureBorder');
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
+      border-radius: 12px;
       padding: 4rem 3rem;
       margin-bottom: 2rem;
       text-align: center;
+      transition: transform .25s ease, box-shadow .25s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.2);
+      }
     }
 
     .bq__text {
       font-size: 1.6rem;
-      line-height: 1.5;
+      line-height: 1.6;
       margin-top: 2.5rem;
       margin-bottom: 2.7rem;
+      @include theme.theme-property('color', 'articleText');
     }
 
     @media (min-width: 1200px) {
@@ -79,7 +92,7 @@
       }
 
       .bq__text {
-        line-height: 1.6;
+        line-height: 1.7;
         margin-bottom: 2.5rem;
       }
     }

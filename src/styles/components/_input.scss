@@ -1,19 +1,20 @@
 @use '../mixins/theme' as theme;
 
 .input {
-  padding: 1.3rem;
+  padding: 1.3rem 1.6rem;
   font-size: 1.4rem;
   @include theme.theme-property('border', 'inputBorder');
   @include theme.theme-property('background-color', 'sectionBg');
   @include theme.theme-property('color', 'articleText');
   width: 100%;
-  border-radius: 5px;
+  border-radius: 8px;
   font-weight: normal;
   font-family: inherit;
+  transition: border-color .2s ease, box-shadow .2s ease;
 }
 
 .invalid {
-  border-color: red !important;
+  border-color: #ef4444 !important;
 }
 
 textarea.input {
@@ -21,12 +22,13 @@ textarea.input {
 }
 
 .input::placeholder {
-  color: #888;
+  @include theme.themed-property('color', #9ca3af, #64748b);
 }
 
 .input:focus {
   outline: none;
   border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(25, 148, 224, 0.2);
 }
 
 .group {

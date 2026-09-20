@@ -3,8 +3,8 @@ $secondary: lightseagreen;
 $danger: #e53e3e;
 $bodyBg: #f9f9f9;
 $bodyText: #555;
-$darkBodyBg: #1a1a1a;
-$darkBodyText: #f9f9f9;
+$darkBodyBg: #0b0f19;
+$darkBodyText: #94a3b8;
 
 $themes:(
   light: (
@@ -12,12 +12,12 @@ $themes:(
     secondary: $secondary,
     bodyBg: $bodyBg,
     bodyText: $bodyText,
-    headings: #000,
-    navLink: #555,
+    headings: #111827,
+    navLink: #4b5563,
     sectionBg: #ffffff,
     fixedHeaderBg: #ffffff,
-    articleText: #111,
-    legendText: #333,
+    articleText: #1f2937,
+    legendText: #4b5563,
     articleLine: 2px solid rgba(#000, .1),
     contactBg: #f6f6f6,
     figureBorder: 1px solid #eee,
@@ -25,21 +25,21 @@ $themes:(
     modalBg: rgba(0, 0, 0, .7)
   ),
   dark: (
-    primary: $primary,
-    secondary: $secondary,
+    primary: #1994e0,
+    secondary: #2dd4bf,
     bodyBg: $darkBodyBg,
     bodyText: $darkBodyText,
-    headings: #fff,
-    navLink: #f9f9f9,
-    sectionBg: #000000,    
-    fixedHeaderBg: #000000,
-    articleText: #f5f5f5,
-    legendText: #959595,
-    articleLine: 2px solid rgba(#fff, .1),
-    contactBg: #141414,
-    figureBorder: 1px solid rgba(#fff, .08),
-    inputBorder: 1px solid rgba(#fff, .15),
-    modalBg: rgba(0, 0, 0, .85)
+    headings: #f8fafc,
+    navLink: #cbd5e1,
+    sectionBg: #111827,    
+    fixedHeaderBg: rgba(11, 15, 25, 0.88),
+    articleText: #e2e8f0,
+    legendText: #7e8b9b,
+    articleLine: 2px solid rgba(25, 148, 224, 0.25),
+    contactBg: #151e2e,
+    figureBorder: 1px solid rgba(255, 255, 255, 0.08),
+    inputBorder: 1px solid rgba(255, 255, 255, 0.12),
+    modalBg: rgba(5, 8, 15, 0.85)
   )
 );
 

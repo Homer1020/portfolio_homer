@@ -21,6 +21,24 @@ body {
 body {
   @include theme.theme-property('background-color', 'bodyBg');
   @include theme.theme-property('color', 'bodyText');
+  transition: background-color .3s ease, color .3s ease;
+  min-height: 100vh;
+}
+
+@media (prefers-color-scheme: dark) {
+  @at-root html:not(.light) body {
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(25, 148, 224, 0.12), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 100% 60%, rgba(45, 212, 191, 0.05), transparent 60%);
+    background-attachment: fixed;
+  }
+}
+
+@at-root html.dark body {
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(25, 148, 224, 0.12), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 100% 60%, rgba(45, 212, 191, 0.05), transparent 60%);
+  background-attachment: fixed;
 }
 
 h1,
@@ -49,8 +67,16 @@ figure {
   text-align: center;
   @include theme.theme-property('background-color', 'sectionBg');
   padding: 3rem 2rem;
-  border-radius: 10px;
+  border-radius: 12px;
   @include theme.theme-property('border', 'figureBorder');
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.2);
+    @include theme.themed-property('border-color', rgba(0, 0, 0, .12), rgba(25, 148, 224, 0.3));
+  }
+
   img {
     display: block;
     margin-right: auto;

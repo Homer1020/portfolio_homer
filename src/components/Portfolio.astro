@@ -59,24 +59,30 @@ const projects = (
   }
 
   .button {
-    border-radius: 5px;
-    font-size: 1.2rem;
-    font-weight: normal;
+    border-radius: 8px;
+    font-size: 1.3rem;
+    font-weight: 500;
     font-family: "Poppins", sans-serif;
+    transition: all .2s ease;
   }
 
-  .active {
-    @include theme.themed-property('background-color', #444, #ccc);
-    @include theme.themed-property('color', #fff, #1a1a1a);
+  .button.active {
+    background-color: var(--primary) !important;
+    color: #fff !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 4px 12px rgba(25, 148, 224, 0.35);
   }
 
   #filter-portfolio {
     margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
   }
 
   #filter-portfolio button {
-    margin-right: 0.5rem;
-    margin-bottom: 1rem;
+    margin-right: 0;
+    margin-bottom: 0;
   }
 </style>
 

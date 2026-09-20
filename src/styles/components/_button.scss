@@ -26,10 +26,10 @@
 .button {
   font-weight: 500;
   font-size: 16px;
-  padding: .8em 1.2em;
-  border-radius: 5px;
+  padding: .8em 1.4em;
+  border-radius: 8px;
   text-decoration: none;
-  transition: background-color .2s, color .2s;
+  transition: all .2s ease;
   display: inline-flex;
   align-items: center;
   cursor: pointer;
@@ -37,7 +37,8 @@
   background-color: transparent;
 
   &:disabled {
-    opacity: .8;
+    opacity: .7;
+    cursor: not-allowed;
   }
 
   &--sm {
@@ -70,6 +71,8 @@
 
     &:hover {
       background-color: darken($primary, 5);
+      box-shadow: 0 4px 14px rgba(15, 129, 199, 0.35);
+      transform: translateY(-1px);
     }
   }
 
@@ -82,31 +85,39 @@
     &:hover {
       color: #fff;
       background-color: $primary;
+      box-shadow: 0 4px 14px rgba(15, 129, 199, 0.3);
+      transform: translateY(-1px);
     }
   }
 
   &--light-o {
     color: #fff;
     text-decoration: none;
-    border: 1px solid #fff;
-    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.05);
 
     &:hover {
       color: $primary;
       background-color: #fff;
+      border-color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
     }
   }
 
   @include makeColorButton(secondary, lightseagreen);
-  @include makeColorButton(dark, #444);
+  @include makeColorButton(dark, #334155);
 
   &--dark-o {
-    @include theme.themed-property('color', #444, #ccc);
-    @include theme.themed-property('border-color', #444, #ccc);
+    @include theme.themed-property('color', #4b5563, #cbd5e1);
+    @include theme.themed-property('border', 1px solid #d1d5db, 1px solid rgba(255, 255, 255, 0.12));
+    @include theme.themed-property('background-color', transparent, rgba(17, 24, 39, 0.6));
 
     &:hover {
-      @include theme.themed-property('background-color', #444, #ccc);
-      @include theme.themed-property('color', #fff, #1a1a1a);
+      @include theme.themed-property('background-color', #1f2937, #1e293b);
+      @include theme.themed-property('color', #ffffff, #f8fafc);
+      @include theme.themed-property('border-color', #1f2937, rgba(25, 148, 224, 0.5));
+      transform: translateY(-1px);
     }
   }
 }
