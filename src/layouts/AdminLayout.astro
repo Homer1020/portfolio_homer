@@ -13,6 +13,7 @@ const navItems = [
 	{ label: "Proyectos", href: "/admin/proyectos" },
 	{ label: "Testimonios", href: "/admin/testimonios" },
 	{ label: "Experiencia", href: "/admin/experiencia" },
+	{ label: "Stack", href: "/admin/stacks" },
 	{ label: "Landing", href: "/admin/landing" },
 ];
 
@@ -72,7 +73,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/admin";
 	<body>
 		<div class="admin">
 			<aside class="admin-sidebar" id="admin-sidebar">
-				<span class="admin-sidebar__logo">Admin</span>
+				<span class="admin-sidebar__logo">Admin Panel</span>
 				<nav>
 					{
 						navItems.map((item) => (
@@ -86,9 +87,19 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/admin";
 							</a>
 						))
 					}
-					<a id="logout-btn" href="javascript:void(0);"
-						>Cerrar sesión</a
+					<hr class="admin-sidebar__divider" />
+					<a
+						href="/"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="admin-sidebar__ext-link"
 					>
+						<i class="fa-solid fa-arrow-up-right-from-square"></i>
+						<span>Ver Sitio Web</span>
+					</a>
+					<a id="logout-btn" href="javascript:void(0);">
+						Cerrar sesión
+					</a>
 				</nav>
 			</aside>
 
@@ -106,8 +117,20 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/admin";
 						<span></span>
 						<span></span>
 					</button>
-					<h1>Dashboard</h1>
-					<ThemeToggle />
+					<h1>{title}</h1>
+					<div class="admin-topbar__actions">
+						<a
+							href="/"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="button button--secondary-o button--sm admin-topbar__site-btn"
+							title="Abrir la landing page"
+						>
+							<i class="fa-solid fa-globe"></i>
+							<span>Ver landing</span>
+						</a>
+						<ThemeToggle />
+					</div>
 				</header>
 
 				<div class="admin-content">

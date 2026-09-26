@@ -1,0 +1,86 @@
+[
+  {
+    "name": "NodeJS",
+    "icon": "/assets/img/nodejs-icon.svg",
+    "darkIcon": "",
+    "order": 1,
+    "draft": false
+  },
+  {
+    "name": "Astro",
+    "icon": "/assets/img/astro-icon.svg",
+    "darkIcon": "/assets/img/astro-icon-white.svg",
+    "order": 2,
+    "draft": false
+  },
+  {
+    "name": "React",
+    "icon": "/assets/img/react-icon.svg",
+    "darkIcon": "",
+    "order": 3,
+    "draft": false
+  },
+  {
+    "name": "Sass",
+    "icon": "/assets/img/sass-icon.svg",
+    "darkIcon": "",
+    "order": 4,
+    "draft": false
+  },
+  {
+    "name": "Laravel",
+    "icon": "/assets/img/laravel-icon.svg",
+    "darkIcon": "",
+    "order": 5,
+    "draft": false
+  },
+  {
+    "name": "PHP",
+    "icon": "/assets/img/php-icon.svg",
+    "darkIcon": "",
+    "order": 6,
+    "draft": false
+  },
+  {
+    "name": "JavaScript",
+    "icon": "/assets/img/javascript-icon.svg",
+    "darkIcon": "",
+    "order": 7,
+    "draft": false
+  },
+  {
+    "name": "TypeScript",
+    "icon": "/assets/img/typescript-icon.svg",
+    "darkIcon": "",
+    "order": 8,
+    "draft": false
+  },
+  {
+    "name": "Wordpress",
+    "icon": "/assets/img/wordpress-icon.svg",
+    "darkIcon": "/assets/img/wordpress-icon-white.svg",
+    "order": 9,
+    "draft": false
+  },
+  {
+    "name": "MySQL",
+    "icon": "/assets/img/mysql-icon.svg",
+    "darkIcon": "",
+    "order": 10,
+    "draft": false
+  },
+  {
+    "name": "NextJS",
+    "icon": "/assets/img/nextjs-icon.svg",
+    "darkIcon": "",
+    "order": 11,
+    "draft": false
+  },
+  {
+    "name": "Firebase",
+    "icon": "/assets/img/firebase-icon.svg",
+    "darkIcon": "",
+    "order": 12,
+    "draft": false
+  }
+]

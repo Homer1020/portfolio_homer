@@ -2,7 +2,7 @@
 import AdminLayout from '../../../layouts/AdminLayout.astro'
 import Input from '../../../components/Form/Input.astro'
 import { getFirestore } from 'firebase-admin/firestore'
-import type { HeroContent, AboutContent } from '../../../types'
+import type { HeroContent, AboutContent, HeroSocialLink } from '../../../types'
 
 const db = getFirestore()
 
@@ -15,10 +15,20 @@ const cvUpdatedAt = landingData.cvUpdatedAt?.toDate
 	? landingData.cvUpdatedAt.toDate().toLocaleString('es-VE')
 	: ''
 
+const defaultSocialLinks: HeroSocialLink[] = [
+	{ label: 'LinkedIn', url: 'https://www.linkedin.com/in/homer-moncayo', icon: 'fab fa-linkedin' },
+	{ label: 'GitHub', url: 'https://github.com/Homer1020/', icon: 'fab fa-github' },
+	{ label: 'CodePen', url: 'https://codepen.io/homer-moncayo', icon: 'fab fa-codepen' },
+]
+
 const hero: HeroContent = {
 	badge: landingData.hero?.badge || 'Hola! yo soy',
 	title: landingData.hero?.title || 'Homer Moncayo',
 	subtitleHtml: landingData.hero?.subtitleHtml || 'Un competente <strong>Programador web FullStack</strong>, apacionado por el mundo del software y con más de 5 años de experiencia.',
+	image: landingData.hero?.image || '',
+	socialLinks: landingData.hero?.socialLinks && landingData.hero.socialLinks.length > 0
+		? landingData.hero.socialLinks
+		: defaultSocialLinks,
 }
 
 const about: AboutContent = {
@@ -30,7 +40,7 @@ const about: AboutContent = {
 
 <AdminLayout title="Landing">
 	<div class="admin-toolbar">
-		<h2>Landing</h2>
+		<h2>Landing Page</h2>
 	</div>
 
 	<div class="admin-modules">
@@ -55,10 +65,17 @@ const about: AboutContent = {
 
 		<div class="admin-card admin-card--module">
 			<div class="admin-card__header">
-				<h3>Hero</h3>
-				<p>Encabezado principal que se muestra al abrir la landing.</p>
+				<h3>Hero (Encabezado)</h3>
+				<p>Foto de perfil, títulos, presentación y enlaces a redes sociales.</p>
 			</div>
-			<button type="button" class="button button--secondary-o button--sm" id="edit-hero-btn">Editar</button>
+			<div class="module-preview">
+				<div class="module-preview__avatar" style={hero.image ? `background-image: url('${hero.image}')` : undefined}></div>
+				<div class="module-preview__info">
+					<strong>{hero.title}</strong>
+					<small>{(hero.socialLinks ?? []).length} redes conectadas</small>
+				</div>
+			</div>
+			<button type="button" class="button button--secondary-o button--sm" id="edit-hero-btn">Editar Hero</button>
 		</div>
 
 		<div class="admin-card admin-card--module">
@@ -66,35 +83,96 @@ const about: AboutContent = {
 				<h3>Sobre mí</h3>
 				<p>Texto de presentación de la sección "Sobre mí".</p>
 			</div>
-			<button type="button" class="button button--secondary-o button--sm" id="edit-about-btn">Editar</button>
+			<div class="module-preview">
+				<div class="module-preview__info">
+					<strong>{about.title}</strong>
+				</div>
+			</div>
+			<button type="button" class="button button--secondary-o button--sm" id="edit-about-btn">Editar Sobre mí</button>
 		</div>
 
-		<div class="admin-card admin-card--placeholder">
-			<h3>Más módulos próximamente</h3>
-			<p>Experiencia y Stack se podrán editar aquí.</p>
+		<div class="admin-card admin-card--module">
+			<div class="admin-card__header">
+				<h3>Stack Tecnológico</h3>
+				<p>Gestiona los iconos y tecnologías que dominas en la landing.</p>
+			</div>
+			<a href="/admin/stacks" class="button button--primary-o button--sm">Gestionar Stacks</a>
 		</div>
 	</div>
 
+	<!-- Modal Editar Hero -->
 	<div class="admin-modal" id="hero-modal">
-		<div class="admin-modal__content">
+		<div class="admin-modal__content admin-modal__content--lg">
 			<button type="button" class="admin-modal__close" id="close-hero-modal">
 				<i class="fa fa-times"></i>
 			</button>
-			<h2>Editar Hero</h2>
+			<h2>Editar Sección Hero</h2>
 			<form id="form-hero">
-				<Input type="text" id="hero-badge" label="Etiqueta" placeholder="Hola! yo soy" required />
-				<Input type="text" id="hero-title" label="Título" placeholder="Homer Moncayo" required />
+				<!-- Foto de perfil -->
+				<div class="hero-avatar-section">
+					<label class="editor-label">Foto de perfil</label>
+					<div class="hero-avatar-picker">
+						<div class="hero-avatar-preview" id="hero-avatar-preview" style={hero.image ? `background-image: url('${hero.image}')` : undefined}></div>
+						<div class="hero-avatar-controls">
+							<div class="hero-avatar-actions">
+								<label class="button button--secondary-o button--sm" for="hero-image-input" id="hero-image-label">
+									<i class="fa-solid fa-cloud-arrow-up"></i>
+									<span>Subir nueva foto</span>
+								</label>
+								<input type="file" id="hero-image-input" accept="image/*" hidden />
+								<button type="button" class="button button--dark-o button--sm" id="hero-image-reset" title="Volver a la imagen por defecto">
+									<i class="fa-solid fa-rotate-left"></i>
+									<span>Por defecto</span>
+								</button>
+							</div>
+							<Input
+								type="url"
+								id="hero-image-url"
+								label="O ingresa la URL de la imagen directamente"
+								placeholder="https://ejemplo.com/avatar.jpg"
+								value={hero.image ?? ''}
+							/>
+						</div>
+					</div>
+					<input type="hidden" id="hero-image-hidden" value={hero.image ?? ''} />
+				</div>
+
+				<div class="grid-2-cols">
+					<Input type="text" id="hero-badge" label="Etiqueta / Saludo" placeholder="Hola! yo soy" required />
+					<Input type="text" id="hero-title" label="Nombre / Título principal" placeholder="Homer Moncayo" required />
+				</div>
+
 				<div class="editor-group">
-					<label class="editor-label">Subtítulo</label>
+					<label class="editor-label">Subtítulo / Descripción corta</label>
 					<div id="hero-subtitle-editor" class="wysiwyg"></div>
 				</div>
+
+				<!-- Enlaces / Redes Sociales -->
+				<div class="social-links-section">
+					<div class="social-links-section__header">
+						<div>
+							<label class="editor-label" style="margin-bottom: 0;">Enlaces y Redes Sociales</label>
+							<p class="section-hint">Personaliza los enlaces que aparecen debajo del subtítulo en el Hero.</p>
+						</div>
+						<button type="button" class="button button--secondary button--sm" id="add-social-link-btn">
+							<i class="fa-solid fa-plus"></i>
+							<span>Agregar enlace</span>
+						</button>
+					</div>
+
+					<div class="social-links-list" id="social-links-list">
+						<!-- Items generados dinámicamente con JS -->
+					</div>
+				</div>
+
 				<div class="admin-modal__actions">
-					<button type="submit" class="button button--primary" id="submit-hero-btn">Guardar</button>
+					<button type="submit" class="button button--primary" id="submit-hero-btn">Guardar Cambios</button>
 				</div>
 			</form>
 		</div>
 	</div>
 
+	<!-- Modal Editar Sobre Mí -->
 	<div class="admin-modal" id="about-modal">
 		<div class="admin-modal__content">
 			<button type="button" class="admin-modal__close" id="close-about-modal">
@@ -147,15 +225,61 @@ const about: AboutContent = {
 		padding: 2rem;
 	}
 
-	.admin-card--module h3 {
-		font-size: 1.8rem;
-		margin-bottom: .3rem;
+	.admin-card--module {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+
+		h3 {
+			font-size: 1.8rem;
+			margin-bottom: .3rem;
+		}
 	}
 
 	.admin-card__header p {
 		font-size: 1.3rem;
 		@include theme.theme-property('color', 'legendText');
 		margin-bottom: 1.5rem;
+	}
+
+	.module-preview {
+		display: flex;
+		align-items: center;
+		gap: 1.2rem;
+		margin-bottom: 1.5rem;
+		padding: 1rem;
+		border-radius: 8px;
+		@include theme.theme-property('background-color', 'contactBg');
+
+		&__avatar {
+			width: 44px;
+			height: 44px;
+			border-radius: 50%;
+			background-size: cover;
+			background-position: center;
+			background-image: url('/assets/img/homer_04.jpeg');
+			flex-shrink: 0;
+			@include theme.theme-property('border', 'figureBorder');
+		}
+
+		&__info {
+			display: flex;
+			flex-direction: column;
+			gap: .2rem;
+			min-width: 0;
+
+			strong {
+				font-size: 1.4rem;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			small {
+				font-size: 1.2rem;
+				@include theme.theme-property('color', 'legendText');
+			}
+		}
 	}
 
 	.cv-status {
@@ -181,10 +305,14 @@ const about: AboutContent = {
 		@include theme.theme-property('color', 'legendText');
 	}
 
-	.admin-card--module {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
+	.grid-2-cols {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.2rem;
+
+		@media (max-width: 600px) {
+			grid-template-columns: 1fr;
+		}
 	}
 
 	.editor-group {
@@ -197,6 +325,176 @@ const about: AboutContent = {
 		font-size: 1.4rem;
 		font-weight: 500;
 		font-family: "Poppins", sans-serif;
+	}
+
+	.section-hint {
+		font-size: 1.2rem;
+		@include theme.theme-property('color', 'legendText');
+		margin-top: .2rem;
+		margin-bottom: .8rem;
+	}
+
+	/* Hero Avatar Picker */
+	.hero-avatar-section {
+		margin-bottom: 2rem;
+		padding: 1.5rem;
+		border-radius: 8px;
+		@include theme.theme-property('background-color', 'contactBg');
+		@include theme.theme-property('border', 'figureBorder');
+	}
+
+	.hero-avatar-picker {
+		display: flex;
+		align-items: center;
+		gap: 2rem;
+
+		@media (max-width: 600px) {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+
+	.hero-avatar-preview {
+		width: 90px;
+		height: 90px;
+		border-radius: 50%;
+		background-size: cover;
+		background-position: center;
+		background-image: url('/assets/img/homer_04.jpeg');
+		box-shadow: 0 0 15px rgba(25, 148, 224, 0.35);
+		border: 3px solid var(--primary);
+		flex-shrink: 0;
+	}
+
+	.hero-avatar-controls {
+		flex: 1;
+		width: 100%;
+	}
+
+	.hero-avatar-actions {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: 1rem;
+		flex-wrap: wrap;
+
+		.button i {
+			margin: 0;
+			font-size: 1.3rem;
+		}
+	}
+
+	/* Social Links Section */
+	.social-links-section {
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+		padding: 1.5rem;
+		border-radius: 8px;
+		@include theme.theme-property('background-color', 'contactBg');
+		@include theme.theme-property('border', 'figureBorder');
+
+		&__header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 1.5rem;
+			gap: 1rem;
+		}
+	}
+
+	.social-links-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	:global(.social-link-row) {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1rem 1.2rem;
+		border-radius: 8px;
+		background-color: var(--body-bg, rgba(0, 0, 0, 0.05));
+		border: 1px solid rgba(125, 125, 125, 0.15);
+		transition: all .2s ease;
+
+		@media (max-width: 650px) {
+			flex-wrap: wrap;
+		}
+	}
+
+	:global(.social-link-icon-box) {
+		width: 38px;
+		height: 38px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 6px;
+		background-color: var(--primary);
+		color: #fff;
+		font-size: 1.8rem;
+		flex-shrink: 0;
+	}
+
+	:global(.social-link-icon-select) {
+		padding: .8rem 1rem;
+		font-size: 1.3rem;
+		border-radius: 6px;
+		border: 1px solid rgba(125, 125, 125, 0.2);
+		background: inherit;
+		color: inherit;
+		width: 140px;
+		flex-shrink: 0;
+	}
+
+	:global(.social-link-input-label) {
+		padding: .8rem 1rem;
+		font-size: 1.3rem;
+		border-radius: 6px;
+		border: 1px solid rgba(125, 125, 125, 0.2);
+		background: inherit;
+		color: inherit;
+		width: 130px;
+		flex-shrink: 0;
+	}
+
+	:global(.social-link-input-url) {
+		padding: .8rem 1rem;
+		font-size: 1.3rem;
+		border-radius: 6px;
+		border: 1px solid rgba(125, 125, 125, 0.2);
+		background: inherit;
+		color: inherit;
+		flex: 1;
+		min-width: 160px;
+	}
+
+	:global(.social-link-custom-icon) {
+		padding: .8rem 1rem;
+		font-size: 1.3rem;
+		border-radius: 6px;
+		border: 1px solid rgba(125, 125, 125, 0.2);
+		background: inherit;
+		color: inherit;
+		width: 130px;
+	}
+
+	:global(.social-link-remove-btn) {
+		background: transparent;
+		border: none;
+		color: #ef4444;
+		cursor: pointer;
+		font-size: 1.6rem;
+		padding: .5rem;
+		border-radius: 4px;
+		transition: background-color .2s;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		&:hover {
+			background-color: rgba(239, 68, 68, 0.1);
+		}
 	}
 
 	.wysiwyg {
@@ -241,24 +539,6 @@ const about: AboutContent = {
 		@include theme.theme-property('border', 'figureBorder');
 	}
 
-	.admin-card--placeholder {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		@include theme.theme-property('color', 'legendText');
-		border-style: dashed;
-
-		h3 {
-			font-size: 1.6rem;
-			@include theme.theme-property('color', 'legendText');
-			margin-bottom: .3rem;
-		}
-
-		p {
-			font-size: 1.3rem;
-		}
-	}
-
 	.admin-modal {
 		display: none;
 		position: fixed;
@@ -282,6 +562,10 @@ const about: AboutContent = {
 		@include theme.theme-property('background-color', 'sectionBg');
 		border-radius: 10px;
 		padding: 2.5rem;
+
+		&--lg {
+			width: min(780px, 100%);
+		}
 	}
 
 	.admin-modal__close {
@@ -378,6 +662,23 @@ const about: AboutContent = {
 	const landing = (window as any).__LANDING__ ?? { hero: {}, about: {} }
 	const toolbarOptions = ['bold', 'italic', 'underline', 'link']
 
+	const PRESET_ICONS = [
+		{ label: 'LinkedIn', icon: 'fab fa-linkedin' },
+		{ label: 'GitHub', icon: 'fab fa-github' },
+		{ label: 'CodePen', icon: 'fab fa-codepen' },
+		{ label: 'X / Twitter', icon: 'fab fa-x-twitter' },
+		{ label: 'Instagram', icon: 'fab fa-instagram' },
+		{ label: 'YouTube', icon: 'fab fa-youtube' },
+		{ label: 'Discord', icon: 'fab fa-discord' },
+		{ label: 'Twitch', icon: 'fab fa-twitch' },
+		{ label: 'WhatsApp', icon: 'fab fa-whatsapp' },
+		{ label: 'Telegram', icon: 'fab fa-telegram' },
+		{ label: 'GitLab', icon: 'fab fa-gitlab' },
+		{ label: 'Email', icon: 'fas fa-envelope' },
+		{ label: 'Web / Sitio', icon: 'fas fa-globe' },
+		{ label: 'Personalizado...', icon: 'custom' },
+	]
+
 	const openModal = (modal: HTMLElement) => {
 		modal.classList.add('open')
 		document.body.style.overflow = 'hidden'
@@ -388,7 +689,7 @@ const about: AboutContent = {
 		document.body.style.overflow = ''
 	}
 
-	// --- Hero ---
+	// --- Hero Elements ---
 	const $heroModal = document.getElementById('hero-modal') as HTMLElement
 	const $editHeroBtn = document.getElementById('edit-hero-btn') as HTMLElement
 	const $closeHeroModal = document.getElementById('close-hero-modal') as HTMLElement
@@ -397,16 +698,229 @@ const about: AboutContent = {
 	const $heroTitle = document.getElementById('hero-title') as HTMLInputElement
 	const $submitHeroBtn = document.getElementById('submit-hero-btn') as HTMLButtonElement
 
+	// Avatar elements
+	const $heroAvatarPreview = document.getElementById('hero-avatar-preview') as HTMLElement
+	const $heroImageInput = document.getElementById('hero-image-input') as HTMLInputElement
+	const $heroImageLabel = document.getElementById('hero-image-label') as HTMLElement
+	const $heroImageReset = document.getElementById('hero-image-reset') as HTMLButtonElement
+	const $heroImageUrl = document.getElementById('hero-image-url') as HTMLInputElement
+	const $heroImageHidden = document.getElementById('hero-image-hidden') as HTMLInputElement
+
+	// Social links elements
+	const $socialLinksList = document.getElementById('social-links-list') as HTMLElement
+	const $addSocialLinkBtn = document.getElementById('add-social-link-btn') as HTMLButtonElement
+
 	const heroSubtitleQuill = new Quill('#hero-subtitle-editor', {
 		theme: 'snow',
 		modules: { toolbar: toolbarOptions },
 	})
 
+	let currentSocialLinks: Array<{ label: string; url: string; icon: string }> = []
+
+	function updateAvatarDisplay(url: string) {
+		$heroImageHidden.value = url
+		$heroImageUrl.value = url
+		if (url) {
+			$heroAvatarPreview.style.backgroundImage = `url('${url}')`
+		} else {
+			$heroAvatarPreview.style.backgroundImage = `url('/assets/img/homer_04.jpeg')`
+		}
+	}
+
+	// Avatar upload
+	$heroImageInput.addEventListener('change', async () => {
+		const file = $heroImageInput.files?.[0]
+		if (!file) return
+
+		const originalLabel = $heroImageLabel.innerHTML
+		$heroImageLabel.innerHTML = '<span>Subiendo...</span>'
+		$heroImageInput.disabled = true
+
+		try {
+			const fd = new FormData()
+			fd.append('file', file)
+			fd.append('folder', 'hero')
+
+			const res = await fetch('/api/admin/upload-image', { method: 'POST', body: fd })
+			if (!res.ok) throw new Error(await res.text())
+
+			const data = await res.json()
+			updateAvatarDisplay(data.url)
+			Swal.fire({
+				icon: 'success',
+				title: 'Foto subida',
+				text: 'La foto se subió correctamente. Recuerda presionar "Guardar Cambios".',
+				timer: 2000,
+				showConfirmButton: false,
+			})
+		} catch (err) {
+			console.error(err)
+			Swal.fire({
+				icon: 'error',
+				title: 'Error al subir la imagen',
+				confirmButtonColor: 'var(--primary)',
+			})
+		} finally {
+			$heroImageLabel.innerHTML = originalLabel
+			$heroImageInput.disabled = false
+			$heroImageInput.value = ''
+		}
+	})
+
+	$heroImageUrl.addEventListener('input', () => {
+		updateAvatarDisplay($heroImageUrl.value.trim())
+	})
+
+	$heroImageReset.addEventListener('click', () => {
+		updateAvatarDisplay('')
+	})
+
+	// Render social links
+	function renderSocialLinks() {
+		$socialLinksList.innerHTML = ''
+
+		if (currentSocialLinks.length === 0) {
+			$socialLinksList.innerHTML = '<p class="section-hint" style="text-align: center; padding: 1rem;">No hay enlaces agregados aún.</p>'
+			return
+		}
+
+		currentSocialLinks.forEach((link, index) => {
+			const row = document.createElement('div')
+			row.className = 'social-link-row'
+
+			const isCustom = !PRESET_ICONS.some(p => p.icon === link.icon && p.icon !== 'custom')
+			const selectedValue = isCustom ? 'custom' : link.icon
+
+			let optionsHtml = PRESET_ICONS.map(p => `
+				<option value="${p.icon}" ${p.icon === selectedValue ? 'selected' : ''}>${p.label}</option>
+			`).join('')
+
+			row.innerHTML = `
+				<div class="social-link-icon-box" id="icon-box-${index}">
+					<i class="${link.icon || 'fas fa-link'}"></i>
+				</div>
+				<select class="social-link-icon-select" data-index="${index}">
+					${optionsHtml}
+				</select>
+				<input
+					type="text"
+					class="social-link-custom-icon"
+					data-index="${index}"
+					placeholder="Clase fa (ej: fab fa-gitlab)"
+					value="${link.icon}"
+					style="display: ${selectedValue === 'custom' ? 'block' : 'none'};"
+				/>
+				<input
+					type="text"
+					class="social-link-input-label"
+					data-index="${index}"
+					placeholder="Nombre (ej: LinkedIn)"
+					value="${link.label || ''}"
+					required
+				/>
+				<input
+					type="url"
+					class="social-link-input-url"
+					data-index="${index}"
+					placeholder="URL (ej: https://...)"
+					value="${link.url || ''}"
+					required
+				/>
+				<button type="button" class="social-link-remove-btn" data-index="${index}" title="Eliminar enlace">
+					<i class="fa fa-trash"></i>
+				</button>
+			`
+
+			$socialLinksList.appendChild(row)
+		})
+
+		// Attach events
+		$socialLinksList.querySelectorAll('.social-link-icon-select').forEach((select) => {
+			select.addEventListener('change', (e) => {
+				const target = e.target as HTMLSelectElement
+				const idx = parseInt(target.getAttribute('data-index') || '0', 10)
+				const row = target.closest('.social-link-row')
+				const customInput = row?.querySelector('.social-link-custom-icon') as HTMLInputElement
+				const iconBox = row?.querySelector('.social-link-icon-box i') as HTMLElement
+				const labelInput = row?.querySelector('.social-link-input-label') as HTMLInputElement
+
+				if (target.value === 'custom') {
+					customInput.style.display = 'block'
+					currentSocialLinks[idx].icon = customInput.value || 'fas fa-link'
+					if (iconBox) iconBox.className = currentSocialLinks[idx].icon
+				} else {
+					customInput.style.display = 'none'
+					currentSocialLinks[idx].icon = target.value
+					customInput.value = target.value
+					if (iconBox) iconBox.className = target.value
+
+					// If label is empty, suggest preset name
+					const preset = PRESET_ICONS.find(p => p.icon === target.value)
+					if (preset && !labelInput.value) {
+						labelInput.value = preset.label.replace(' / Sitio', '').replace(' / Twitter', '')
+						currentSocialLinks[idx].label = labelInput.value
+					}
+				}
+			})
+		})
+
+		$socialLinksList.querySelectorAll('.social-link-custom-icon').forEach((input) => {
+			input.addEventListener('input', (e) => {
+				const target = e.target as HTMLInputElement
+				const idx = parseInt(target.getAttribute('data-index') || '0', 10)
+				const row = target.closest('.social-link-row')
+				const iconBox = row?.querySelector('.social-link-icon-box i') as HTMLElement
+				currentSocialLinks[idx].icon = target.value.trim() || 'fas fa-link'
+				if (iconBox) iconBox.className = currentSocialLinks[idx].icon
+			})
+		})
+
+		$socialLinksList.querySelectorAll('.social-link-input-label').forEach((input) => {
+			input.addEventListener('input', (e) => {
+				const target = e.target as HTMLInputElement
+				const idx = parseInt(target.getAttribute('data-index') || '0', 10)
+				currentSocialLinks[idx].label = target.value
+			})
+		})
+
+		$socialLinksList.querySelectorAll('.social-link-input-url').forEach((input) => {
+			input.addEventListener('input', (e) => {
+				const target = e.target as HTMLInputElement
+				const idx = parseInt(target.getAttribute('data-index') || '0', 10)
+				currentSocialLinks[idx].url = target.value
+			})
+		})
+
+		$socialLinksList.querySelectorAll('.social-link-remove-btn').forEach((btn) => {
+			btn.addEventListener('click', (e) => {
+				const target = (e.target as HTMLElement).closest('.social-link-remove-btn') as HTMLElement
+				const idx = parseInt(target.getAttribute('data-index') || '0', 10)
+				currentSocialLinks.splice(idx, 1)
+				renderSocialLinks()
+			})
+		})
+	}
+
+	$addSocialLinkBtn.addEventListener('click', () => {
+		currentSocialLinks.push({
+			label: 'GitHub',
+			url: 'https://github.com/',
+			icon: 'fab fa-github',
+		})
+		renderSocialLinks()
+	})
+
 	$editHeroBtn.addEventListener('click', () => {
 		$heroBadge.value = landing.hero?.badge ?? ''
 		$heroTitle.value = landing.hero?.title ?? ''
+		updateAvatarDisplay(landing.hero?.image ?? '')
 		heroSubtitleQuill.setText('')
 		heroSubtitleQuill.clipboard.dangerouslyPasteHTML(landing.hero?.subtitleHtml ?? '')
+
+		// Clone social links array
+		currentSocialLinks = JSON.parse(JSON.stringify(landing.hero?.socialLinks ?? []))
+		renderSocialLinks()
+
 		openModal($heroModal)
 	})
 
@@ -423,9 +937,11 @@ const about: AboutContent = {
 		try {
 			const payload = {
 				hero: {
-					badge: $heroBadge.value,
-					title: $heroTitle.value,
+					badge: $heroBadge.value.trim(),
+					title: $heroTitle.value.trim(),
 					subtitleHtml: heroSubtitleQuill.root.innerHTML,
+					image: $heroImageHidden.value.trim(),
+					socialLinks: currentSocialLinks.filter(l => l.url.trim() !== '' && l.label.trim() !== ''),
 				},
 			}
 			await setDoc(doc(db, 'landing', 'content'), payload, { merge: true })
@@ -438,6 +954,7 @@ const about: AboutContent = {
 			})
 			window.location.reload()
 		} catch (err) {
+			console.error(err)
 			Swal.fire({
 				title: 'Error al guardar el hero.',
 				icon: 'error',
@@ -445,7 +962,7 @@ const about: AboutContent = {
 			})
 		} finally {
 			$submitHeroBtn.disabled = false
-			$submitHeroBtn.textContent = 'Guardar'
+			$submitHeroBtn.textContent = 'Guardar Cambios'
 		}
 	})
 

@@ -1,0 +1,716 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+import Input from '../../components/Form/Input.astro'
+
+import { getFirestore } from 'firebase-admin/firestore'
+import type { StackInterface } from '../../types'
+
+const db = getFirestore()
+
+const stacksSnap = await db.collection('stacks').orderBy('order', 'asc').get()
+
+const stacks = stacksSnap.docs.map(doc => {
+	const data = doc.data()
+	return {
+		id: doc.id,
+		name: data.name ?? '',
+		icon: data.icon ?? '',
+		darkIcon: data.darkIcon ?? '',
+		order: data.order ?? 0,
+		draft: data.draft ?? false,
+	}
+}) as StackInterface[]
+---
+
+<AdminLayout title="Stack Tecnológico">
+	<div class="admin-toolbar">
+		<div>
+			<h2>Stack Tecnológico</h2>
+			<p class="admin-toolbar__subtitle">Gestiona los lenguajes, frameworks y herramientas que se muestran en tu portfolio.</p>
+		</div>
+		<div class="admin-toolbar__actions">
+			<button type="button" class="button button--primary button--sm" id="new-stack-btn">
+				<i class="fa-solid fa-plus"></i>
+				<span>Nuevo stack</span>
+			</button>
+		</div>
+	</div>
+
+	<div class="admin-table-wrapper">
+		<table class="admin-table">
+			<thead>
+				<tr>
+					<th>Orden</th>
+					<th>Icono</th>
+					<th>Tecnología</th>
+					<th>Icono (Claro / Defecto)</th>
+					<th>Icono (Oscuro)</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody id="stacks-tbody">
+				{stacks.length === 0 && (
+					<tr id="empty-row">
+						<td colspan="7" class="admin-table__empty-state">
+							No hay tecnologías registradas aún. Puedes agregar una nueva o ejecutar el seeder.
+						</td>
+					</tr>
+				)}
+				{stacks.map(stack => (
+					<tr data-row-id={stack.id}>
+						<td><span class="admin-order-badge">{stack.order}</span></td>
+						<td>
+							<div class="stack-table-icons">
+								<div class="stack-thumb-preview" title="Icono modo claro">
+									<img src={stack.icon} alt={stack.name} />
+								</div>
+								{stack.darkIcon && (
+									<div class="stack-thumb-preview stack-thumb-preview--dark" title="Icono modo oscuro">
+										<img src={stack.darkIcon} alt={stack.name} />
+									</div>
+								)}
+							</div>
+						</td>
+						<td><strong>{stack.name}</strong></td>
+						<td class="admin-table__truncate" title={stack.icon}><code>{stack.icon}</code></td>
+						<td class="admin-table__truncate" title={stack.darkIcon}>
+							{stack.darkIcon ? <code>{stack.darkIcon}</code> : <span class="admin-table__empty">—</span>}
+						</td>
+						<td>
+							<span class:list={['admin-badge', { 'admin-badge--success': !stack.draft }]}>
+								{stack.draft ? 'Borrador' : 'Público'}
+							</span>
+						</td>
+						<td>
+							<div class="admin-table__actions">
+								<button
+									type="button"
+									class="button button--sm button--secondary-o"
+									data-action="toggle"
+									data-id={stack.id}
+									data-draft={String(stack.draft)}
+								>{stack.draft ? 'Publicar' : 'Despublicar'}</button>
+								<button
+									type="button"
+									class="button button--sm button--primary-o"
+									data-action="edit"
+									data-id={stack.id}
+									data-name={stack.name}
+									data-icon={stack.icon}
+									data-dark-icon={stack.darkIcon}
+									data-order={String(stack.order)}
+									data-draft={String(stack.draft)}
+								>Editar</button>
+								<button type="button" class="button button--sm button--dark-o" data-action="delete" data-id={stack.id}>Eliminar</button>
+							</div>
+						</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Modal Crear/Editar Stack -->
+	<div class="admin-modal" id="stack-modal">
+		<div class="admin-modal__content">
+			<button type="button" class="admin-modal__close" id="close-stack-modal">
+				<i class="fa fa-times"></i>
+			</button>
+			<h2 id="stack-modal-title">Nuevo Stack</h2>
+			<form id="form-stack">
+				<div class="grid-2-cols">
+					<Input type="text" id="name" label="Nombre de la tecnología" placeholder="Astro, React, Node.js..." required />
+					<Input type="number" id="order" label="Orden (menor = primero)" placeholder="1" required />
+				</div>
+
+				<!-- Icono principal -->
+				<div class="icon-upload-group">
+					<label class="editor-label">Icono Principal (Modo Claro / Predeterminado)</label>
+					<div class="icon-upload-row">
+						<div class="icon-preview-box" id="icon-preview-box">
+							<img id="icon-preview" src="/assets/img/code.jpg" alt="" />
+						</div>
+						<div class="icon-upload-inputs">
+							<div class="icon-upload-actions">
+								<label class="button button--secondary-o button--sm" for="icon-file-input" id="icon-file-label">
+									<i class="fa-solid fa-cloud-arrow-up"></i>
+									<span>Subir SVG / PNG</span>
+								</label>
+								<input type="file" id="icon-file-input" accept="image/*,.svg" hidden />
+							</div>
+							<Input
+								type="text"
+								id="icon"
+								label="O escribe la ruta o URL"
+								placeholder="/assets/img/astro-icon.svg"
+								required
+							/>
+						</div>
+					</div>
+				</div>
+
+				<!-- Icono modo oscuro (opcional) -->
+				<div class="icon-upload-group">
+					<label class="editor-label">Icono Variante Modo Oscuro (Opcional)</label>
+					<p class="section-hint">Útil si el icono original es negro y se pierde en fondos oscuros.</p>
+					<div class="icon-upload-row">
+						<div class="icon-preview-box icon-preview-box--dark" id="dark-icon-preview-box">
+							<img id="dark-icon-preview" src="/assets/img/code.jpg" alt="" />
+						</div>
+						<div class="icon-upload-inputs">
+							<div class="icon-upload-actions">
+								<label class="button button--secondary-o button--sm" for="dark-icon-file-input" id="dark-icon-file-label">
+									<i class="fa-solid fa-cloud-arrow-up"></i>
+									<span>Subir SVG / PNG</span>
+								</label>
+								<input type="file" id="dark-icon-file-input" accept="image/*,.svg" hidden />
+							</div>
+							<Input
+								type="text"
+								id="dark-icon"
+								label="O escribe la ruta o URL"
+								placeholder="/assets/img/astro-icon-white.svg"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<div class="admin-checkbox">
+					<input type="checkbox" id="draft" name="draft" />
+					<label for="draft">Guardar como borrador (oculto del sitio)</label>
+				</div>
+
+				<div class="admin-modal__actions">
+					<button type="submit" class="button button--primary" id="submit-stack-btn">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</AdminLayout>
+
+<style lang="scss">
+	@use '../../styles/mixins/theme' as theme;
+
+	.admin-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 2rem;
+		flex-wrap: wrap;
+		gap: 1rem;
+
+		h2 {
+			font-size: 2.2rem;
+		}
+
+		&__subtitle {
+			font-size: 1.3rem;
+			@include theme.theme-property('color', 'legendText');
+			margin-top: .3rem;
+		}
+
+		&__actions {
+			display: flex;
+			gap: 1rem;
+		}
+	}
+
+	.admin-table-wrapper {
+		@include theme.theme-property('background-color', 'sectionBg');
+		@include theme.theme-property('border', 'figureBorder');
+		border-radius: 10px;
+		overflow-x: auto;
+	}
+
+	.admin-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 1.4rem;
+
+		th, td {
+			text-align: left;
+			padding: 1.2rem 1.5rem;
+			white-space: nowrap;
+		}
+
+		thead th {
+			@include theme.theme-property('background-color', 'contactBg');
+			@include theme.theme-property('color', 'legendText');
+			font-weight: 600;
+			@include theme.theme-property('border-bottom', 'figureBorder');
+		}
+
+		tbody tr:not(:last-child) td {
+			@include theme.theme-property('border-bottom', 'figureBorder');
+		}
+	}
+
+	.stack-table-icons {
+		display: flex;
+		align-items: center;
+		gap: .6rem;
+	}
+
+	.stack-thumb-preview {
+		width: 36px;
+		height: 36px;
+		border-radius: 6px;
+		padding: 4px;
+		background-color: #f8fafc;
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		img {
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain;
+		}
+
+		&--dark {
+			background-color: #0f172a;
+			border-color: rgba(255, 255, 255, 0.15);
+		}
+	}
+
+	.admin-order-badge {
+		display: inline-block;
+		padding: .2rem .7rem;
+		border-radius: 4px;
+		font-weight: 600;
+		font-size: 1.2rem;
+		@include theme.theme-property('background-color', 'contactBg');
+		@include theme.theme-property('border', 'figureBorder');
+	}
+
+	.admin-table__truncate {
+		max-width: 220px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.admin-table__empty {
+		@include theme.theme-property('color', 'legendText');
+	}
+
+	.admin-table__empty-state {
+		text-align: center;
+		@include theme.theme-property('color', 'legendText');
+		padding: 3rem;
+	}
+
+	.admin-table__actions {
+		display: flex;
+		gap: .6rem;
+	}
+
+	.admin-badge {
+		display: inline-block;
+		padding: .2rem .75rem;
+		border-radius: 20px;
+		font-size: 1.2rem;
+		font-weight: 500;
+		background-color: rgba(148, 163, 184, .2);
+		color: #94a3b8;
+
+		&--success {
+			background-color: rgba(34, 197, 94, .15);
+			color: #22c55e;
+		}
+	}
+
+	.grid-2-cols {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.2rem;
+
+		@media (max-width: 600px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.section-hint {
+		font-size: 1.2rem;
+		@include theme.theme-property('color', 'legendText');
+		margin-top: -.4rem;
+		margin-bottom: .8rem;
+	}
+
+	.icon-upload-group {
+		margin-bottom: 1.5rem;
+		padding: 1.2rem;
+		border-radius: 8px;
+		@include theme.theme-property('background-color', 'contactBg');
+		@include theme.theme-property('border', 'figureBorder');
+	}
+
+	.icon-upload-row {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+
+		@media (max-width: 600px) {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+
+	.icon-preview-box {
+		width: 64px;
+		height: 64px;
+		border-radius: 8px;
+		padding: 8px;
+		background-color: #ffffff;
+		border: 1px solid rgba(0, 0, 0, 0.15);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+
+		img {
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain;
+		}
+
+		&--dark {
+			background-color: #0b0f19;
+			border-color: rgba(255, 255, 255, 0.15);
+		}
+	}
+
+	.icon-upload-inputs {
+		flex: 1;
+		width: 100%;
+
+		:global(.group) {
+			margin-bottom: 0;
+		}
+	}
+
+	.icon-upload-actions {
+		margin-bottom: .8rem;
+
+		.button i {
+			margin: 0;
+			font-size: 1.3rem;
+		}
+	}
+
+	.admin-checkbox {
+		display: flex;
+		align-items: center;
+		gap: .8rem;
+		margin: 1.5rem 0;
+		font-size: 1.4rem;
+
+		input[type="checkbox"] {
+			width: 1.8rem;
+			height: 1.8rem;
+			cursor: pointer;
+			accent-color: var(--primary);
+		}
+
+		label {
+			cursor: pointer;
+			@include theme.theme-property('color', 'headings');
+		}
+	}
+
+	.admin-modal {
+		display: none;
+		position: fixed;
+		inset: 0;
+		@include theme.theme-property('background-color', 'modalBg');
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+		z-index: 100;
+	}
+
+	.admin-modal.open {
+		display: flex;
+	}
+
+	.admin-modal__content {
+		position: relative;
+		width: min(620px, 100%);
+		max-height: 90vh;
+		overflow-y: auto;
+		@include theme.theme-property('background-color', 'sectionBg');
+		border-radius: 10px;
+		padding: 2.5rem;
+	}
+
+	.admin-modal__close {
+		position: absolute;
+		top: 1.5rem;
+		right: 1.5rem;
+		background: none;
+		border: none;
+		font-size: 1.8rem;
+		cursor: pointer;
+		@include theme.theme-property('color', 'legendText');
+	}
+
+	.admin-modal__actions {
+		margin-top: 1.5rem;
+	}
+
+	.admin-modal h2 {
+		font-size: 2rem;
+		margin-bottom: 2rem;
+	}
+
+	.editor-label {
+		display: block;
+		margin-bottom: .75rem;
+		font-size: 1.4rem;
+		font-weight: 500;
+		font-family: "Poppins", sans-serif;
+	}
+</style>
+
+<script>
+	import {
+		collection,
+		addDoc,
+		doc,
+		updateDoc,
+		deleteDoc,
+		serverTimestamp,
+	} from 'firebase/firestore'
+	import { db } from '../../config/firebase'
+	import Swal from 'sweetalert2'
+
+	const $modal = document.getElementById('stack-modal') as HTMLElement
+	const $modalTitle = document.getElementById('stack-modal-title') as HTMLElement
+	const $closeModal = document.getElementById('close-stack-modal') as HTMLElement
+	const $newBtn = document.getElementById('new-stack-btn') as HTMLElement
+	const $form = document.getElementById('form-stack') as HTMLFormElement
+	const $tbody = document.getElementById('stacks-tbody') as HTMLElement
+	const $submitBtn = document.getElementById('submit-stack-btn') as HTMLButtonElement
+
+	const $name = document.getElementById('name') as HTMLInputElement
+	const $icon = document.getElementById('icon') as HTMLInputElement
+	const $darkIcon = document.getElementById('dark-icon') as HTMLInputElement
+	const $order = document.getElementById('order') as HTMLInputElement
+	const $draft = document.getElementById('draft') as HTMLInputElement
+
+	const $iconPreview = document.getElementById('icon-preview') as HTMLImageElement
+	const $darkIconPreview = document.getElementById('dark-icon-preview') as HTMLImageElement
+	const $iconFileInput = document.getElementById('icon-file-input') as HTMLInputElement
+	const $iconFileLabel = document.getElementById('icon-file-label') as HTMLElement
+	const $darkIconFileInput = document.getElementById('dark-icon-file-input') as HTMLInputElement
+	const $darkIconFileLabel = document.getElementById('dark-icon-file-label') as HTMLElement
+
+	let editingId: string | null = null
+
+	const openModal = () => {
+		$modal.classList.add('open')
+		document.body.style.overflow = 'hidden'
+	}
+
+	const closeModal = () => {
+		$modal.classList.remove('open')
+		document.body.style.overflow = ''
+		$form.reset()
+		editingId = null
+		updatePreviews()
+	}
+
+	function updatePreviews() {
+		$iconPreview.src = $icon.value.trim() || '/assets/img/code.jpg'
+		$darkIconPreview.src = $darkIcon.value.trim() || '/assets/img/code.jpg'
+	}
+
+	$icon.addEventListener('input', updatePreviews)
+	$darkIcon.addEventListener('input', updatePreviews)
+
+	// File uploads
+	async function handleFileUpload(fileInput: HTMLInputElement, labelEl: HTMLElement, targetInput: HTMLInputElement) {
+		const file = fileInput.files?.[0]
+		if (!file) return
+
+		const originalLabel = labelEl.innerHTML
+		labelEl.innerHTML = '<span>Subiendo...</span>'
+		fileInput.disabled = true
+
+		try {
+			const fd = new FormData()
+			fd.append('file', file)
+			fd.append('folder', 'stacks')
+
+			const res = await fetch('/api/admin/upload-image', { method: 'POST', body: fd })
+			if (!res.ok) throw new Error(await res.text())
+
+			const data = await res.json()
+			targetInput.value = data.url
+			updatePreviews()
+			Swal.fire({
+				icon: 'success',
+				title: 'Icono subido',
+				text: 'El icono se subió exitosamente a ImageKit.',
+				timer: 1500,
+				showConfirmButton: false,
+			})
+		} catch (err) {
+			console.error(err)
+			Swal.fire({
+				icon: 'error',
+				title: 'Error al subir el archivo',
+				confirmButtonColor: 'var(--primary)',
+			})
+		} finally {
+			labelEl.innerHTML = originalLabel
+			fileInput.disabled = false
+			fileInput.value = ''
+		}
+	}
+
+	$iconFileInput.addEventListener('change', () => {
+		handleFileUpload($iconFileInput, $iconFileLabel, $icon)
+	})
+
+	$darkIconFileInput.addEventListener('change', () => {
+		handleFileUpload($darkIconFileInput, $darkIconFileLabel, $darkIcon)
+	})
+
+	$newBtn.addEventListener('click', () => {
+		editingId = null
+		$modalTitle.textContent = 'Nuevo Stack'
+		$form.reset()
+		$order.value = '1'
+		updatePreviews()
+		openModal()
+	})
+
+	$closeModal.addEventListener('click', closeModal)
+	$modal.addEventListener('click', e => {
+		if (e.target === $modal) closeModal()
+	})
+
+	$form.addEventListener('submit', async e => {
+		e.preventDefault()
+		$submitBtn.disabled = true
+		$submitBtn.textContent = 'Guardando...'
+
+		const payload = {
+			name: $name.value.trim(),
+			icon: $icon.value.trim(),
+			darkIcon: $darkIcon.value.trim(),
+			order: Number($order.value),
+			draft: $draft.checked,
+		}
+
+		try {
+			if (editingId) {
+				await updateDoc(doc(db, 'stacks', editingId), payload)
+			} else {
+				await addDoc(collection(db, 'stacks'), {
+					...payload,
+					createdAt: serverTimestamp(),
+				})
+			}
+
+			closeModal()
+			await Swal.fire({
+				title: editingId ? 'Stack actualizado.' : 'Stack creado.',
+				icon: 'success',
+				confirmButtonColor: 'var(--secondary)',
+			})
+			window.location.reload()
+		} catch (err) {
+			console.error(err)
+			Swal.fire({
+				title: 'Error al guardar el stack.',
+				icon: 'error',
+				confirmButtonColor: 'var(--primary)',
+			})
+		} finally {
+			$submitBtn.disabled = false
+			$submitBtn.textContent = 'Guardar'
+		}
+	})
+
+	// Delegación de eventos en la tabla (editar, toggle, eliminar)
+	$tbody.addEventListener('click', async e => {
+		const target = e.target as HTMLElement
+		const btn = target.closest<HTMLButtonElement>('button[data-action]')
+		if (!btn) return
+
+		const action = btn.dataset.action
+		const id = btn.dataset.id!
+
+		if (action === 'edit') {
+			editingId = id
+			$modalTitle.textContent = 'Editar Stack'
+			$name.value = btn.dataset.name ?? ''
+			$icon.value = btn.dataset.icon ?? ''
+			$darkIcon.value = btn.dataset.darkIcon ?? ''
+			$order.value = btn.dataset.order ?? '0'
+			$draft.checked = btn.dataset.draft === 'true'
+			updatePreviews()
+			openModal()
+		}
+
+		if (action === 'toggle') {
+			const currentDraft = btn.dataset.draft === 'true'
+			btn.disabled = true
+
+			try {
+				await updateDoc(doc(db, 'stacks', id), { draft: !currentDraft })
+				window.location.reload()
+			} catch (err) {
+				console.error(err)
+				Swal.fire({
+					title: 'Error al cambiar estado.',
+					icon: 'error',
+					confirmButtonColor: 'var(--primary)',
+				})
+				btn.disabled = false
+			}
+		}
+
+		if (action === 'delete') {
+			const result = await Swal.fire({
+				title: '¿Eliminar stack?',
+				text: 'Esta acción no se puede deshacer.',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: 'var(--primary)',
+				cancelButtonColor: '#64748b',
+				confirmButtonText: 'Sí, eliminar',
+				cancelButtonText: 'Cancelar',
+			})
+
+			if (!result.isConfirmed) return
+
+			btn.disabled = true
+
+			try {
+				await deleteDoc(doc(db, 'stacks', id))
+				document.querySelector(`[data-row-id="${id}"]`)?.remove()
+				if ($tbody.querySelectorAll('tr[data-row-id]').length === 0) {
+					$tbody.innerHTML = '<tr id="empty-row"><td colspan="7" class="admin-table__empty-state">No hay tecnologías aún.</td></tr>'
+				}
+				Swal.fire({
+					title: 'Eliminado.',
+					icon: 'success',
+					timer: 1500,
+					showConfirmButton: false,
+				})
+			} catch (err) {
+				console.error(err)
+				Swal.fire({
+					title: 'Error al eliminar el stack.',
+					icon: 'error',
+					confirmButtonColor: 'var(--primary)',
+				})
+				btn.disabled = false
+			}
+		}
+	})
+</script>

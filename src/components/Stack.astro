@@ -1,60 +1,54 @@
 ---
-const techs = [
-  {
-    path: '/assets/img/nodejs-icon.svg',
-    tech: 'NodeJS'
-  },
-  {
-    path: '/assets/img/astro-icon.svg',
-    darkPath: '/assets/img/astro-icon-white.svg',
-    tech: 'Astro'
-  },
-  {
-    path: '/assets/img/react-icon.svg',
-    tech: 'React'
-  },
-  {
-    path: '/assets/img/sass-icon.svg',
-    tech: 'Sass'
-  },
-  {
-    path: '/assets/img/laravel-icon.svg',
-    tech: 'Laravel'
-  },
-  {
-    path: '/assets/img/php-icon.svg',
-    tech: 'PHP'
-  },
-  {
-    path: '/assets/img/javascript-icon.svg',
-    tech: 'JavaScript'
-  },
-  {
-    path: '/assets/img/typescript-icon.svg',
-    tech: 'TypeScript'
-  },
-  {
-    path: '/assets/img/wordpress-icon.svg',
-    darkPath: '/assets/img/wordpress-icon-white.svg',
-    tech: 'Wordpress'
-  },
-  {
-    path: '/assets/img/mysql-icon.svg',
-    tech: 'MySQL'
-  },
-  {
-    path: '/assets/img/nextjs-icon.svg',
-    tech: 'NextJS'
-  },
-  {
-    path: '/assets/img/firebase-icon.svg',
-    tech: 'Firebase'
-  },
-]
+import { db } from '../config/firebase'
+import { collection, getDocs, query, orderBy } from 'firebase/firestore'
+import type { StackInterface } from '../types'
+import defaultStacks from '../data/stacks.json'
+
+let stacks: Array<{ path: string; darkPath?: string; tech: string }> = []
+
+try {
+  const q = query(collection(db, 'stacks'), orderBy('order', 'asc'))
+  const querySnapshot = await getDocs(q)
+
+  const dbStacks = querySnapshot.docs
+    .map(doc => {
+      const data = doc.data()
+      return {
+        id: doc.id,
+        name: data.name ?? '',
+        icon: data.icon ?? '',
+        darkIcon: data.darkIcon ?? '',
+        order: data.order ?? 0,
+        draft: data.draft ?? false,
+      }
+    })
+    .filter(item => !item.draft) as StackInterface[]
+
+  if (dbStacks.length > 0) {
+    stacks = dbStacks.map(s => ({
+      path: s.icon,
+      darkPath: s.darkIcon || undefined,
+      tech: s.name,
+    }))
+  } else {
+    stacks = defaultStacks.map(s => ({
+      path: s.icon,
+      darkPath: s.darkIcon || undefined,
+      tech: s.name,
+    }))
+  }
+} catch (e) {
+  stacks = defaultStacks.map(s => ({
+    path: s.icon,
+    darkPath: s.darkIcon || undefined,
+    tech: s.name,
+  }))
+}
 ---
+
 <ul class="l-stack">
   {
-    techs.map(({ path, darkPath, tech }) => (
+    stacks.map(({ path, darkPath, tech }) => (
       <li class="l-stack__item">
         <figure>
           {

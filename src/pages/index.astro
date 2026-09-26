@@ -21,6 +21,12 @@ const hero: HeroContent = {
 	badge: landingData.hero?.badge || 'Hola! yo soy',
 	title: landingData.hero?.title || 'Homer Moncayo',
 	subtitleHtml: landingData.hero?.subtitleHtml || 'Un competente <strong>Programador web FullStack</strong>, apacionado por el mundo del software y con más de 5 años de experiencia.',
+	image: landingData.hero?.image || '',
+	socialLinks: landingData.hero?.socialLinks || [
+		{ label: 'LinkedIn', url: 'https://www.linkedin.com/in/homer-moncayo', icon: 'fab fa-linkedin' },
+		{ label: 'GitHub', url: 'https://github.com/Homer1020/', icon: 'fab fa-github' },
+		{ label: 'CodePen', url: 'https://codepen.io/homer-moncayo', icon: 'fab fa-codepen' },
+	],
 }
 
 const about: AboutContent = {
@@ -31,7 +37,13 @@ const about: AboutContent = {
 ---
 
 <Layout title="Homer Developer">
-	<Hero badge={hero.badge} title={hero.title} subtitleHtml={hero.subtitleHtml} />
+	<Hero
+		badge={hero.badge}
+		title={hero.title}
+		subtitleHtml={hero.subtitleHtml}
+		image={hero.image}
+		socialLinks={hero.socialLinks}
+	/>
 	<section class="p-section bg-white l-about" id="sobre-mi">
 		<div class="container">
 			<div class="l-about__media">

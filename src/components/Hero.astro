@@ -7,7 +7,19 @@ const {
   badge = 'Hola! yo soy',
   title = 'Homer Moncayo',
   subtitleHtml = 'Un competente <strong>Programador web FullStack</strong>, apacionado por el mundo del software y con más de 5 años de experiencia.',
+  image = '',
+  socialLinks = [
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/homer-moncayo', icon: 'fab fa-linkedin' },
+    { label: 'GitHub', url: 'https://github.com/Homer1020/', icon: 'fab fa-github' },
+    { label: 'CodePen', url: 'https://codepen.io/homer-moncayo', icon: 'fab fa-codepen' },
+  ],
 } = Astro.props
+
+const linksToRender = socialLinks && socialLinks.length > 0 ? socialLinks : [
+  { label: 'LinkedIn', url: 'https://www.linkedin.com/in/homer-moncayo', icon: 'fab fa-linkedin' },
+  { label: 'GitHub', url: 'https://github.com/Homer1020/', icon: 'fab fa-github' },
+  { label: 'CodePen', url: 'https://codepen.io/homer-moncayo', icon: 'fab fa-codepen' },
+]
 ---
 
 <div class="hero">
@@ -16,18 +28,23 @@ const {
       <p class="badge">{badge}</p>
       <h1 class="hero__title">{title}</h1>
       <p class="hero__subtitle" set:html={subtitleHtml} />
-      <a href="https://www.linkedin.com/in/homer-moncayo" target="_blank" class="social-link" title="LinkedIn">
-        <i class="fab fa-linkedin"></i>
-      </a>
-      <a href="https://github.com/Homer1020/" target="_blank" class="social-link" title="GitHub">
-        <i class="fab fa-github"></i>
-      </a>
-      <a href="https://codepen.io/homer-moncayo" target="_blank" class="social-link" title="CodePen">
-        <i class="fab fa-codepen"></i>
-      </a>
+      {linksToRender.map((link) => (
+        <a
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-link"
+          title={link.label}
+        >
+          <i class={link.icon}></i>
+        </a>
+      ))}
     </div>
     <div>
-      <div class="hero__img"></div>
+      <div
+        class="hero__img"
+        style={image ? `background-image: url('${image}');` : undefined}
+      ></div>
     </div>
   </div>
 

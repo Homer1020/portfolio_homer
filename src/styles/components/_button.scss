@@ -32,6 +32,8 @@
   transition: all .2s ease;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  gap: .8rem;
   cursor: pointer;
   border: none;
   background-color: transparent;
@@ -43,26 +45,31 @@
 
   &--sm {
     font-size: 1.4rem;
+    gap: .7rem;
   }
 
   &--md {
     font-size: 1.8rem;
     font-weight: 500;
+    gap: .9rem;
   }
 
   i {
-    font-size: 1.8rem;
-    margin-left: 1rem;
+    font-size: 1.3rem;
+    line-height: 1;
+    margin: 0;
   }
 
   svg {
-    width: 1.4em;
-    margin-left: .7rem;
+    width: 1.3em;
+    height: 1.3em;
+    margin: 0;
   }
 
   &--text-small {
     font-size: 14px;
     padding: 1em 1.5em;
+    gap: .6rem;
   }
 
   &--primary {

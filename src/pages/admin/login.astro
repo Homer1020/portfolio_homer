@@ -3,10 +3,11 @@ import AuthLayout from '../../layouts/AuthLayout.astro'
 import Input from '../../components/Form/Input.astro'
 ---
 
-<AuthLayout title="Login">
+<AuthLayout title="Iniciar sesión">
 	<div class="admin-auth">
 		<div class="admin-auth__card">
-			<span class="admin-auth__logo">PANEL</span>
+			<span class="admin-auth__logo">ADMIN PANEL</span>
+			<span class="admin-auth__subtitle">Ingresa tus credenciales para administrar el sitio</span>
 			<form id="form-login">
 				<Input
 					type="email"
@@ -22,10 +23,17 @@ import Input from '../../components/Form/Input.astro'
 					placeholder="••••••••"
 					required
 				/>
-				<button type="submit" class="button button--primary button--block">
+				<button type="submit" class="button button--primary button--block" id="btn-submit">
 					Entrar
 				</button>
 			</form>
+
+			<div class="admin-auth__footer">
+				<a href="/" class="admin-auth__back">
+					<i class="fa-solid fa-arrow-left"></i>
+					<span>Volver a la landing</span>
+				</a>
+			</div>
 		</div>
 	</div>
 </AuthLayout>
@@ -42,10 +50,10 @@ import Input from '../../components/Form/Input.astro'
 <script>
   import { signInWithEmailAndPassword } from "firebase/auth";
   import { auth } from "../../config/firebase";
+  import Swal from "sweetalert2";
 
   async function handleLogin(email: string, password: string) {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
     const idToken = await userCredential.user.getIdToken();
 
     const res = await fetch("/api/auth/signin", {
@@ -55,21 +63,41 @@ import Input from '../../components/Form/Input.astro'
 
     if (res.ok) {
       window.location.href = "/admin";
+    } else {
+      throw new Error("Error al crear sesión en el servidor");
     }
   }
 
   const form = document.getElementById("form-login") as HTMLFormElement;
+  const btnSubmit = document.getElementById("btn-submit") as HTMLButtonElement;
 
-    form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const email = (document.getElementById("email") as HTMLInputElement).value;
-        const password = (document.getElementById("password") as HTMLInputElement).value;
-    
-        try {
-            await handleLogin(email, password);
-        } catch (error) {
-            console.error("Error during login:", error);
-            alert("Error al iniciar sesión. Por favor, verifica tus credenciales.");
-        }
-    });
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = (document.getElementById("email") as HTMLInputElement).value;
+    const password = (document.getElementById("password") as HTMLInputElement).value;
+
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = "Iniciando sesión...";
+
+    try {
+      await handleLogin(email, password);
+    } catch (error: any) {
+      console.error("Error during login:", error);
+      let message = "Error al iniciar sesión. Por favor, verifica tus credenciales.";
+      if (error?.code === "auth/invalid-credential" || error?.code === "auth/user-not-found" || error?.code === "auth/wrong-password") {
+        message = "Credenciales incorrectas. Verifica tu correo y contraseña.";
+      } else if (error?.code === "auth/too-many-requests") {
+        message = "Demasiados intentos fallidos. Intenta más tarde.";
+      }
+
+      Swal.fire({
+        icon: "error",
+        title: "No se pudo iniciar sesión",
+        text: message,
+        confirmButtonColor: "var(--primary)",
+      });
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = "Entrar";
+    }
+  });
 </script>

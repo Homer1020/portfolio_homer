@@ -2,7 +2,7 @@ export interface TestimonialInterface {
   id: string
   role: string
   name: string
-  testimonial: string,
+  testimonial: string
   avatar: string
   published?: boolean
 }
@@ -17,16 +17,33 @@ export interface ExperienceInterface {
   draft?: boolean
 }
 
+export interface HeroSocialLink {
+  label: string
+  url: string
+  icon: string
+}
+
 export interface HeroContent {
   badge: string
   title: string
   subtitleHtml: string
+  image?: string
+  socialLinks?: HeroSocialLink[]
 }
 
 export interface AboutContent {
   badge: string
   title: string
   bodyHtml: string
+}
+
+export interface StackInterface {
+  id: string
+  name: string
+  icon: string
+  darkIcon?: string
+  order?: number
+  draft?: boolean
 }
 
 export interface ProjectInterface {

@@ -5,7 +5,7 @@ import { getFirestore } from "firebase-admin/firestore";
 
 const db = getFirestore();
 
-const [testimoniosSnap, proyectosSnap, visitasSnap, visitasSnapshot] =
+const [testimoniosSnap, proyectosSnap, stacksSnap, visitasSnap, visitasSnapshot] =
 	await Promise.all([
 		db
 			.collection("testimonials")
@@ -13,16 +13,19 @@ const [testimoniosSnap, proyectosSnap, visitasSnap, visitasSnapshot] =
 			.count()
 			.get(),
 		db.collection("projects").count().get(),
+		db.collection("stacks").count().get(),
 		db.collection("analytics").count().get(),
 		db.collection("analytics").orderBy("fecha", "desc").limit(10).get(),
 	]);
 
 const totalTestimonios = testimoniosSnap.data().count;
 const totalProyectos = proyectosSnap.data().count;
+const totalStacks = stacksSnap.data().count;
 const totalVisitas = visitasSnap.data().count;
 
 const stats = [
 	{ label: "Proyectos", value: totalProyectos },
+	{ label: "Tecnologías (Stacks)", value: totalStacks },
 	{ label: "Testimonios pendientes", value: totalTestimonios },
 	{ label: "Visitas totales", value: totalVisitas },
 ];
