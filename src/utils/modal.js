@@ -1,19 +1,23 @@
 export const generateProjectTemplate = ({ title, image, description, stacks, github, url, gallery }) => {
+  const allImages = [image, ...(gallery || [])]
+  const uniqueImages = [...new Set(allImages)]
+  const hasSlider = uniqueImages.length > 1
+
+  const bannerHtml = hasSlider
+    ? `<div class="project-slider owl-carousel">
+        ${uniqueImages.map(imgUrl => `
+          <div data-dot="<img src='${imgUrl}'>">
+            <img class="banner banner--slide" src="${imgUrl}" alt="${title || ''}">
+          </div>
+        `).join('')}
+      </div>`
+    : `<img class="banner" src="${image}" alt='${title || ''}'>`
+
   return `
-    <img class="banner" src="${image}" alt='${title}'>
+    ${bannerHtml}
     <div>
       <h2 class="title">${title || ''}</h2>
       <div class="styled-content">${description || '<p>Inserte contenido aqui</p>'}</div>
-      ${gallery && gallery.length ? `
-        <h3 class="subtitle">Galería:</h3>
-        <div class="modal-gallery">
-          ${gallery.map(url => (
-    `<button type="button" class="modal-gallery__item${url === image ? ' active' : ''}" data-image="${url}">
-              <img src="${url}" alt="${title || ''}" loading="lazy">
-            </button>`
-  )).join('')}
-        </div>
-      ` : ''}
       <h3 class="subtitle">Tecnologías:</h3>
       <ul class="list">
         ${stacks.map(stack => (
@@ -52,19 +56,6 @@ const handleCloseModal = (e) => {
   }
 }
 
-const handleGalleryClick = (e) => {
-  const $item = e.target.closest('.modal-gallery__item')
-  if (!$item) return
-
-  const $modal = $item.closest('.modal')
-  const $banner = $modal?.querySelector('.banner')
-  if (!$banner || !$item.dataset.image) return
-
-  $banner.src = $item.dataset.image
-  $modal.querySelectorAll('.modal-gallery__item.active').forEach($el => $el.classList.remove('active'))
-  $item.classList.add('active')
-}
-
 export const showModal = (content, config = {}) => {
   const $modal = config?.modalSelector
     ? document.getElementById(config.modalSelector)
@@ -83,7 +74,6 @@ export const showModal = (content, config = {}) => {
   `.trim()
 
   $modal.addEventListener('click', handleCloseModal)
-  $modal.addEventListener('click', handleGalleryClick)
 
   document.body.style.overflow = 'hidden'
 
@@ -91,3 +81,24 @@ export const showModal = (content, config = {}) => {
 }
 
 export const generateModal = (project) => showModal(generateProjectTemplate(project))
+
+export const initModalSlider = ($modal) => {
+  if (window.$ && window.$.fn.owlCarousel) {
+    const $slider = window.$($modal).find('.project-slider');
+    if ($slider.length) {
+      $slider.owlCarousel({
+        items: 1,
+        dotsData: true,
+        dots: true,
+        nav: false,
+        margin: 20,
+        autoHeight: true
+      });
+
+      // Aseguramos que el clic funcione siempre
+      $slider.on('click', '.owl-dot', function() {
+        $slider.trigger('to.owl.carousel', [window.$(this).index(), 300]);
+      });
+    }
+  }
+}

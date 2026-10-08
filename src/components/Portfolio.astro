@@ -89,7 +89,7 @@ const projects = (
 <script>
   import Isotope from "isotope-layout";
   import imagesLoaded from "imagesloaded";
-  import { generateModal } from "../utils/modal";
+  import { generateModal, initModalSlider } from "../utils/modal";
   import type { ProjectInterface } from "../types";
 
   const $grid = document.getElementById("portfolio") as HTMLElement;
@@ -143,7 +143,10 @@ const projects = (
 
       if (project) {
         const $modal = generateModal(project);
-        if ($modal) document.body.appendChild($modal);
+        if ($modal) {
+          document.body.appendChild($modal);
+          initModalSlider($modal);
+        }
       }
     }
   };
