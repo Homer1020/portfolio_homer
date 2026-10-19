@@ -1,8 +1,8 @@
 ---
-import '../styles/style.scss'
-import Header from '../components/Header.astro'
-import Footer from '../components/Footer.astro'
-import { registrarVisita } from '../utils/analytics';
+import "../styles/style.scss";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { registrarVisita } from "../utils/analytics";
 
 interface Props {
 	title: string;
@@ -18,9 +18,12 @@ await registrarVisita(Astro);
 	<head>
 		<script is:inline>
 			(function () {
-				var theme = localStorage.getItem('theme');
-				if (theme !== 'dark' && theme !== 'light') {
-					theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				var theme = localStorage.getItem("theme");
+				if (theme !== "dark" && theme !== "light") {
+					theme = window.matchMedia("(prefers-color-scheme: dark)")
+						.matches
+						? "dark"
+						: "light";
 				}
 				document.documentElement.classList.add(theme);
 			})();
@@ -28,33 +31,66 @@ await registrarVisita(Astro);
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<meta name="author" content="Homer Moncayo">
-		<meta name="keywords" content="programador, fullstack, frontend, sistemas informaticos, venezuela, caracas, diseño web, portafolio, homer moncayo, developer, HTML, Laravel, NodeJS">
-		<meta name="description" content="Visualiza mis proyectos y contactame! Soy Homer Moncayo, programador web FrontEnd competente con más de 4 años experiencia. Me encanta el poder resolver problemas utilizando código..">
+		<meta name="author" content="Homer Moncayo" />
+		<meta
+			name="keywords"
+			content="programador, fullstack, frontend, sistemas informaticos, venezuela, caracas, diseño web, portafolio, homer moncayo, developer, HTML, Laravel, NodeJS"
+		/>
+		<meta
+			name="description"
+			content="Visualiza mis proyectos y contactame! Soy Homer Moncayo, programador web FrontEnd competente con más de 4 años experiencia. Me encanta el poder resolver problemas utilizando código.."
+		/>
 		<!-- GOOGLE VERIFICATION -->
-		<meta name="google-site-verification" content="dXQ55fsdkWCXP1t4jvvkrF0BmUM_LEPLF7iYCUGetEA" />
+		<meta
+			name="google-site-verification"
+			content="dXQ55fsdkWCXP1t4jvvkrF0BmUM_LEPLF7iYCUGetEA"
+		/>
 		<!-- OPEN GRAPH -->
-		<meta property="og:type" content="website">
-		<meta property="og:title" content="Homer Moncayo">
-		<meta property="og:url" content="https://homer-developer.vercel.app">
-		<meta property="og:image" content="/assets/img/screenshot.png">
-		<meta property="og:description" content="Soy Homer Moncayo, desarrollador web Front-End con más de 6 años de experiencia transformando ideas en soluciones digitales eficientes. Me apasiona resolver problemas complejos a través del código y crear experiencias de usuario impecables. ¡Echa un vistazo a mi trabajo y hablemos!">
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="Homer Moncayo" />
+		<meta property="og:url" content="https://homer-developer.vercel.app" />
+		<meta property="og:image" content="/assets/img/screenshot.png" />
+		<meta
+			property="og:description"
+			content="Soy Homer Moncayo, desarrollador web Front-End con más de 6 años de experiencia transformando ideas en soluciones digitales eficientes. Me apasiona resolver problemas complejos a través del código y crear experiencias de usuario impecables. ¡Echa un vistazo a mi trabajo y hablemos!"
+		/>
 		<!-- END OPEN GRAPH -->
 		<!-- FAVICON -->
-		<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-		<link rel="manifest" href="/favicon/site.webmanifest">
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="/favicon/apple-touch-icon.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="/favicon/favicon-32x32.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="16x16"
+			href="/favicon/favicon-16x16.png"
+		/>
+		<link rel="manifest" href="/favicon/site.webmanifest" />
 		<!-- FONT AWESOME -->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+		/>
 		<!-- GOOGLE FONTS -->
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+			rel="stylesheet"
+		/>
 		<!-- OWL CAROUSEL -->
-		<link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
+		<link rel="stylesheet" href="/assets/css/owl.carousel.min.css" />
 		<!-- OWL THEME -->
-		<link rel="stylesheet" href="/assets/css/owl.theme.default.min.css">
+		<link rel="stylesheet" href="/assets/css/owl.theme.default.min.css" />
+		<slot name="head" />
 		<title>{title}</title>
 	</head>
 	<body>
@@ -62,7 +98,11 @@ await registrarVisita(Astro);
 		<main>
 			<slot />
 		</main>
-		<a href="https://wa.link/hbtnx0" target="_blank" class="social-link social-link--whatsapp">
+		<a
+			href="https://wa.link/hbtnx0"
+			target="_blank"
+			class="social-link social-link--whatsapp"
+		>
 			<i class="fab fa-whatsapp"></i>
 		</a>
 		<Footer />

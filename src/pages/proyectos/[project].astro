@@ -1,78 +1,101 @@
 ---
-import Layout from "../../layouts/Layout.astro"
-import { db } from '../../config/firebase-server'
-import type { ProjectInterface } from '../../types'
+import Layout from "../../layouts/Layout.astro";
+import { db } from "../../config/firebase-server";
+import type { ProjectInterface } from "../../types";
 
-const { project: slug } = Astro.params
+const { project: slug } = Astro.params;
 
-const projectSnap = slug ? await db.collection('projects').doc(slug).get() : null
+const projectSnap = slug
+  ? await db.collection("projects").doc(slug).get()
+  : null;
 
 if (!projectSnap?.exists) {
-  return Astro.redirect('/', 301)
+  return Astro.redirect("/", 301);
 }
 
-const data = projectSnap.data() ?? {}
+const data = projectSnap.data() ?? {};
 
 const project: ProjectInterface = {
   slug: projectSnap.id,
-  title: data.title ?? '',
-  mockup: data.mockup ?? '',
-  image: data.image ?? '',
+  title: data.title ?? "",
+  mockup: data.mockup ?? "",
+  image: data.image ?? "",
   stacks: data.stacks ?? [],
-  description: data.description ?? '',
+  description: data.description ?? "",
   gallery: data.gallery ?? [],
   url: data.url ?? null,
   github: data.github ?? null,
   draft: data.draft ?? false,
-}
+};
 
 if (project.draft) {
-  return Astro.redirect('/', 301)
+  return Astro.redirect("/", 301);
 }
 ---
-<Layout
-  title={ project.title }
->
+
+<Layout title={project.title}>
+  <!-- Inyectamos CSS y JS exclusivo para esta página -->
+  <Fragment slot="head">
+    <link href="/assets/css/lightbox.min.css" rel="stylesheet" />
+  </Fragment>
   <div class="container">
-    <img class="banner" src={project.image} alt={project.title}>
     <div>
       <h1 class="title">{project.title}</h1>
-      <h3 class="subtitle">Descripción:</h3>
-      <div class="styled-content" set:html={project.description || `
+      <!-- <h3 class="subtitle">Descripción:</h3> -->
+      <div
+        class="styled-content"
+        set:html={project.description ||
+          `
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum itaque nam quam et? Inventore accusantium iure excepturi quam expedita enim natus blanditiis vero ea, harum quis cupiditate, voluptatem quia fugit.</p>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum itaque nam quam et? Inventore accusantium iure excepturi quam expedita enim natus blanditiis vero ea, harum quis cupiditate, voluptatem quia fugit.</p>
-      `.trim()}></div>
-      {project.gallery && project.gallery.length > 0 && (
-        <>
-          <h3 class="subtitle">Galería:</h3>
-          <div class="gallery">
-            {project.gallery.map(url => (
-              <a href={url} target="_blank" rel="noopener">
-                <img src={url} alt={project.title} loading="lazy">
+      `.trim()}
+      />
+      {
+        project.gallery && project.gallery.length > 0 && (
+          <>
+            <h3 class="subtitle">Galería:</h3>
+            <div class="gallery">
+              <a data-lightbox="gallery" href={project.image}>
+                <img src={project.image} alt={project.title} />
               </a>
-            ))}
-          </div>
-        </>
-      )}
+              {project.gallery.map((url) => (
+                <a data-lightbox="gallery" href={url}>
+                  <img src={url} alt={project.title} loading="lazy" />
+                </a>
+              ))}
+            </div>
+          </>
+        )
+      }
       <h3 class="subtitle">Tecnologías:</h3>
       <ul class="list">
-        {(project.stacks ?? []).map(stack => (
-          <li>{stack}</li>
-        ))}
+        {(project.stacks ?? []).map((stack) => <li>{stack}</li>)}
       </ul>
       <div class="buttons">
-        {project.github && (
-          <a target="_blank" href={project.github} class="button button--secondary">
-            Código
-            <i class="fab fa-github"></i>
-          </a>
-        )}
-        {project.url && (
-          <a href={project.url} target="_blank" class="button button--primary">
-            Preview
-            <i class="fa fa-link"></i>
-          </a>
-        )}
+        {
+          project.github && (
+            <a
+              target="_blank"
+              href={project.github}
+              class="button button--secondary"
+            >
+              Código
+              <i class="fab fa-github" />
+            </a>
+          )
+        }
+        {
+          project.url && (
+            <a
+              href={project.url}
+              target="_blank"
+              class="button button--primary"
+            >
+              Preview
+              <i class="fa fa-link" />
+            </a>
+          )
+        }
       </div>
     </div>
   </div>
@@ -81,7 +104,9 @@ if (project.draft) {
 <style is:global>
   .header {
     background-color: #fff;
-    box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
+    box-shadow:
+      rgba(27, 31, 35, 0.04) 0px 1px 0px,
+      rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
   }
 
   p {
@@ -95,7 +120,7 @@ if (project.draft) {
     font-weight: 500;
     line-height: 1;
   }
-  
+
   .container {
     margin-bottom: 5rem;
     margin-top: 10rem;
@@ -129,7 +154,7 @@ if (project.draft) {
   .list li {
     background-color: #eee;
     display: inline-block;
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     border-radius: 3px;
     font-size: 1.4rem;
   }
@@ -158,6 +183,8 @@ if (project.draft) {
   }
 
   .buttons a:not(:last-child) {
-    margin-right: .5rem;
+    margin-right: 0.5rem;
   }
 </style>
+
+<script is:inline src="/assets/js/lightbox.min.js"></script>

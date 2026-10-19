@@ -13,12 +13,16 @@ const { title, image, stacks = [], slug } = Astro.props;
   data-project-slug={slug}
   class={stacks.map((stack) => stack.toLowerCase()).join(" ")}
 >
-  <a href={`#${slug}`} class="project-wrapper">
+  <!-- <a href={`#${slug}`} class="project-wrapper">
+    <img class="project-img" src={image} alt={title} />
+  </a> -->
+
+  <a href={`/proyectos/${slug}`} class="project-wrapper">
     <img class="project-img" src={image} alt={title} />
   </a>
   <h3>
-    <!-- <a href={`/proyectos/${ slug }`}>{title}</a> -->
-    <a href="javascript:void(0);">{title}</a>
+    <a href={`/proyectos/${slug}`}>{title}</a>
+    <!-- <a href="javascript:void(0);">{title}</a> -->
   </h3>
   {
     stacks.map((stack) => (
