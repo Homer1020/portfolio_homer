@@ -121,9 +121,15 @@ if (project.draft) {
     line-height: 1;
   }
 
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
   .container {
-    margin-bottom: 5rem;
-    margin-top: 10rem;
+    padding-bottom: 5rem;
+    padding-top: 10rem;
   }
 
   h1 {
@@ -152,7 +158,6 @@ if (project.draft) {
   }
 
   .list li {
-    background-color: #eee;
     display: inline-block;
     padding: 0.5rem 1rem;
     border-radius: 3px;
