@@ -37,6 +37,12 @@ const about: AboutContent = {
 ---
 
 <Layout title="Homer Developer">
+	<Fragment slot="head">
+		<!-- OWL CAROUSEL -->
+		<link rel="stylesheet" href="/assets/css/owl.carousel.min.css" />
+		<!-- OWL THEME -->
+		<link rel="stylesheet" href="/assets/css/owl.theme.default.min.css" />
+	</Fragment>
 	<Hero
 		badge={hero.badge}
 		title={hero.title}
@@ -110,3 +116,6 @@ const about: AboutContent = {
 		</div>
 	</section>
 </Layout>
+
+<script is:inline src="/assets/js/jquery.min.js"></script>
+<script is:inline src="/assets/js/owl.carousel.min.js"></script>
