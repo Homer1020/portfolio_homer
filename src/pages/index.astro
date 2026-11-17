@@ -1,53 +1,121 @@
 ---
 import Layout from '../layouts/Layout.astro'
-import Services from '../components/home/Services.astro'
-import Process from '../components/home/Process.astro'
+import Hero from '../components/Hero.astro'
 import Stack from '../components/Stack.astro'
+import Portfolio from '../components/Portfolio.astro'
+import Testimonials from '../components/Testimonials.astro'
 import ContactForm from '../components/ContactForm.astro'
+import Experience from '../components/Experience.astro'
+import SectionBanner from '../components/CreateTestimonial.astro'
+
+import { getFirestore } from 'firebase-admin/firestore'
+import type { HeroContent, AboutContent } from '../types'
+
+const db = getFirestore()
+const landingSnap = await db.collection('landing').doc('content').get()
+const landingData = landingSnap.data() ?? {}
+
+const cvUrl = landingData.cvUrl || '/Homer-Moncayo.pdf'
+
+const hero: HeroContent = {
+	badge: landingData.hero?.badge || 'Hola! yo soy',
+	title: landingData.hero?.title || 'Homer Moncayo',
+	subtitleHtml: landingData.hero?.subtitleHtml || 'Un competente <strong>Programador web FullStack</strong>, apacionado por el mundo del software y con más de 5 años de experiencia.',
+	image: landingData.hero?.image || '',
+	socialLinks: landingData.hero?.socialLinks || [
+		{ label: 'LinkedIn', url: 'https://www.linkedin.com/in/homer-moncayo', icon: 'fab fa-linkedin' },
+		{ label: 'GitHub', url: 'https://github.com/Homer1020/', icon: 'fab fa-github' },
+		{ label: 'CodePen', url: 'https://codepen.io/homer-moncayo', icon: 'fab fa-codepen' },
+	],
+}
+
+const about: AboutContent = {
+	badge: landingData.about?.badge || 'Sobre mi',
+	title: landingData.about?.title || 'Un creador de software limpio, moderno y escalable para la web y móviles.',
+	bodyHtml: landingData.about?.bodyHtml || '<p>Soy un programador web FullStack especializado en el área del FrontEnd. Incursioné en el mundo de la programación a los 16 años de edad y quedé fascinado. Mi capacidad para entender y resolver temas complejos me ayudó a convertirme en un programador competente a día de hoy.</p><p>Soy un experto en la creación de interfaces de usuario intuitivas, adaptables a dispositivos y amigables al SEO. Me destaco por brindar servicios de calidad y poner esmero en mis desarrollos. Soy muy comprometido con mi trabajo y trato de dar un esfuerzo adicional en cada proyecto que emprendo.</p>',
+}
 ---
 
-<Layout
-	title="Homer Developer | Desarrollo web a medida"
-	description="Desarrollo web full-stack a medida: sitios, aplicaciones, APIs, e-commerce y mantenimiento. Cuéntame tu proyecto."
->
-	<section class="s-hero">
+<Layout title="Homer Developer">
+	<Fragment slot="head">
+		<!-- OWL CAROUSEL -->
+		<link rel="stylesheet" href="/assets/css/owl.carousel.min.css" />
+		<!-- OWL THEME -->
+		<link rel="stylesheet" href="/assets/css/owl.theme.default.min.css" />
+	</Fragment>
+	<Hero
+		badge={hero.badge}
+		title={hero.title}
+		subtitleHtml={hero.subtitleHtml}
+		image={hero.image}
+		socialLinks={hero.socialLinks}
+	/>
+	<section class="p-section bg-white l-about" id="sobre-mi">
 		<div class="container">
-			<p class="badge">Desarrollador Full-Stack</p>
-			<h1 class="s-hero__title">¿Qué puedo hacer <span>por ti?</span></h1>
-			<p class="s-hero__text">
-				Convierto ideas en software limpio, moderno y escalable. Te ayudo a lanzar, mejorar y mantener tu producto digital.
-			</p>
-			<div class="s-hero__actions">
-				<a href="#contacto" class="button button--primary">Hablemos de tu proyecto</a>
-				<a href="/portfolio" class="button button--secondary-o">Ver portfolio <i class="fas fa-arrow-right"></i></a>
+			<div class="l-about__media">
+				<img src="/assets/img/developer.svg" alt="">
+			</div>
+			<div class="l-about__info">
+				<p class="badge">{about.badge}</p>
+				<h2>{about.title}</h2>
+				<div class="l-about__body" set:html={about.bodyHtml} />
+				<a href={cvUrl} target="_blank" class="button button--secondary-o">
+					Descargar CV
+					<i class="far fa-file-pdf"></i>
+				</a>
 			</div>
 		</div>
 	</section>
 
-	<Services />
-	<Process />
-
-	<section class="p-section bg-white" id="tecnologias">
+	<section class="p-section pt-0 bg-white">
 		<div class="container container--sm">
-			<p class="badge text-center">Tecnologías</p>
-			<h2 class="text-center">Herramientas con las que trabajo</h2>
+			<h2 class="text-center">Experiencia laboral</h2>
+			<div class="separator">
+				<i class="fa fa-briefcase"></i>
+			</div>
+			<Experience />
+		</div>
+	</section>
+
+	<section class="p-section" id="habilidades">
+		<div class="container container--sm">
+			<p class="badge text-center">Habilidades</p>
+			<h2 class="text-center">Mis lenguajes y frameworks.</h2>
 			<Stack />
 		</div>
 	</section>
 
-	<section class="p-section cta-band">
+	<section class="p-section bg-white" id="portafolio">
 		<div class="container">
-			<h2>Mira lo que he construido</h2>
-			<p>Proyectos reales, experiencia y testimonios de clientes en mi portfolio.</p>
-			<a href="/portfolio" class="button">Ir al portfolio <i class="fas fa-arrow-right"></i></a>
+			<p class="badge">Portfolio</p>
+			<h2>Algunos de mis proyectos</h2>
+
+			<Portfolio />
 		</div>
 	</section>
 
-	<section class="p-section" id="contacto">
+	<section class="p-section" id="testimonios">
+		<div class="container container-sm	testimonials">
+				<p class="badge text-center">Testimonios</p>
+				<h2 class="text-center">Lo que las personas opinan de mi</h2>
+				<Testimonials />
+			</div>
+		</div>
+	</section>
+
+	<SectionBanner
+		title="¡Comparte tu opinión!"
+		text="Tu testimonio es clave para ayudarme a mejorar y crecer. Si has trabajado conmigo o has utilizado mis servicios, por favor deja un comentario sobre tu experiencia."
+	/>
+
+	<section class="bg-white p-section" id="contacto">
 		<div class="container">
 			<p class="badge">Contacto</p>
-			<h2>Cuéntame tu proyecto</h2>
+			<h2>Dejame un mensaje!</h2>
 			<ContactForm />
 		</div>
 	</section>
 </Layout>
+
+<script is:inline src="/assets/js/jquery.min.js"></script>
+<script is:inline src="/assets/js/owl.carousel.min.js"></script>

@@ -23,17 +23,17 @@ const isPortfolio = path.startsWith('/portfolio') || path.startsWith('/proyectos
       <nav class="nav" id="navbar">
         {isPortfolio ? (
           <>
-            <a href="/" class="nav__link">Servicios</a>
-            <a href="/portfolio#sobre-mi" class="nav__link">Sobre mi</a>
-            <a href="/portfolio#portafolio" class="nav__link">Proyectos</a>
-            <a href="/portfolio#testimonios" class="nav__link">Testimonios</a>
-            <a href="/portfolio#contacto" class="nav__link">Contacto</a>
+            <a href="#sobre-mi" class="nav__link">Sobre mi</a>
+            <a href="#portafolio" class="nav__link">Proyectos</a>
+            <a href="#testimonios" class="nav__link">Testimonios</a>
+            <a href="#contacto" class="nav__link">Contacto</a>
           </>
         ) : (
           <>
-            <a href="/#servicios" class="nav__link">Servicios</a>
-            <a href="/portfolio" class="nav__link">Portfolio</a>
-            <a href="/#contacto" class="nav__link">Contacto</a>
+            <a href="#sobre-mi" class="nav__link">Sobre mi</a>
+            <a href="#portafolio" class="nav__link">Proyectos</a>
+            <a href="#testimonios" class="nav__link">Testimonios</a>
+            <a href="#contacto" class="nav__link">Contacto</a>
           </>
         )}
         <!-- <a href="https://www.workana.com/freelancer/592e65dcdeb09899960ddca5f588ee35" target="_blank" class="button button--primary-o">
