@@ -1,0 +1,24 @@
+---
+const steps = [
+	{ title: 'Brief', text: 'Hablamos de tu idea, objetivos y alcance.' },
+	{ title: 'Propuesta', text: 'Te presento plan, tiempos y presupuesto claros.' },
+	{ title: 'Desarrollo', text: 'Construyo por etapas, con entregas y feedback continuo.' },
+	{ title: 'Entrega y soporte', text: 'Publicamos y te acompaño después del lanzamiento.' },
+]
+---
+
+<section class="p-section" id="proceso">
+	<div class="container">
+		<p class="badge text-center">Proceso</p>
+		<h2 class="text-center">Así trabajamos juntos</h2>
+		<ol class="timeline">
+			{steps.map((s, i) => (
+				<li class="timeline__item">
+					<span class="timeline__dot">{String(i + 1).padStart(2, '0')}</span>
+					<h3>{s.title}</h3>
+					<p>{s.text}</p>
+				</li>
+			))}
+		</ol>
+	</div>
+</section>

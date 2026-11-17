@@ -1,0 +1,20 @@
+---
+import ServiceCard from './ServiceCard.astro'
+
+const services = [
+	{ icon: 'fas fa-laptop-code', title: 'Desarrollo web a medida', text: 'Sitios y aplicaciones web rápidos, adaptables y optimizados para SEO, diseñados según tu negocio.' },
+	{ icon: 'fas fa-server', title: 'Apps, SaaS y APIs', text: 'Plataformas escalables con backend sólido, autenticación, paneles de administración y APIs.' },
+	{ icon: 'fas fa-cart-shopping', title: 'E-commerce e integraciones', text: 'Tiendas online, pasarelas de pago y conexión con los servicios que ya usas.' },
+	{ icon: 'fas fa-gauge-high', title: 'Optimización y mantenimiento', text: 'Mejoro rendimiento, corrijo errores y mantengo tu proyecto actualizado y seguro.' },
+]
+---
+
+<section class="p-section bg-white" id="servicios">
+	<div class="container">
+		<p class="badge text-center">Servicios</p>
+		<h2 class="text-center">Cómo puedo ayudarte</h2>
+		<div class="services-grid">
+			{services.map((s) => <ServiceCard {...s} />)}
+		</div>
+	</div>
+</section>

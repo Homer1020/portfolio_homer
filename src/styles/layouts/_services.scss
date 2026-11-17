@@ -1,0 +1,202 @@
+@use '../mixins/theme' as theme;
+
+.s-hero {
+  padding: 10rem 0;
+  padding-top: calc(10rem + 70px);
+  text-align: center;
+
+  @media (min-width: 992px) {
+    padding-top: calc(10rem + 76.55px);
+  }
+
+  &__title {
+    font-size: 4.6rem;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+
+    @media (min-width: 992px) {
+      font-size: 6rem;
+    }
+
+    span {
+      color: var(--primary);
+    }
+  }
+
+  &__text {
+    max-width: 62rem;
+    margin: 0 auto 3rem;
+    font-size: 1.8rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+}
+
+.services-grid {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: 4rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  // @media (min-width: 1200px) { grid-template-columns: repeat(4, 1fr); }
+}
+
+.service-card {
+  padding: 3rem 2.5rem;
+  border-radius: 12px;
+  @include theme.theme-property(background-color, contactBg);
+  @include theme.theme-property(border, figureBorder);
+  transition: transform .2s ease, box-shadow .2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px -10px rgba(25, 148, 224, .35);
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: 12px;
+    font-size: 2.4rem;
+    margin-bottom: 2rem;
+    color: #fff;
+    background: #0F81C7;
+  }
+
+  h3 {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.timeline {
+  --dot: 4.4rem;
+  position: relative;
+  list-style: none;
+  margin: 5rem 0 0;
+  padding: 0;
+
+  // línea vertical (izquierda en móvil)
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--dot) / 2 - 1px);
+    width: 2px;
+    background: var(--primary);
+    opacity: .35;
+  }
+
+  &__item {
+    position: relative;
+    padding-left: calc(var(--dot) + 2rem);
+    padding-bottom: 4rem;
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+
+    h3 {
+      font-size: 2rem;
+      margin-bottom: .6rem;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &__dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--dot);
+    height: var(--dot);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #fff;
+    background: #0F81C7;
+    @include theme.theme-property(border-color, bodyBg);
+    border-width: 5px;
+    border-style: solid;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+
+    // línea horizontal que pasa por el centro de los puntos
+    &::before {
+      top: calc(var(--dot) / 2 - 1px);
+      bottom: auto;
+      left: calc(12.5%);
+      right: calc(12.5%);
+      width: auto;
+      height: 2px;
+    }
+
+    &__item {
+      padding: calc(var(--dot) + 2rem) 0 0;
+      text-align: center;
+
+      &:last-child {
+        padding-bottom: 0;
+      }
+    }
+
+    &__dot {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+}
+
+.cta-band {
+  text-align: center;
+  color: #fff;
+  background: #0F81C7;
+
+  h2,
+  p {
+    color: #fff;
+  }
+
+  p {
+    max-width: 60rem;
+    margin: 0 auto 3rem;
+    font-size: 1.8rem;
+  }
+
+  .button {
+    background: #fff;
+    color: #0F81C7;
+  }
+
+  .button:hover {
+    background: #f1f5f9;
+  }
+}

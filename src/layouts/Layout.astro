@@ -6,15 +6,23 @@ import { registrarVisita } from "../utils/analytics";
 
 interface Props {
 	title: string;
+	description?: string;
+	ogImage?: string;
 }
 
-const { title } = Astro.props;
+const {
+	title,
+	description = "Homer Moncayo | Desarrollador Web Full-Stack. +7 años creando aplicaciones web escalables, APIs y arquitecturas de alto impacto. ¡Explora mi trabajo!",
+	ogImage = "/assets/img/screenshot.png",
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, "https://homer-developer.com").href;
+const ogImageUrl = new URL(ogImage, "https://homer-developer.com").href;
 
 await registrarVisita(Astro);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<script is:inline>
 			(function () {
@@ -36,10 +44,8 @@ await registrarVisita(Astro);
 			name="keywords"
 			content="Homer Moncayo, desarrollador web full stack, full stack developer, react, node.js, typescript, laravel, desarrollo web a medida, arquitectura web"
 		/>
-		<meta
-			name="description"
-			content="Homer Moncayo | Desarrollador Web Full-Stack. +7 años creando aplicaciones web escalables, APIs y arquitecturas de alto impacto. ¡Explora mi trabajo!"
-		/>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
 		<!-- GOOGLE VERIFICATION -->
 		<meta
 			name="google-site-verification"
@@ -47,13 +53,10 @@ await registrarVisita(Astro);
 		/>
 		<!-- OPEN GRAPH -->
 		<meta property="og:type" content="website" />
-		<meta property="og:title" content="Homer Moncayo | Desarrollador Web Full-Stack" />
-		<meta property="og:url" content="https://homer-developer.com" />
-		<meta property="og:image" content="/assets/img/screenshot.png" />
-		<meta
-			property="og:description"
-			content="Desarrollador Web Full-Stack con más de 7 años de experiencia transformando ideas en aplicaciones web escalables, eficientes e integrales. Explora mis proyectos y hablemos."
-		/>
+		<meta property="og:title" content={title} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImageUrl} />
+		<meta property="og:description" content={description} />
 		<!-- END OPEN GRAPH -->
 		<!-- FAVICON -->
 		<link

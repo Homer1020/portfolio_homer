@@ -10,7 +10,7 @@ const projectSnap = slug
   : null;
 
 if (!projectSnap?.exists) {
-  return Astro.redirect("/", 301);
+  return Astro.redirect("/portfolio", 301);
 }
 
 const data = projectSnap.data() ?? {};
@@ -29,7 +29,7 @@ const project: ProjectInterface = {
 };
 
 if (project.draft) {
-  return Astro.redirect("/", 301);
+  return Astro.redirect("/portfolio", 301);
 }
 ---
 
@@ -38,7 +38,7 @@ if (project.draft) {
   <Fragment slot="head">
     <link href="/assets/css/lightbox.min.css" rel="stylesheet" />
   </Fragment>
-  <div class="container">
+  <div class="container container--sm">
     <div>
       <h1 class="title">{project.title}</h1>
       <!-- <h3 class="subtitle">Descripción:</h3> -->

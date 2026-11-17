@@ -111,11 +111,17 @@ const projects = (
     },
   });
 
+  $filterPortfolio
+    .querySelector('[data-filter="*"]')
+    ?.classList.add("active");
+
   // Filtros de categoría
   $filterPortfolio.addEventListener("click", (e) => {
-    const target = e.target as HTMLElement;
+    const target = (e.target as HTMLElement).closest<HTMLElement>(
+      "[data-filter]",
+    );
 
-    if (target.dataset.filter) {
+    if (target?.dataset.filter) {
       $filterPortfolio.querySelectorAll(".button").forEach(($btn) => {
         $btn.classList.remove("active");
       });

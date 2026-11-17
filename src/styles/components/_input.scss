@@ -7,7 +7,7 @@
   @include theme.theme-property('background-color', 'sectionBg');
   @include theme.theme-property('color', 'articleText');
   width: 100%;
-  border-radius: 8px;
+  border-radius: 4px;
   font-weight: normal;
   font-family: inherit;
   transition: border-color .2s ease, box-shadow .2s ease;
