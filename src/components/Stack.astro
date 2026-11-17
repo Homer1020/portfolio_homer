@@ -1,10 +1,40 @@
 ---
 import { db } from '../config/firebase'
 import { collection, getDocs, query, orderBy } from 'firebase/firestore'
-import type { StackInterface } from '../types'
+import type { StackInterface, StackCategory } from '../types'
 import defaultStacks from '../data/stacks.json'
+import {
+  resolveStackCategories,
+  normalizeStackCategory,
+  type StackCategoryOption,
+} from '../utils/stackCategories'
 
-let stacks: Array<{ path: string; darkPath?: string; tech: string }> = []
+type StackItem = { path: string; darkPath?: string; tech: string; category: StackCategory }
+
+let categories: StackCategoryOption[] = resolveStackCategories()
+
+try {
+  const catSnap = await getDocs(query(collection(db, 'stackCategories'), orderBy('order', 'asc')))
+  categories = resolveStackCategories(
+    catSnap.docs.map(d => ({
+      slug: d.data().slug ?? d.id,
+      name: d.data().name ?? '',
+      order: d.data().order ?? 0,
+    }))
+  )
+} catch (e) {
+  // fallback: categorías por defecto
+}
+
+const fromDefaults = (): StackItem[] =>
+  defaultStacks.map(s => ({
+    path: s.icon,
+    darkPath: s.darkIcon || undefined,
+    tech: s.name,
+    category: normalizeStackCategory((s as any).category, categories),
+  }))
+
+let stacks: StackItem[] = []
 
 try {
   const q = query(collection(db, 'stacks'), orderBy('order', 'asc'))
@@ -20,50 +50,76 @@ try {
         darkIcon: data.darkIcon ?? '',
         order: data.order ?? 0,
         draft: data.draft ?? false,
+        category: normalizeStackCategory(data.category, categories),
       }
     })
     .filter(item => !item.draft) as StackInterface[]
 
-  if (dbStacks.length > 0) {
-    stacks = dbStacks.map(s => ({
-      path: s.icon,
-      darkPath: s.darkIcon || undefined,
-      tech: s.name,
-    }))
-  } else {
-    stacks = defaultStacks.map(s => ({
-      path: s.icon,
-      darkPath: s.darkIcon || undefined,
-      tech: s.name,
-    }))
-  }
+  stacks =
+    dbStacks.length > 0
+      ? dbStacks.map(s => ({
+          path: s.icon,
+          darkPath: s.darkIcon || undefined,
+          tech: s.name,
+          category: normalizeStackCategory(s.category, categories),
+        }))
+      : fromDefaults()
 } catch (e) {
-  stacks = defaultStacks.map(s => ({
-    path: s.icon,
-    darkPath: s.darkIcon || undefined,
-    tech: s.name,
-  }))
+  stacks = fromDefaults()
 }
+
+const groups = categories.map(cat => ({
+  ...cat,
+  items: stacks.filter(s => s.category === cat.slug),
+})).filter(g => g.items.length > 0)
+
+// Sin ninguna categoría asignada: grilla plana como antes
+const isFlat = groups.length === 1 && groups[0].slug === 'uncategorized'
 ---
 
-<ul class="l-stack">
-  {
-    stacks.map(({ path, darkPath, tech }) => (
-      <li class="l-stack__item">
-        <figure>
-          {
-            darkPath ? (
+{
+  isFlat ? (
+    <ul class="l-stack">
+      {stacks.map(({ path, darkPath, tech }) => (
+        <li class="l-stack__item">
+          <figure>
+            {darkPath ? (
               <>
                 <img src={path} alt={tech} class="l-stack__img--light" />
                 <img src={darkPath} alt={tech} class="l-stack__img--dark" />
               </>
             ) : (
               <img src={path} alt={tech} />
-            )
-          }
-          <figcaption>{tech}</figcaption>
-        </figure>
-      </li>
-    ))
-  }
-</ul>
+            )}
+            <figcaption>{tech}</figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <div class="l-stack-groups">
+      {groups.map(group => (
+        <div class="l-stack-group">
+          <h3 class="l-stack-group__title">{group.name}</h3>
+          <ul class="l-stack l-stack--group">
+            {group.items.map(({ path, darkPath, tech }) => (
+              <li class="l-stack__item">
+                <figure>
+                  {darkPath ? (
+                    <>
+                      <img src={path} alt={tech} class="l-stack__img--light" />
+                      <img src={darkPath} alt={tech} class="l-stack__img--dark" />
+                    </>
+                  ) : (
+                    <img src={path} alt={tech} />
+                  )}
+                  <figcaption>{tech}</figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  )
+}

@@ -1,9 +1,64 @@
+@use '../mixins/theme' as theme;
+
+.l-stack-groups {
+  margin-top: 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.l-stack-group {
+  display: grid;
+  gap: 1.6rem;
+  align-items: center;
+
+  // Borde solo en móvil; en desktop el grupo es solo contenedor
+  @media screen and (max-width: 991px) {
+    padding: 2rem;
+    border-radius: 1.2rem;
+    @include theme.theme-property(border, figureBorder);
+  }
+
+  @media screen and (min-width: 992px) {
+    grid-template-columns: 220px 1fr;
+    gap: 3rem;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin: 0;
+    font-size: 1.4rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    @include theme.theme-property(color, legendText);
+
+    &::before {
+      content: '';
+      width: 4px;
+      height: 2.4rem;
+      border-radius: 4px;
+      background: linear-gradient(180deg, var(--primary), var(--secondary));
+    }
+  }
+}
+
 .l-stack {
   margin-top: 5rem;
   list-style: none;
   display: grid;
   gap: 1rem;
-  
+
+  figure {
+    padding: 2rem;
+  }
+
+  figcaption {
+    font-size: 1.4rem;
+    font-weight: normal;
+  }
+
   grid-template-columns: repeat(2, 1fr);
 
   // @media screen and (min-width: 576px) {
@@ -19,10 +74,30 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
+  &--group {
+    margin-top: 0;
+    gap: 1.6rem;
+    grid-template-columns: repeat(2, 1fr);
+
+    @media screen and (min-width: 576px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media screen and (min-width: 992px) {
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 2rem;
+    }
+
+    @media screen and (min-width: 1200px) {
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    }
+  }
+
   &__item {
     img {
-      height: 70px;
-      max-width: 90px;
+      height: 40px;
+      max-width: 60px;
+      margin-bottom: 1rem;
     }
   }
 

@@ -8,16 +8,33 @@ interface Props {
 
 const { title } = Astro.props;
 
-const navItems = [
+type NavItem = {
+	label: string;
+	href: string;
+	children?: { label: string; href: string }[];
+};
+
+const navItems: NavItem[] = [
 	{ label: "Dashboard", href: "/admin" },
 	{ label: "Proyectos", href: "/admin/proyectos" },
 	{ label: "Testimonios", href: "/admin/testimonios" },
 	{ label: "Experiencia", href: "/admin/experiencia" },
-	{ label: "Stack", href: "/admin/stacks" },
+	{
+		label: "Stack",
+		href: "/admin/stacks",
+		children: [
+			{ label: "Listado", href: "/admin/stacks" },
+			{ label: "Categorías", href: "/admin/stacks/categorias" },
+		],
+	},
 	{ label: "Landing", href: "/admin/landing" },
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/admin";
+const isInGroup = (item: NavItem) =>
+	item.children?.some(
+		(c) => currentPath === c.href || currentPath.startsWith(c.href + "/"),
+	) ?? false;
 ---
 
 <!doctype html>
@@ -76,16 +93,46 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/admin";
 				<span class="admin-sidebar__logo">Admin Panel</span>
 				<nav>
 					{
-						navItems.map((item) => (
-							<a
-								href={item.href}
-								class:list={[
-									{ "is-active": item.href === currentPath },
-								]}
-							>
-								{item.label}
-							</a>
-						))
+						navItems.map((item) =>
+							item.children ? (
+								<div
+									class:list={[
+										"admin-sidebar__group",
+										{ "is-open": isInGroup(item) },
+									]}
+								>
+									<button
+										type="button"
+										class="admin-sidebar__group-toggle"
+										aria-expanded={isInGroup(item) ? "true" : "false"}
+									>
+										<span>{item.label}</span>
+										<i class="fa-solid fa-chevron-down" />
+									</button>
+									<div class="admin-sidebar__sub">
+										{item.children.map((child) => (
+											<a
+												href={child.href}
+												class:list={[
+													{ "is-active": child.href === currentPath },
+												]}
+											>
+												{child.label}
+											</a>
+										))}
+									</div>
+								</div>
+							) : (
+								<a
+									href={item.href}
+									class:list={[
+										{ "is-active": item.href === currentPath },
+									]}
+								>
+									{item.label}
+								</a>
+							),
+						)
 					}
 					<hr class="admin-sidebar__divider" />
 					<a
@@ -165,6 +212,15 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/admin";
 			$burger?.classList.contains("active") ? "true" : "false",
 		);
 	};
+
+	document.querySelectorAll(".admin-sidebar__group-toggle").forEach((btn) =>
+		btn.addEventListener("click", () => {
+			const open = btn
+				.closest(".admin-sidebar__group")
+				?.classList.toggle("is-open");
+			btn.setAttribute("aria-expanded", open ? "true" : "false");
+		}),
+	);
 
 	$burger?.addEventListener("click", toggleSidebar);
 	$overlay?.addEventListener("click", closeSidebar);

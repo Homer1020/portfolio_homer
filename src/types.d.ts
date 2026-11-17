@@ -37,6 +37,15 @@ export interface AboutContent {
   bodyHtml: string
 }
 
+export type StackCategory = string
+
+export interface StackCategoryInterface {
+  id: string
+  name: string
+  slug: string
+  order: number
+}
+
 export interface StackInterface {
   id: string
   name: string
@@ -44,6 +53,7 @@ export interface StackInterface {
   darkIcon?: string
   order?: number
   draft?: boolean
+  category?: StackCategory
 }
 
 export interface ProjectInterface {

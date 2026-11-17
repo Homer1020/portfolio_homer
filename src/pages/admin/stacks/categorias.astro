@@ -1,0 +1,549 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro'
+import Input from '../../../components/Form/Input.astro'
+
+import { getFirestore } from 'firebase-admin/firestore'
+import type { StackCategoryInterface } from '../../../types'
+
+const db = getFirestore()
+
+const [catsSnap, stacksSnap] = await Promise.all([
+	db.collection('stackCategories').orderBy('order', 'asc').get(),
+	db.collection('stacks').get(),
+])
+
+const usage: Record<string, number> = {}
+stacksSnap.docs.forEach(d => {
+	const slug = d.data().category ?? 'uncategorized'
+	usage[slug] = (usage[slug] ?? 0) + 1
+})
+
+const categories = catsSnap.docs.map(doc => {
+	const data = doc.data()
+	return {
+		id: doc.id,
+		name: data.name ?? '',
+		slug: data.slug ?? doc.id,
+		order: data.order ?? 0,
+	}
+}) as StackCategoryInterface[]
+---
+
+<AdminLayout title="Categorías de Stack">
+	<div class="admin-toolbar">
+		<div>
+			<h2>Categorías de Stack</h2>
+			<p class="admin-toolbar__subtitle">Agrupa las tecnologías en el portfolio (Backend, Frontend, CMS...). Las tecnologías sin categoría se muestran en "Otros".</p>
+		</div>
+		<div class="admin-toolbar__actions">
+			<button type="button" class="button button--primary button--sm" id="new-category-btn">
+				<i class="fa-solid fa-plus"></i>
+				<span>Nueva categoría</span>
+			</button>
+		</div>
+	</div>
+
+	{categories.length === 0 && (
+		<div class="admin-notice">
+			<p>
+				No hay categorías guardadas: el sitio usa las categorías por defecto
+				(Backend, Frontend, CMS, Databases, Tools y Mobile). Cárgalas para poder editarlas;
+				al crear tu primera categoría también se cargan automáticamente.
+			</p>
+			<button type="button" class="button button--secondary-o button--sm" id="seed-defaults-btn">
+				Cargar categorías por defecto
+			</button>
+		</div>
+	)}
+
+	<div class="admin-table-wrapper">
+		<table class="admin-table">
+			<thead>
+				<tr>
+					<th>Orden</th>
+					<th>Nombre</th>
+					<th>Slug</th>
+					<th>Tecnologías</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody id="categories-tbody">
+				{categories.length === 0 && (
+					<tr id="empty-row">
+						<td colspan="5" class="admin-table__empty-state">No hay categorías registradas aún.</td>
+					</tr>
+				)}
+				{categories.map(cat => (
+					<tr data-row-id={cat.id}>
+						<td><span class="admin-order-badge">{cat.order}</span></td>
+						<td><strong>{cat.name}</strong></td>
+						<td><code>{cat.slug}</code></td>
+						<td><span class="admin-badge">{usage[cat.slug] ?? 0}</span></td>
+						<td>
+							<div class="admin-table__actions">
+								<button
+									type="button"
+									class="button button--sm button--primary-o"
+									data-action="edit"
+									data-id={cat.id}
+									data-name={cat.name}
+									data-slug={cat.slug}
+									data-order={String(cat.order)}
+								>Editar</button>
+								<button
+									type="button"
+									class="button button--sm button--dark-o"
+									data-action="delete"
+									data-id={cat.id}
+									data-slug={cat.slug}
+									data-count={String(usage[cat.slug] ?? 0)}
+								>Eliminar</button>
+							</div>
+						</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Modal Crear/Editar Categoría -->
+	<div class="admin-modal" id="category-modal">
+		<div class="admin-modal__content">
+			<button type="button" class="admin-modal__close" id="close-category-modal">
+				<i class="fa fa-times"></i>
+			</button>
+			<h2 id="category-modal-title">Nueva Categoría</h2>
+			<form id="form-category">
+				<Input type="text" id="name" label="Nombre" placeholder="Backend, Frontend, CMS..." required />
+				<div class="grid-2-cols">
+					<Input type="text" id="slug" label="Slug (identificador)" placeholder="backend" required pattern="[a-z0-9\-]+" />
+					<Input type="number" id="order" label="Orden (menor = primero)" placeholder="1" required />
+				</div>
+				<p class="section-hint" id="slug-hint">El slug no se puede cambiar después de crear la categoría.</p>
+
+				<div class="admin-modal__actions">
+					<button type="submit" class="button button--primary" id="submit-category-btn">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</AdminLayout>
+
+<style lang="scss">
+	@use '../../../styles/mixins/theme' as theme;
+
+	.admin-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 2rem;
+		flex-wrap: wrap;
+		gap: 1rem;
+
+		h2 {
+			font-size: 2.2rem;
+		}
+
+		&__subtitle {
+			font-size: 1.3rem;
+			@include theme.theme-property('color', 'legendText');
+			margin-top: .3rem;
+		}
+
+		&__actions {
+			display: flex;
+			gap: 1rem;
+		}
+	}
+
+	.admin-table-wrapper {
+		@include theme.theme-property('background-color', 'sectionBg');
+		@include theme.theme-property('border', 'figureBorder');
+		border-radius: 10px;
+		overflow-x: auto;
+	}
+
+	.admin-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 1.4rem;
+
+		th, td {
+			text-align: left;
+			padding: 1.2rem 1.5rem;
+			white-space: nowrap;
+		}
+
+		thead th {
+			@include theme.theme-property('background-color', 'contactBg');
+			@include theme.theme-property('color', 'legendText');
+			font-weight: 600;
+			@include theme.theme-property('border-bottom', 'figureBorder');
+		}
+
+		tbody tr:not(:last-child) td {
+			@include theme.theme-property('border-bottom', 'figureBorder');
+		}
+	}
+
+	.admin-order-badge {
+		display: inline-block;
+		padding: .2rem .7rem;
+		border-radius: 4px;
+		font-weight: 600;
+		font-size: 1.2rem;
+		@include theme.theme-property('background-color', 'contactBg');
+		@include theme.theme-property('border', 'figureBorder');
+	}
+
+	.admin-table__truncate {
+		max-width: 220px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.admin-table__empty {
+		@include theme.theme-property('color', 'legendText');
+	}
+
+	.admin-table__empty-state {
+		text-align: center;
+		@include theme.theme-property('color', 'legendText');
+		padding: 3rem;
+	}
+
+	.admin-table__actions {
+		display: flex;
+		gap: .6rem;
+	}
+
+	.admin-badge {
+		display: inline-block;
+		padding: .2rem .75rem;
+		border-radius: 20px;
+		font-size: 1.2rem;
+		font-weight: 500;
+		background-color: rgba(148, 163, 184, .2);
+		color: #94a3b8;
+
+		&--success {
+			background-color: rgba(34, 197, 94, .15);
+			color: #22c55e;
+		}
+	}
+
+	.grid-2-cols {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.2rem;
+
+		@media (max-width: 600px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.admin-checkbox {
+		display: flex;
+		align-items: center;
+		gap: .8rem;
+		margin: 1.5rem 0;
+		font-size: 1.4rem;
+
+		input[type="checkbox"] {
+			width: 1.8rem;
+			height: 1.8rem;
+			cursor: pointer;
+			accent-color: var(--primary);
+		}
+
+		label {
+			cursor: pointer;
+			@include theme.theme-property('color', 'headings');
+		}
+	}
+
+	.admin-modal {
+		display: none;
+		position: fixed;
+		inset: 0;
+		@include theme.theme-property('background-color', 'modalBg');
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+		z-index: 100;
+	}
+
+	.admin-modal.open {
+		display: flex;
+	}
+
+	.admin-modal__content {
+		position: relative;
+		width: min(620px, 100%);
+		max-height: 90vh;
+		overflow-y: auto;
+		@include theme.theme-property('background-color', 'sectionBg');
+		border-radius: 10px;
+		padding: 2.5rem;
+	}
+
+	.admin-modal__close {
+		position: absolute;
+		top: 1.5rem;
+		right: 1.5rem;
+		background: none;
+		border: none;
+		font-size: 1.8rem;
+		cursor: pointer;
+		@include theme.theme-property('color', 'legendText');
+	}
+
+	.admin-modal__actions {
+		margin-top: 1.5rem;
+	}
+
+	.admin-modal h2 {
+		font-size: 2rem;
+		margin-bottom: 2rem;
+	}
+
+	.editor-label {
+		display: block;
+		margin-bottom: .75rem;
+		font-size: 1.4rem;
+		font-weight: 500;
+		font-family: "Poppins", sans-serif;
+	}
+
+	.admin-notice {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+		margin-bottom: 2rem;
+		padding: 1.5rem 2rem;
+		border-radius: 10px;
+		font-size: 1.3rem;
+		@include theme.theme-property('background-color', 'contactBg');
+		@include theme.theme-property('border', 'figureBorder');
+		@include theme.theme-property('color', 'legendText');
+
+		p { flex: 1; min-width: 240px; }
+	}
+
+	.section-hint {
+		font-size: 1.2rem;
+		@include theme.theme-property('color', 'legendText');
+		margin-top: .4rem;
+	}
+</style>
+
+<script>
+	import {
+		collection,
+		addDoc,
+		doc,
+		updateDoc,
+		deleteDoc,
+		getDocs,
+		query,
+		where,
+		writeBatch,
+		serverTimestamp,
+	} from 'firebase/firestore'
+	import { db } from '../../../config/firebase'
+	import { DEFAULT_STACK_CATEGORIES, slugify } from '../../../utils/stackCategories'
+	import Swal from 'sweetalert2'
+
+	const $modal = document.getElementById('category-modal') as HTMLElement
+	const $modalTitle = document.getElementById('category-modal-title') as HTMLElement
+	const $closeModal = document.getElementById('close-category-modal') as HTMLElement
+	const $newBtn = document.getElementById('new-category-btn') as HTMLElement
+	const $seedBtn = document.getElementById('seed-defaults-btn') as HTMLButtonElement | null
+	const $form = document.getElementById('form-category') as HTMLFormElement
+	const $tbody = document.getElementById('categories-tbody') as HTMLElement
+	const $submitBtn = document.getElementById('submit-category-btn') as HTMLButtonElement
+
+	const $name = document.getElementById('name') as HTMLInputElement
+	const $slug = document.getElementById('slug') as HTMLInputElement
+	const $order = document.getElementById('order') as HTMLInputElement
+	const $slugHint = document.getElementById('slug-hint') as HTMLElement
+
+	const categoriesRef = collection(db, 'stackCategories')
+	const hasRows = () => !!$tbody.querySelector('tr[data-row-id]')
+	const existingSlugs = () =>
+		Array.from($tbody.querySelectorAll<HTMLElement>('button[data-action="edit"]')).map(b => b.dataset.slug)
+
+	let editingId: string | null = null
+	let slugTouched = false
+
+	const openModal = () => {
+		$modal.classList.add('open')
+		document.body.style.overflow = 'hidden'
+	}
+
+	const closeModal = () => {
+		$modal.classList.remove('open')
+		document.body.style.overflow = ''
+		$form.reset()
+		editingId = null
+	}
+
+	const seedDefaults = async () => {
+		const batch = writeBatch(db)
+		DEFAULT_STACK_CATEGORIES.forEach(c => {
+			batch.set(doc(categoriesRef), {
+				name: c.name,
+				slug: c.slug,
+				order: c.order,
+				createdAt: serverTimestamp(),
+			})
+		})
+		await batch.commit()
+	}
+
+	$name.addEventListener('input', () => {
+		if (!editingId && !slugTouched) $slug.value = slugify($name.value)
+	})
+	$slug.addEventListener('input', () => {
+		slugTouched = true
+	})
+
+	$newBtn.addEventListener('click', () => {
+		editingId = null
+		slugTouched = false
+		$modalTitle.textContent = 'Nueva Categoría'
+		$form.reset()
+		$slug.readOnly = false
+		$slugHint.hidden = false
+		$order.value = String($tbody.querySelectorAll('tr[data-row-id]').length + 1)
+		openModal()
+	})
+
+	$seedBtn?.addEventListener('click', async () => {
+		$seedBtn.disabled = true
+		try {
+			await seedDefaults()
+			window.location.reload()
+		} catch (err) {
+			console.error(err)
+			$seedBtn.disabled = false
+			Swal.fire({ title: 'Error al cargar las categorías.', icon: 'error', confirmButtonColor: 'var(--primary)' })
+		}
+	})
+
+	$closeModal.addEventListener('click', closeModal)
+	$modal.addEventListener('click', e => {
+		if (e.target === $modal) closeModal()
+	})
+
+	$form.addEventListener('submit', async e => {
+		e.preventDefault()
+
+		const slug = slugify($slug.value)
+		if (!slug || slug === 'uncategorized') {
+			Swal.fire({ title: 'Slug no válido.', text: '"uncategorized" está reservado.', icon: 'warning', confirmButtonColor: 'var(--primary)' })
+			return
+		}
+		if (!editingId && existingSlugs().includes(slug)) {
+			Swal.fire({ title: 'Ese slug ya existe.', icon: 'warning', confirmButtonColor: 'var(--primary)' })
+			return
+		}
+
+		$submitBtn.disabled = true
+		$submitBtn.textContent = 'Guardando...'
+
+		try {
+			if (editingId) {
+				await updateDoc(doc(db, 'stackCategories', editingId), {
+					name: $name.value.trim(),
+					order: Number($order.value),
+				})
+			} else {
+				// Primera categoría: conserva las de por defecto para no dejar stacks huérfanos
+				if (!hasRows()) {
+					const defaultsToSeed = DEFAULT_STACK_CATEGORIES.filter(c => c.slug !== slug)
+					const batch = writeBatch(db)
+					defaultsToSeed.forEach(c => {
+						batch.set(doc(categoriesRef), { name: c.name, slug: c.slug, order: c.order, createdAt: serverTimestamp() })
+					})
+					await batch.commit()
+				}
+				await addDoc(categoriesRef, {
+					name: $name.value.trim(),
+					slug,
+					order: Number($order.value),
+					createdAt: serverTimestamp(),
+				})
+			}
+
+			closeModal()
+			await Swal.fire({
+				title: editingId ? 'Categoría actualizada.' : 'Categoría creada.',
+				icon: 'success',
+				confirmButtonColor: 'var(--secondary)',
+			})
+			window.location.reload()
+		} catch (err) {
+			console.error(err)
+			Swal.fire({ title: 'Error al guardar la categoría.', icon: 'error', confirmButtonColor: 'var(--primary)' })
+		} finally {
+			$submitBtn.disabled = false
+			$submitBtn.textContent = 'Guardar'
+		}
+	})
+
+	$tbody.addEventListener('click', async e => {
+		const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-action]')
+		if (!btn) return
+
+		const id = btn.dataset.id!
+
+		if (btn.dataset.action === 'edit') {
+			editingId = id
+			$modalTitle.textContent = 'Editar Categoría'
+			$name.value = btn.dataset.name ?? ''
+			$slug.value = btn.dataset.slug ?? ''
+			$slug.readOnly = true
+			$slugHint.hidden = true
+			$order.value = btn.dataset.order ?? '0'
+			openModal()
+		}
+
+		if (btn.dataset.action === 'delete') {
+			const count = Number(btn.dataset.count ?? 0)
+			const slug = btn.dataset.slug!
+
+			const result = await Swal.fire({
+				title: '¿Eliminar categoría?',
+				text:
+					count > 0
+						? `${count} tecnología(s) pasarán a "Sin categoría".`
+						: 'Esta acción no se puede deshacer.',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Sí, eliminar',
+				cancelButtonText: 'Cancelar',
+				confirmButtonColor: 'var(--danger)',
+			})
+			if (!result.isConfirmed) return
+
+			btn.disabled = true
+			try {
+				if (count > 0) {
+					const used = await getDocs(query(collection(db, 'stacks'), where('category', '==', slug)))
+					const batch = writeBatch(db)
+					used.docs.forEach(d => batch.update(d.ref, { category: 'uncategorized' }))
+					await batch.commit()
+				}
+				await deleteDoc(doc(db, 'stackCategories', id))
+				window.location.reload()
+			} catch (err) {
+				console.error(err)
+				btn.disabled = false
+				Swal.fire({ title: 'Error al eliminar la categoría.', icon: 'error', confirmButtonColor: 'var(--primary)' })
+			}
+		}
+	})
+</script>
