@@ -3,6 +3,22 @@ import Project from "./Project.astro";
 import { db } from "../config/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import type { ProjectInterface } from "../types";
+import {
+  resolveProjectFilters,
+  type ProjectFilterOption,
+} from "../utils/projectFilters";
+
+const filtersSnapshot = await getDocs(collection(db, "projectFilters"));
+const filters = resolveProjectFilters(
+  filtersSnapshot.docs.map((d) => {
+    const data = d.data();
+    return {
+      slug: data.slug ?? d.id,
+      name: data.name ?? "",
+      order: data.order ?? 0,
+    } as ProjectFilterOption;
+  }),
+);
 
 // 1. Obtener los proyectos directamente desde Firestore
 const querySnapshot = await getDocs(collection(db, "projects"));
@@ -22,24 +38,16 @@ const projects = (
   <button class="button button--sm button--dark-o" data-filter="*"
     >Mostrar todo</button
   >
-  <button class="button button--sm button--dark-o" data-filter=".php"
-    >PHP</button
-  >
-  <button class="button button--sm button--dark-o" data-filter=".laravel"
-    >Laravel</button
-  >
-  <button class="button button--sm button--dark-o" data-filter=".javascript"
-    >JavaScript</button
-  >
-  <button class="button button--sm button--dark-o" data-filter=".reactjs"
-    >ReactJS</button
-  >
-  <button class="button button--sm button--dark-o" data-filter=".wordpress"
-    >Wordpress</button
-  >
-  <button class="button button--sm button--dark-o" data-filter=".nodejs"
-    >NodeJS</button
-  >
+  {
+    filters.map((filter) => (
+      <button
+        class="button button--sm button--dark-o"
+        data-filter={`.${filter.slug}`}
+      >
+        {filter.name}
+      </button>
+    ))
+  }
 </div>
 
 <!-- Guardamos los proyectos mapeados en data-projects para consumirlos desde el script -->

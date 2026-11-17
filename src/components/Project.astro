@@ -1,4 +1,6 @@
 ---
+import { slugify } from "../utils/projectFilters";
+
 interface Props {
   image: string;
   title: string;
@@ -11,7 +13,7 @@ const { title, image, stacks = [], slug } = Astro.props;
 
 <article
   data-project-slug={slug}
-  class={stacks.map((stack) => stack.toLowerCase()).join(" ")}
+  class={stacks.map((stack) => slugify(stack)).join(" ")}
 >
   <!-- <a href={`#${slug}`} class="project-wrapper">
     <img class="project-img" src={image} alt={title} />

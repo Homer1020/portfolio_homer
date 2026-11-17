@@ -1,0 +1,537 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro'
+import Input from '../../../components/Form/Input.astro'
+
+import { getFirestore } from 'firebase-admin/firestore'
+import { slugify } from '../../../utils/projectFilters'
+import type { ProjectFilterInterface } from '../../../types'
+
+const db = getFirestore()
+
+const [catsSnap, projectsSnap] = await Promise.all([
+	db.collection('projectFilters').orderBy('order', 'asc').get(),
+	db.collection('projects').get(),
+])
+
+const usage: Record<string, number> = {}
+projectsSnap.docs.forEach(d => {
+	const stacks: string[] = d.data().stacks ?? []
+	new Set(stacks.map(s => slugify(String(s)))).forEach(slug => {
+		usage[slug] = (usage[slug] ?? 0) + 1
+	})
+})
+
+const categories = catsSnap.docs.map(doc => {
+	const data = doc.data()
+	return {
+		id: doc.id,
+		name: data.name ?? '',
+		slug: data.slug ?? doc.id,
+		order: data.order ?? 0,
+	}
+}) as ProjectFilterInterface[]
+---
+
+<AdminLayout title="Filtros del portfolio">
+	<div class="admin-toolbar">
+		<div>
+			<h2>Filtros del portfolio</h2>
+			<p class="admin-toolbar__subtitle">Botones de filtro del portfolio. El slug debe coincidir con el stack del proyecto en minúsculas (ej. "ReactJS" → reactjs); se usa como data-filter=".slug".</p>
+		</div>
+		<div class="admin-toolbar__actions">
+			<button type="button" class="button button--primary button--sm" id="new-category-btn">
+				<i class="fa-solid fa-plus"></i>
+				<span>Nuevo filtro</span>
+			</button>
+		</div>
+	</div>
+
+	{categories.length === 0 && (
+		<div class="admin-notice">
+			<p>
+				No hay filtros guardados: el sitio usa los filtros por defecto
+					(PHP, Laravel, JavaScript, ReactJS, Wordpress y NodeJS). Cárgalos para poder editarlos;
+					al crear tu primer filtro también se cargan automáticamente.
+			</p>
+			<button type="button" class="button button--secondary-o button--sm" id="seed-defaults-btn">
+				Cargar filtros por defecto
+			</button>
+		</div>
+	)}
+
+	<div class="admin-table-wrapper">
+		<table class="admin-table">
+			<thead>
+				<tr>
+					<th>Orden</th>
+					<th>Nombre</th>
+					<th>Slug</th>
+					<th>Proyectos</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody id="categories-tbody">
+				{categories.length === 0 && (
+					<tr id="empty-row">
+						<td colspan="5" class="admin-table__empty-state">No hay filtros registrados aún.</td>
+					</tr>
+				)}
+				{categories.map(cat => (
+					<tr data-row-id={cat.id}>
+						<td><span class="admin-order-badge">{cat.order}</span></td>
+						<td><strong>{cat.name}</strong></td>
+						<td><code>{cat.slug}</code></td>
+						<td><span class="admin-badge">{usage[cat.slug] ?? 0}</span></td>
+						<td>
+							<div class="admin-table__actions">
+								<button
+									type="button"
+									class="button button--sm button--primary-o"
+									data-action="edit"
+									data-id={cat.id}
+									data-name={cat.name}
+									data-slug={cat.slug}
+									data-order={String(cat.order)}
+								>Editar</button>
+								<button
+									type="button"
+									class="button button--sm button--dark-o"
+									data-action="delete"
+									data-id={cat.id}
+									data-slug={cat.slug}
+								>Eliminar</button>
+							</div>
+						</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Modal Crear/Editar Filtro -->
+	<div class="admin-modal" id="category-modal">
+		<div class="admin-modal__content">
+			<button type="button" class="admin-modal__close" id="close-category-modal">
+				<i class="fa fa-times"></i>
+			</button>
+			<h2 id="category-modal-title">Nuevo Filtro</h2>
+			<form id="form-category">
+				<Input type="text" id="name" label="Nombre" placeholder="ReactJS" required />
+				<div class="grid-2-cols">
+					<Input type="text" id="slug" label="Slug (identificador)" placeholder="reactjs" required pattern="[a-z0-9\-]+" />
+					<Input type="number" id="order" label="Orden (menor = primero)" placeholder="1" required />
+				</div>
+				<p class="section-hint" id="slug-hint">El slug no se puede cambiar después de crear el filtro.</p>
+
+				<div class="admin-modal__actions">
+					<button type="submit" class="button button--primary" id="submit-category-btn">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</AdminLayout>
+
+<style lang="scss">
+	@use '../../../styles/mixins/theme' as theme;
+
+	.admin-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 2rem;
+		flex-wrap: wrap;
+		gap: 1rem;
+
+		h2 {
+			font-size: 2.2rem;
+		}
+
+		&__subtitle {
+			font-size: 1.3rem;
+			@include theme.theme-property('color', 'legendText');
+			margin-top: .3rem;
+		}
+
+		&__actions {
+			display: flex;
+			gap: 1rem;
+		}
+	}
+
+	.admin-table-wrapper {
+		@include theme.theme-property('background-color', 'sectionBg');
+		@include theme.theme-property('border', 'figureBorder');
+		border-radius: 10px;
+		overflow-x: auto;
+	}
+
+	.admin-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 1.4rem;
+
+		th, td {
+			text-align: left;
+			padding: 1.2rem 1.5rem;
+			white-space: nowrap;
+		}
+
+		thead th {
+			@include theme.theme-property('background-color', 'contactBg');
+			@include theme.theme-property('color', 'legendText');
+			font-weight: 600;
+			@include theme.theme-property('border-bottom', 'figureBorder');
+		}
+
+		tbody tr:not(:last-child) td {
+			@include theme.theme-property('border-bottom', 'figureBorder');
+		}
+	}
+
+	.admin-order-badge {
+		display: inline-block;
+		padding: .2rem .7rem;
+		border-radius: 4px;
+		font-weight: 600;
+		font-size: 1.2rem;
+		@include theme.theme-property('background-color', 'contactBg');
+		@include theme.theme-property('border', 'figureBorder');
+	}
+
+	.admin-table__truncate {
+		max-width: 220px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.admin-table__empty {
+		@include theme.theme-property('color', 'legendText');
+	}
+
+	.admin-table__empty-state {
+		text-align: center;
+		@include theme.theme-property('color', 'legendText');
+		padding: 3rem;
+	}
+
+	.admin-table__actions {
+		display: flex;
+		gap: .6rem;
+	}
+
+	.admin-badge {
+		display: inline-block;
+		padding: .2rem .75rem;
+		border-radius: 20px;
+		font-size: 1.2rem;
+		font-weight: 500;
+		background-color: rgba(148, 163, 184, .2);
+		color: #94a3b8;
+
+		&--success {
+			background-color: rgba(34, 197, 94, .15);
+			color: #22c55e;
+		}
+	}
+
+	.grid-2-cols {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.2rem;
+
+		@media (max-width: 600px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.admin-checkbox {
+		display: flex;
+		align-items: center;
+		gap: .8rem;
+		margin: 1.5rem 0;
+		font-size: 1.4rem;
+
+		input[type="checkbox"] {
+			width: 1.8rem;
+			height: 1.8rem;
+			cursor: pointer;
+			accent-color: var(--primary);
+		}
+
+		label {
+			cursor: pointer;
+			@include theme.theme-property('color', 'headings');
+		}
+	}
+
+	.admin-modal {
+		display: none;
+		position: fixed;
+		inset: 0;
+		@include theme.theme-property('background-color', 'modalBg');
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+		z-index: 100;
+	}
+
+	.admin-modal.open {
+		display: flex;
+	}
+
+	.admin-modal__content {
+		position: relative;
+		width: min(620px, 100%);
+		max-height: 90vh;
+		overflow-y: auto;
+		@include theme.theme-property('background-color', 'sectionBg');
+		border-radius: 10px;
+		padding: 2.5rem;
+	}
+
+	.admin-modal__close {
+		position: absolute;
+		top: 1.5rem;
+		right: 1.5rem;
+		background: none;
+		border: none;
+		font-size: 1.8rem;
+		cursor: pointer;
+		@include theme.theme-property('color', 'legendText');
+	}
+
+	.admin-modal__actions {
+		margin-top: 1.5rem;
+	}
+
+	.admin-modal h2 {
+		font-size: 2rem;
+		margin-bottom: 2rem;
+	}
+
+	.editor-label {
+		display: block;
+		margin-bottom: .75rem;
+		font-size: 1.4rem;
+		font-weight: 500;
+		font-family: "Poppins", sans-serif;
+	}
+
+	.admin-notice {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+		margin-bottom: 2rem;
+		padding: 1.5rem 2rem;
+		border-radius: 10px;
+		font-size: 1.3rem;
+		@include theme.theme-property('background-color', 'contactBg');
+		@include theme.theme-property('border', 'figureBorder');
+		@include theme.theme-property('color', 'legendText');
+
+		p { flex: 1; min-width: 240px; }
+	}
+
+	.section-hint {
+		font-size: 1.2rem;
+		@include theme.theme-property('color', 'legendText');
+		margin-top: .4rem;
+	}
+</style>
+
+<script>
+	import {
+		collection,
+		addDoc,
+		doc,
+		updateDoc,
+		deleteDoc,
+		writeBatch,
+		serverTimestamp,
+	} from 'firebase/firestore'
+	import { db } from '../../../config/firebase'
+	import { DEFAULT_PROJECT_FILTERS, slugify } from '../../../utils/projectFilters'
+	import Swal from 'sweetalert2'
+
+	const $modal = document.getElementById('category-modal') as HTMLElement
+	const $modalTitle = document.getElementById('category-modal-title') as HTMLElement
+	const $closeModal = document.getElementById('close-category-modal') as HTMLElement
+	const $newBtn = document.getElementById('new-category-btn') as HTMLElement
+	const $seedBtn = document.getElementById('seed-defaults-btn') as HTMLButtonElement | null
+	const $form = document.getElementById('form-category') as HTMLFormElement
+	const $tbody = document.getElementById('categories-tbody') as HTMLElement
+	const $submitBtn = document.getElementById('submit-category-btn') as HTMLButtonElement
+
+	const $name = document.getElementById('name') as HTMLInputElement
+	const $slug = document.getElementById('slug') as HTMLInputElement
+	const $order = document.getElementById('order') as HTMLInputElement
+	const $slugHint = document.getElementById('slug-hint') as HTMLElement
+
+	const categoriesRef = collection(db, 'projectFilters')
+	const hasRows = () => !!$tbody.querySelector('tr[data-row-id]')
+	const existingSlugs = () =>
+		Array.from($tbody.querySelectorAll<HTMLElement>('button[data-action="edit"]')).map(b => b.dataset.slug)
+
+	let editingId: string | null = null
+	let slugTouched = false
+
+	const openModal = () => {
+		$modal.classList.add('open')
+		document.body.style.overflow = 'hidden'
+	}
+
+	const closeModal = () => {
+		$modal.classList.remove('open')
+		document.body.style.overflow = ''
+		$form.reset()
+		editingId = null
+	}
+
+	const seedDefaults = async () => {
+		const batch = writeBatch(db)
+		DEFAULT_PROJECT_FILTERS.forEach(c => {
+			batch.set(doc(categoriesRef), {
+				name: c.name,
+				slug: c.slug,
+				order: c.order,
+				createdAt: serverTimestamp(),
+			})
+		})
+		await batch.commit()
+	}
+
+	$name.addEventListener('input', () => {
+		if (!editingId && !slugTouched) $slug.value = slugify($name.value)
+	})
+	$slug.addEventListener('input', () => {
+		slugTouched = true
+	})
+
+	$newBtn.addEventListener('click', () => {
+		editingId = null
+		slugTouched = false
+		$modalTitle.textContent = 'Nuevo Filtro'
+		$form.reset()
+		$slug.readOnly = false
+		$slugHint.hidden = false
+		$order.value = String($tbody.querySelectorAll('tr[data-row-id]').length + 1)
+		openModal()
+	})
+
+	$seedBtn?.addEventListener('click', async () => {
+		$seedBtn.disabled = true
+		try {
+			await seedDefaults()
+			window.location.reload()
+		} catch (err) {
+			console.error(err)
+			$seedBtn.disabled = false
+			Swal.fire({ title: 'Error al cargar los filtros.', icon: 'error', confirmButtonColor: 'var(--primary)' })
+		}
+	})
+
+	$closeModal.addEventListener('click', closeModal)
+	$modal.addEventListener('click', e => {
+		if (e.target === $modal) closeModal()
+	})
+
+	$form.addEventListener('submit', async e => {
+		e.preventDefault()
+
+		const slug = slugify($slug.value)
+		if (!slug) {
+			Swal.fire({ title: 'Slug no válido.', icon: 'warning', confirmButtonColor: 'var(--primary)' })
+			return
+		}
+		if (!editingId && existingSlugs().includes(slug)) {
+			Swal.fire({ title: 'Ese slug ya existe.', icon: 'warning', confirmButtonColor: 'var(--primary)' })
+			return
+		}
+
+		$submitBtn.disabled = true
+		$submitBtn.textContent = 'Guardando...'
+
+		try {
+			if (editingId) {
+				await updateDoc(doc(db, 'projectFilters', editingId), {
+					name: $name.value.trim(),
+					order: Number($order.value),
+				})
+			} else {
+				// Primer filtro: conserva los de por defecto para no perder los botones actuales
+				if (!hasRows()) {
+					const defaultsToSeed = DEFAULT_PROJECT_FILTERS.filter(c => c.slug !== slug)
+					const batch = writeBatch(db)
+					defaultsToSeed.forEach(c => {
+						batch.set(doc(categoriesRef), { name: c.name, slug: c.slug, order: c.order, createdAt: serverTimestamp() })
+					})
+					await batch.commit()
+				}
+				await addDoc(categoriesRef, {
+					name: $name.value.trim(),
+					slug,
+					order: Number($order.value),
+					createdAt: serverTimestamp(),
+				})
+			}
+
+			closeModal()
+			await Swal.fire({
+				title: editingId ? 'Filtro actualizado.' : 'Filtro creado.',
+				icon: 'success',
+				confirmButtonColor: 'var(--secondary)',
+			})
+			window.location.reload()
+		} catch (err) {
+			console.error(err)
+			Swal.fire({ title: 'Error al guardar el filtro.', icon: 'error', confirmButtonColor: 'var(--primary)' })
+		} finally {
+			$submitBtn.disabled = false
+			$submitBtn.textContent = 'Guardar'
+		}
+	})
+
+	$tbody.addEventListener('click', async e => {
+		const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-action]')
+		if (!btn) return
+
+		const id = btn.dataset.id!
+
+		if (btn.dataset.action === 'edit') {
+			editingId = id
+			$modalTitle.textContent = 'Editar Filtro'
+			$name.value = btn.dataset.name ?? ''
+			$slug.value = btn.dataset.slug ?? ''
+			$slug.readOnly = true
+			$slugHint.hidden = true
+			$order.value = btn.dataset.order ?? '0'
+			openModal()
+		}
+
+		if (btn.dataset.action === 'delete') {
+
+			const result = await Swal.fire({
+				title: '¿Eliminar filtro?',
+				text: 'Esta acción no se puede deshacer.',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Sí, eliminar',
+				cancelButtonText: 'Cancelar',
+				confirmButtonColor: 'var(--danger)',
+			})
+			if (!result.isConfirmed) return
+
+			btn.disabled = true
+			try {
+				await deleteDoc(doc(db, 'projectFilters', id))
+				window.location.reload()
+			} catch (err) {
+				console.error(err)
+				btn.disabled = false
+				Swal.fire({ title: 'Error al eliminar el filtro.', icon: 'error', confirmButtonColor: 'var(--primary)' })
+			}
+		}
+	})
+</script>

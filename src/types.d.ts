@@ -46,6 +46,13 @@ export interface StackCategoryInterface {
   order: number
 }
 
+export interface ProjectFilterInterface {
+  id: string
+  name: string
+  slug: string
+  order: number
+}
+
 export interface StackInterface {
   id: string
   name: string
