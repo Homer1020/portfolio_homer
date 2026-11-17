@@ -2,6 +2,19 @@ import type { APIRoute } from 'astro'
 import { FieldValue } from 'firebase-admin/firestore'
 import { serverAuth, db } from '../../../config/firebase-server'
 
+const normalizeImageKitFileName = (value: string | null, fallback: string) => {
+	if (!value) return fallback
+
+	const safeValue = value.trim()
+	if (!safeValue) return fallback
+
+	const cleanValue = safeValue.split('?')[0].split('#')[0]
+	const fileName = cleanValue.substring(cleanValue.lastIndexOf('/') + 1) || cleanValue
+	const decoded = decodeURIComponent(fileName)
+
+	return decoded.includes('.') ? decoded : `${decoded}.${fallback.split('.').pop() ?? 'pdf'}`
+}
+
 export const POST: APIRoute = async ({ request, cookies }) => {
 	const sessionCookie = cookies.get('__session')?.value
 
@@ -17,6 +30,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
 	const formData = await request.formData()
 	const file = formData.get('file')
+	const currentFileName = formData.get('fileName') as string | null
 
 	if (!(file instanceof File) || file.size === 0) {
 		return new Response('No se envió ningún archivo', { status: 400 })
@@ -31,13 +45,15 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 	}
 
 	try {
-		const fileName = `cv-${Date.now()}.pdf`
+		const defaultFileName = 'landing-cv.pdf'
+		const fileName = normalizeImageKitFileName(currentFileName, defaultFileName)
 
 		const imageKitFormData = new FormData()
 		imageKitFormData.append('file', file, fileName)
 		imageKitFormData.append('fileName', fileName)
 		imageKitFormData.append('folder', 'landing')
 		imageKitFormData.append('useUniqueFileName', 'false')
+		imageKitFormData.append('overwriteFile', 'true')
 
 		const uploadRes = await fetch('https://upload.imagekit.io/api/v1/files/upload', {
 			method: 'POST',

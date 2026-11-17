@@ -358,6 +358,15 @@ const testimonios = testimoniosSnap.docs
 			if (!confirm.isConfirmed) return
 
 			try {
+				const assetUrls = [$button.dataset.avatar].filter(Boolean)
+				for (const assetUrl of assetUrls) {
+					await fetch('/api/admin/delete-image', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ url: assetUrl }),
+					})
+				}
+
 				await deleteDoc(doc(db, 'testimonials', id))
 				document.querySelector(`tr[data-row-id="${id}"]`)?.remove()
 				Swal.fire({

@@ -16,6 +16,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
 	const formData = await request.formData()
 	const file = formData.get('file')
+	const customFileName = formData.get('fileName') as string | null
+	const overwriteFile = formData.get('overwriteFile') === 'true' || formData.get('overwriteFile') === '1'
 
 	if (!(file instanceof File) || file.size === 0) {
 		return new Response('No se envió ningún archivo', { status: 400 })
@@ -34,17 +36,15 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 		const slug = formData.get('slug')
 		const field = formData.get('field')
 		const isCoverField = typeof slug === 'string' && slug.trim() !== '' && (field === 'mockup' || field === 'image')
-
-		const fileName = isCoverField
-			? `${slug}-${field}.${ext}`
-			: `project-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+		const currentFileName = customFileName ? customFileName.split('?')[0].split('#')[0].split('/').pop() : null
+		const fileName = currentFileName || (isCoverField ? `${slug}-${field}.${ext}` : `project-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`)
 
 		const imageKitFormData = new FormData()
 		imageKitFormData.append('file', file, fileName)
 		imageKitFormData.append('fileName', fileName)
 		imageKitFormData.append('folder', 'projects')
-		imageKitFormData.append('useUniqueFileName', 'false')
-		if (isCoverField) imageKitFormData.append('overwriteFile', 'true')
+		imageKitFormData.append('useUniqueFileName', overwriteFile || isCoverField ? 'false' : 'true')
+		if (overwriteFile || isCoverField) imageKitFormData.append('overwriteFile', 'true')
 
 		const uploadRes = await fetch('https://upload.imagekit.io/api/v1/files/upload', {
 			method: 'POST',

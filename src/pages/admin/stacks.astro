@@ -542,6 +542,11 @@ const stacks = stacksSnap.docs.map(doc => {
 			const fd = new FormData()
 			fd.append('file', file)
 			fd.append('folder', 'stacks')
+			const currentFileName = targetInput.value ? targetInput.value.split('?')[0].split('/').pop() : null
+			if (currentFileName) {
+				fd.append('fileName', currentFileName)
+				fd.append('overwriteFile', 'true')
+			}
 
 			const res = await fetch('/api/admin/upload-image', { method: 'POST', body: fd })
 			if (!res.ok) throw new Error(await res.text())
@@ -691,6 +696,15 @@ const stacks = stacksSnap.docs.map(doc => {
 			btn.disabled = true
 
 			try {
+				const assetUrls = [btn.dataset.icon, btn.dataset.darkIcon].filter(Boolean)
+				for (const assetUrl of assetUrls) {
+					await fetch('/api/admin/delete-image', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ url: assetUrl }),
+					})
+				}
+
 				await deleteDoc(doc(db, 'stacks', id))
 				document.querySelector(`[data-row-id="${id}"]`)?.remove()
 				if ($tbody.querySelectorAll('tr[data-row-id]').length === 0) {

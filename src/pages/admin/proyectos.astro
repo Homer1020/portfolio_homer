@@ -592,6 +592,11 @@ const proyectos = proyectosSnap.docs.map(doc => {
 			fd.append('file', file)
 			fd.append('slug', $slugInput.value.trim())
 			fd.append('field', field)
+			const currentFileName = $hiddenField.value ? $hiddenField.value.split('?')[0].split('/').pop() : null
+			if (currentFileName) {
+				fd.append('fileName', currentFileName)
+				fd.append('overwriteFile', 'true')
+			}
 
 			const res = await fetch('/api/admin/upload-project-image', { method: 'POST', body: fd })
 			if (!res.ok) throw new Error(await res.text())
@@ -711,6 +716,23 @@ const proyectos = proyectosSnap.docs.map(doc => {
 			if (!confirm.isConfirmed) return
 
 			try {
+				const assetUrls = [
+					$button.dataset.mockup,
+					$button.dataset.image,
+					...JSON.parse($button.dataset.gallery ?? '[]'),
+				].filter(Boolean)
+
+				for (const assetUrl of assetUrls) {
+					const deleteRes = await fetch('/api/admin/delete-image', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ url: assetUrl }),
+					})
+					if (!deleteRes.ok) {
+						console.warn('No se pudo borrar la imagen de ImageKit:', assetUrl)
+					}
+				}
+
 				await deleteDoc(doc(db, 'projects', slug))
 				document.querySelector(`tr[data-row-slug="${slug}"]`)?.remove()
 				Swal.fire({

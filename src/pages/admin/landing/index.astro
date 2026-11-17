@@ -194,8 +194,9 @@ const about: AboutContent = {
 	</div>
 </AdminLayout>
 
-<script define:vars={{ hero, about }} is:inline>
+<script define:vars={{ hero, about, cvUrl }} is:inline>
 	window.__LANDING__ = { hero, about }
+	window.__CV_URL__ = cvUrl
 </script>
 
 <style lang="scss">
@@ -592,8 +593,19 @@ const about: AboutContent = {
 <script>
 	import Swal from 'sweetalert2'
 
+	const cvUrl = (window as any).__CV_URL__ ?? ''
 	const $input = document.getElementById('cv-input') as HTMLInputElement
 	const $label = document.getElementById('cv-upload-label') as HTMLElement
+
+	const getFileNameFromUrl = (url: string) => {
+		if (!url) return null
+		try {
+			const cleanUrl = url.split('?')[0].split('#')[0]
+			return cleanUrl.substring(cleanUrl.lastIndexOf('/') + 1) || null
+		} catch {
+			return null
+		}
+	}
 
 	$input.addEventListener('change', async () => {
 		const file = $input.files?.[0]
@@ -629,6 +641,11 @@ const about: AboutContent = {
 		try {
 			const fd = new FormData()
 			fd.append('file', file)
+			const currentFileName = getFileNameFromUrl(cvUrl)
+			if (currentFileName) {
+				fd.append('fileName', currentFileName)
+				fd.append('overwriteFile', 'true')
+			}
 
 			const res = await fetch('/api/admin/upload-cv', { method: 'POST', body: fd })
 			if (!res.ok) throw new Error(await res.text())
@@ -740,6 +757,11 @@ const about: AboutContent = {
 			const fd = new FormData()
 			fd.append('file', file)
 			fd.append('folder', 'hero')
+			const currentFileName = $heroImageHidden.value ? $heroImageHidden.value.split('?')[0].split('/').pop() : null
+			if (currentFileName) {
+				fd.append('fileName', currentFileName)
+				fd.append('overwriteFile', 'true')
+			}
 
 			const res = await fetch('/api/admin/upload-image', { method: 'POST', body: fd })
 			if (!res.ok) throw new Error(await res.text())
